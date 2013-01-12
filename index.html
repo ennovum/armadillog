@@ -1,0 +1,104 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<title>Armadillog - logs reading tool</title>
+	<meta name="description" content="Logs reading tool. Input a piece of text or a file, apply a set of filters and check out the result. You can narrow the output down to the point where you see only what is relevant to your current need.">
+	<meta name="author" content="Grzegorz Wasiak">
+	<meta name="viewport" content="width=device-width">
+	<link rel="shortcut icon" href="styles/armadillog.png" />
+	<link rel="stylesheet" href="styles/normalize.css">
+	<link rel="stylesheet" href="styles/custom.css">
+	<link rel="stylesheet" href="styles/print.css">
+	<link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,700' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+<div id="top">
+	<div id="topbar">
+		<div id="logo">
+			<h3>Armadillog <span class="beta">beta</span></h3>
+		</div>
+		<div id="mainmenu">
+			<ul class="mainmenu-list">
+				<li class="mainmenu-item">
+					<a id="armadillog-input-switch" class="mainmenu-link" href="#input-toggle"><span class="hotkey">I</span>nput</a>
+				</li>
+				<li class="mainmenu-item">
+					<a id="armadillog-filter-switch" class="mainmenu-link" href="#filter-toggle"><span class="hotkey">F</span>ilter</a>
+				</li>
+				<li class="mainmenu-item">
+					<a id="armadillog-examine-switch" class="mainmenu-link" href="#filter-examine"><span class="hotkey">E</span>xamine</a>
+				</li>
+			</ul>
+		</div>
+		<div id="sidemenu">
+			<ul class="sidemenu-list">
+				<li class="sidemenu-item">
+					<a id="ennovum-link" class="sidemenu-link" href="http://ennovum.net" target="_blank">Ennovum</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div id="description">
+		<br />
+		<br />
+		<br />
+		<p>Welcome!</p>
+		<br />
+		<br />
+		<p>Armadillog is a tool which makes it easier and faster to go through a large amount of text, e. g. application logs.</p>
+		<p>Input a piece of text or a file, apply a set of filters and check out the result.</p>
+		<p>You can narrow the output down to the point where you see only what is relevant to your current need.</p>
+		<br />
+		<br />
+		<p>It's still a work in progress, so please feel free to send me any bug reports or feature requests.</p>
+		<br />
+		<br />
+		<p>Grzegorz Wasiak</p>
+		<p>@ennovum</p>
+		<p>armadillog@ennovum.net</p>
+		<br />
+		<br />
+		<br />
+	</div>
+	<div id="armadillog-input-wrapper" class="hidden drawer-wrapper">
+		<div id="armadillog-input-box" class="drawer">
+		</div>
+		<a href="#input-fold" id="armadillog-input-fold" class="drawer-fold">Fold</a>
+	</div>
+	<div id="armadillog-filter-wrapper" class="hidden drawer-wrapper">
+		<div id="armadillog-filter-box" class="drawer">
+		</div>
+		<a href="#filter-fold" id="armadillog-filter-fold" class="drawer-fold">Fold</a>
+	</div>
+	<div id="armadillog-examine-wrapper" class="hidden drawer-wrapper">
+		<div id="armadillog-examine-box" class="drawer">
+		</div>
+		<a href="#examine-fold" id="armadillog-examine-fold" class="drawer-fold">Fold</a>
+	</div>
+</div>
+<div id="main">
+	<div id="armadillog-content-box">
+	</div>
+</div>
+
+<script src="scripts/vendor/require.js"></script>
+<script src="scripts/index.js"></script>
+
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-20996965-6']);
+_gaq.push(['_trackPageview']);
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+</body>
+</html>
