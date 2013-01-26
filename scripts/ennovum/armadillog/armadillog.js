@@ -4,10 +4,9 @@ window.define && define(
 	[
 		'ennovum.Environment',
 		'ennovum.Utils',
-		'./core',
-		'./layout'
+		'./core'
 	],
-	function (mEnvironment, mUtils, mArmadillogCore, mArmadillogLayout) {
+	function (mEnvironment, mUtils, mArmadillogCore) {
 /* ==================================================================================================== */
 
 // debug console logs switch
@@ -126,7 +125,6 @@ Armadillog.prototype = {
 		DEBUG && console && console.log('Armadillog', 'dataInit', arguments);
 		
 		this.armadillogCore = new mArmadillogCore.ArmadillogCore(this.config);
-		this.armadillogLayout = new mArmadillogLayout.ArmadillogLayout(this.config);
 		
 		return true;
 	},

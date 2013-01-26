@@ -1,5 +1,5 @@
 /* =============================================================================
-   Custom styles
+   Custom global styles
    ========================================================================== */
 
 @font-face {
@@ -22,20 +22,8 @@
     font-style: normal;
 }
 
-html {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
-
-body {
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	padding: 0;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	line-height: 17px;
+a {
+	cursor: pointer;
 }
 
 .no-js body {
@@ -94,12 +82,28 @@ body {
 	line-height: 17px;
 }
 
+/* =============================================================================
+   Custom local styles
+   ========================================================================== */
+
+html,
+body {
+	/* display: box; */ display: -moz-box; display: -webkit-box; display: box; width: 100%; height: 100%;
+	/* box-orient: vertical; */ -moz-box-orient: vertical; -webkit-box-orient: vertical; box-orient: vertical;
+	/* box-flex: 1; */ -moz-box-flex: 1; -webkit-box-flex: 1; box-flex: 1;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 17px;
+}
+
 #top {
-	position: fixed;
-	top: 0;
-	width: 100%;
 	color: rgb(255, 255, 255);
-	z-index: 100;
+	overflow: auto;
 }
 
 #topbar {
@@ -128,6 +132,20 @@ body {
 
 #logo .beta {
     font-size: 14px;
+}
+
+#ennovum {
+	float: right;
+}
+
+#ennovum-link {
+	display: block;
+	width: 30px;
+	height: 30px;
+	margin: 10px 0 0 10px;
+	background: url('ennovum.png') 0 0 no-repeat;
+	text-indent: -1000px;
+	overflow: hidden;
 }
 
 #mainmenu {
@@ -200,47 +218,8 @@ body {
 	background: rgba(187, 102, 102, 1);
 }
 
-#sidemenu {
-	float: right;
-}
-
-#sidemenu .sidemenu-list {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	overflow: auto;
-}
-
-#sidemenu .sidemenu-item {
-	display: block;
-	float: left;
-	padding: 0 0 0 10px;
-}
-
-#sidemenu #ennovum-link {
-	display: block;
-	width: 30px;
-	height: 30px;
-	margin: 10px 0 0 10px;
-	background: url('ennovum.png') 0 0 no-repeat;
-	text-indent: -1000px;
-	overflow: hidden;
-}
-
 #description {
 	display: none;
-}
-
-.drawer-wrapper {
-	opacity: 0.75;
-	transition-property: opacity;
-	transition-duration: .8s;
-	transition-timing-function: ease;
-}
-
-#top:hover .drawer-wrapper {
-	opacity: 0.95;
-	transition-duration: .1s;
 }
 
 #armadillog-input-wrapper {
@@ -372,7 +351,6 @@ body {
 }
 
 #armadillog-filter-box .filter-list {
-	max-height: 400px;
 	margin: 10px 0 0 0;
 	padding: 10px;
 	background: rgba(119, 170, 119, 1);
@@ -491,7 +469,6 @@ body {
 }
 
 #armadillog-filter-box .filter-button-box {
-	margin: 10px 0 0 0;
 	overflow: auto;
 }
 
@@ -500,7 +477,7 @@ body {
 #armadillog-filter-box .filter-button-submit {
 	display: block;
 	float: left;
-	margin: 0 20px 0 0;
+	margin: 10px 20px 0 0;
 	padding-left: 30px;
 	background-image: url('icons.png');
 	background-repeat: no-repeat;
@@ -536,17 +513,10 @@ body {
 }
 
 #main {
-	position: absolute;
-	min-width: 100%;
-	min-height: 100%;
-	z-index: 0;
-}
-
-#armadillog-content-box {
-	margin: 50px 0 0 0;
-}
-
-#armadillog-content-box .content-frame {
+	/* display: box; */ display: -moz-box; display: -webkit-box; display: box; width: 100%; height: 100%;
+	/* box-orient: vertical; */ -moz-box-orient: vertical; -webkit-box-orient: vertical; box-orient: vertical;
+	/* box-flex: 1; */ -moz-box-flex: 1; -webkit-box-flex: 1; box-flex: 1;
+	overflow: auto;
 }
 
 #armadillog-content-box .content-line-list {

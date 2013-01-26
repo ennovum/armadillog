@@ -12,31 +12,31 @@ window.define && define(
 var DEBUG = false;
 
 /**
- * ArmadillogLayout interface
+ * Layout interface
  */
-var iArmadillogLayout = {
+var iLayout = {
 };
 
 /**
- * ArmadillogLayout constructor
+ * Layout constructor
  */
-var ArmadillogLayout = function ArmadillogLayout() {
+var Layout = function Layout() {
 	this.init.apply(this, arguments);
-	return mUtils.obj.implement({}, this, iArmadillogLayout);
+	return mUtils.obj.implement({}, this, iLayout);
 };
 
 /**
- * ArmadillogLayout prototype
+ * Layout prototype
  */
-ArmadillogLayout.prototype = {
+Layout.prototype = {
 	
 	/**
 	 * Initializes instance
 	 * 
 	 * @param {object} config configuration object
 	 */
-	init: function ArmadillogLayout_init(config) {
-		DEBUG && console && console.log('ArmadillogLayout', 'init', arguments);
+	init: function Layout_init(config) {
+		DEBUG && console && console.log('Layout', 'init', arguments);
 		
 		switch (true) {
 			case !this.configSet(config):
@@ -55,13 +55,13 @@ ArmadillogLayout.prototype = {
 	 * 
 	 * @param {object} config configuration object
 	 */
-	configSet: function ArmadillogLayout_configSet(config) {
-		DEBUG && console && console.log('ArmadillogLayout', 'configSet', arguments);
+	configSet: function Layout_configSet(config) {
+		DEBUG && console && console.log('Layout', 'configSet', arguments);
 		
 		switch (false) {
 			case !!config:
 			case typeof config === 'object':
-				console && console.error('ArmadillogLayout', 'configSet', 'invalid input');
+				console && console.error('Layout', 'configSet', 'invalid input');
 				return false;
 		};
 		
@@ -74,7 +74,8 @@ ArmadillogLayout.prototype = {
 			filterFoldEl: config.filterFoldEl || null,
 			mainmenuExamineEl: config.mainmenuExamineEl || null,
 			examineWrapperEl: config.examineWrapperEl || null,
-			examineFoldEl: config.examineFoldEl || null
+			examineFoldEl: config.examineFoldEl || null,
+			contentBoxEl: config.contentBoxEl || null
 		};
 		
 		return true;
@@ -83,9 +84,9 @@ ArmadillogLayout.prototype = {
 	/**
 	 * Initializes view
 	 */
-	viewInit: function ArmadillogLayout_viewInit() {
-		DEBUG && console && console.log('ArmadillogLayout', 'viewInit', arguments);
-		
+	viewInit: function Layout_viewInit() {
+		DEBUG && console && console.log('Layout', 'viewInit', arguments);
+
 		// nothing
 		
 		return true;
@@ -94,8 +95,8 @@ ArmadillogLayout.prototype = {
 	/**
 	 * Initializes UI
 	 */
-	uiInit: function ArmadillogLayout_uiInit() {
-		DEBUG && console && console.log('ArmadillogLayout', 'uiInit', arguments);
+	uiInit: function Layout_uiInit() {
+		DEBUG && console && console.log('Layout', 'uiInit', arguments);
 		
 		this.config.mainmenuInputEl.addEventListener(
 			'click',
@@ -145,8 +146,8 @@ ArmadillogLayout.prototype = {
 	/**
 	 * 
 	 */
-	keyboardInit: function ArmadillogLayout_keyboardInit() {
-		DEBUG && console && console.log('ArmadillogLayout', 'keyboardInit', arguments);
+	keyboardInit: function Layout_keyboardInit() {
+		DEBUG && console && console.log('Layout', 'keyboardInit', arguments);
 		
 		document.addEventListener(
 			'keyup',
@@ -184,12 +185,12 @@ ArmadillogLayout.prototype = {
 		
 		return true;
 	},
-    
+	
     /**
      * 
      */
-    inputHide: function ArmadillogLayout_inputToggle() {
-        DEBUG && console && console.log('ArmadillogLayout', 'inputHide', arguments);
+    inputHide: function Layout_inputToggle() {
+        DEBUG && console && console.log('Layout', 'inputHide', arguments);
         
         mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
         
@@ -201,8 +202,8 @@ ArmadillogLayout.prototype = {
     /**
      * 
      */
-    inputToggle: function ArmadillogLayout_inputToggle() {
-        DEBUG && console && console.log('ArmadillogLayout', 'inputToggle', arguments);
+    inputToggle: function Layout_inputToggle() {
+        DEBUG && console && console.log('Layout', 'inputToggle', arguments);
         
         mUtils.dom.classToggle(this.config.mainmenuInputEl, 'pressed');
         mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
@@ -218,8 +219,8 @@ ArmadillogLayout.prototype = {
     /**
      * 
      */
-    filterHide: function ArmadillogLayout_filterToggle() {
-        DEBUG && console && console.log('ArmadillogLayout', 'filterHide', arguments);
+    filterHide: function Layout_filterToggle() {
+        DEBUG && console && console.log('Layout', 'filterHide', arguments);
 
         mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
         
@@ -231,8 +232,8 @@ ArmadillogLayout.prototype = {
     /**
      * 
      */
-    filterToggle: function ArmadillogLayout_filterToggle() {
-        DEBUG && console && console.log('ArmadillogLayout', 'filterToggle', arguments);
+    filterToggle: function Layout_filterToggle() {
+        DEBUG && console && console.log('Layout', 'filterToggle', arguments);
 
         mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
         mUtils.dom.classToggle(this.config.mainmenuFilterEl, 'pressed')
@@ -248,8 +249,8 @@ ArmadillogLayout.prototype = {
     /**
      * 
      */
-    examineHide: function ArmadillogLayout_examineToggle() {
-        DEBUG && console && console.log('ArmadillogLayout', 'examineHide', arguments);
+    examineHide: function Layout_examineToggle() {
+        DEBUG && console && console.log('Layout', 'examineHide', arguments);
 
         mUtils.dom.classRemove(this.config.mainmenuExamineEl, 'pressed')
         
@@ -261,8 +262,8 @@ ArmadillogLayout.prototype = {
     /**
      * 
      */
-    examineToggle: function ArmadillogLayout_examineToggle() {
-        DEBUG && console && console.log('ArmadillogLayout', 'examineToggle', arguments);
+    examineToggle: function Layout_examineToggle() {
+        DEBUG && console && console.log('Layout', 'examineToggle', arguments);
 
         mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
         mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
@@ -278,15 +279,15 @@ ArmadillogLayout.prototype = {
 	/**
 	 * 
 	 */
-	toString: function ArmadillogLayout_toString() {
-		return 'ennovum.ArmadillogLayout';
+	toString: function Layout_toString() {
+		return 'ennovum.Layout';
 	}
 
 };
 
 /* ==================================================================================================== */
 		return {
-			'ArmadillogLayout': ArmadillogLayout,
-			'iArmadillogLayout': iArmadillogLayout
+			'Layout': Layout,
+			'iLayout': iLayout
 		};
 	});

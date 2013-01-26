@@ -3,6 +3,11 @@
 require.config({
 	'packages': [
 		{
+			'name': 'Flexie',
+			'location': 'scripts/vendor',
+			'main': 'flexie.1.0.3.js'
+		},
+		{
 			'name': 'Handlebars',
 			'location': 'scripts/vendor',
 			'main': 'handlebars-1.0.rc.1.js'
@@ -41,9 +46,17 @@ require.config({
 			'name': 'ennovum.Armadillog',
 			'location': 'scripts/ennovum/armadillog',
 			'main': 'armadillog.js'
+		},
+		{
+			'name': 'armadillog.Layout',
+			'location': 'scripts/armadillog',
+			'main': 'layout.js'
 		}
 	],
 	'shim': {
+		'Flexie': {
+			'exports': 'Flexie'
+		},
 		'Handlebars': {
 			'exports': 'Handlebars'
 		}
@@ -52,11 +65,15 @@ require.config({
 
 require(
 	[
-		'ennovum.Armadillog'
+		'ennovum.Armadillog',
+		'Flexie',
+		'armadillog.Layout'
 	],
-	function (mArmadillog) {
-		var armadillog = new mArmadillog.Armadillog({
+	function (mArmadillog, Flexie, mLayout) {
+		var config = {
 			'bodyEl': document.querySelector('body'),
+			'topEl': document.querySelector('#top'),
+			'mainEl': document.querySelector('#main'),
 			'mainmenuInputEl': document.querySelector('#armadillog-input-switch'),
 			'mainmenuFilterEl': document.querySelector('#armadillog-filter-switch'),
 			'mainmenuExamineEl': document.querySelector('#armadillog-examine-switch'),
@@ -72,7 +89,10 @@ require(
 			'contentBoxEl': document.querySelector('#armadillog-content-box'),
 			'contentScrollEl': window,
 			'contentDropEl': document.querySelector('#main')
-		});
+		};
+	
+		var armadillog = new mArmadillog.Armadillog(config);
+		var layout = new mLayout.Layout(config);
 
 		var descriptionEl = document.querySelector('#description');
 		var descriptionLineEl;
