@@ -70,42 +70,47 @@ require(
 		'armadillog.Layout'
 	],
 	function (mArmadillog, Flexie, mLayout) {
-		var config = {
-			'bodyEl': document.querySelector('body'),
-			'topEl': document.querySelector('#top'),
-			'mainEl': document.querySelector('#main'),
-			'mainmenuInputEl': document.querySelector('#armadillog-input-switch'),
-			'mainmenuFilterEl': document.querySelector('#armadillog-filter-switch'),
-			'mainmenuExamineEl': document.querySelector('#armadillog-examine-switch'),
-			'inputWrapperEl': document.querySelector('#armadillog-input-wrapper'),
-			'inputBoxEl': document.querySelector('#armadillog-input-box'),
-			'inputFoldEl': document.querySelector('#armadillog-input-fold'),
-			'filterWrapperEl': document.querySelector('#armadillog-filter-wrapper'),
-			'filterBoxEl': document.querySelector('#armadillog-filter-box'),
-			'filterFoldEl': document.querySelector('#armadillog-filter-fold'),
-			'examineWrapperEl': document.querySelector('#armadillog-examine-wrapper'),
-			'examineBoxEl': document.querySelector('#armadillog-examine-box'),
-			'examineFoldEl': document.querySelector('#armadillog-examine-fold'),
-			'contentBoxEl': document.querySelector('#armadillog-content-box'),
-			'contentScrollEl': window,
-			'contentDropEl': document.querySelector('#main')
-		};
+		try {
+			var config = {
+				'bodyEl': document.querySelector('body'),
+				'topEl': document.querySelector('#top'),
+				'mainEl': document.querySelector('#main'),
+				'mainmenuInputEl': document.querySelector('#armadillog-input-switch'),
+				'mainmenuFilterEl': document.querySelector('#armadillog-filter-switch'),
+				'mainmenuExamineEl': document.querySelector('#armadillog-examine-switch'),
+				'inputWrapperEl': document.querySelector('#armadillog-input-wrapper'),
+				'inputBoxEl': document.querySelector('#armadillog-input-box'),
+				'inputFoldEl': document.querySelector('#armadillog-input-fold'),
+				'filterWrapperEl': document.querySelector('#armadillog-filter-wrapper'),
+				'filterBoxEl': document.querySelector('#armadillog-filter-box'),
+				'filterFoldEl': document.querySelector('#armadillog-filter-fold'),
+				'examineWrapperEl': document.querySelector('#armadillog-examine-wrapper'),
+				'examineBoxEl': document.querySelector('#armadillog-examine-box'),
+				'examineFoldEl': document.querySelector('#armadillog-examine-fold'),
+				'contentBoxEl': document.querySelector('#armadillog-content-box'),
+				'contentScrollEl': window,
+				'contentDropEl': document.querySelector('#main')
+			};
+		
+			var armadillog = new mArmadillog.Armadillog(config);
+			var layout = new mLayout.Layout(config);
 	
-		var armadillog = new mArmadillog.Armadillog(config);
-		var layout = new mLayout.Layout(config);
-
-		var descriptionEl = document.querySelector('#description');
-		var descriptionLineEl;
-		var descriptionLineList = [];
-		
-		for (var i = 0, l = descriptionEl.childNodes.length; i < l; i++) {
-			descriptionLineEl = descriptionEl.childNodes[i];
-			if (descriptionLineEl.tagName) {
-				descriptionLineList.push(descriptionLineEl.textContent);
+			var descriptionEl = document.querySelector('#description');
+			var descriptionLineEl;
+			var descriptionLineList = [];
+			
+			for (var i = 0, l = descriptionEl.childNodes.length; i < l; i++) {
+				descriptionLineEl = descriptionEl.childNodes[i];
+				if (descriptionLineEl.tagName) {
+					descriptionLineList.push(descriptionLineEl.textContent);
+				}
 			}
+			
+			armadillog.contentTextSet(
+				descriptionLineList.join("\n"),
+				'Welcome message');
 		}
-		
-		armadillog.contentTextSet(
-			descriptionLineList.join("\n"),
-			'Welcome message');
+		catch (err) {
+			console && console.error(err.message);
+		}
 	});

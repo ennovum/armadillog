@@ -33,12 +33,39 @@ if (!Function.prototype.bind) {
 	};
 }
 
+//
+if (!window.console) {
+	window.console = null;
+}
+
+// BlobBuilder
 if (!window.BlobBuilder) {
 	window.BlobBuilder = window.BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder;
 }
 
+// URL
 if (!window.URL) {
 	window.URL = window.URL || window.webkitURL;
+}
+
+// Array.isArray
+if (!Array.isArray) {
+	Array.isArray = function Array_isArray(arg) {
+		switch (false) {
+			case typeof arg === 'object':
+			case typeof arg['length'] === 'number':
+			case typeof arg['push'] === 'function':
+			case typeof arg['pop'] === 'function':
+			case typeof arg['shift'] === 'function':
+			case typeof arg['unshift'] === 'function':
+			case typeof arg['indexof'] === 'function':
+			case typeof arg['slice'] === 'function':
+			case typeof arg['splice'] === 'function':
+				return false;
+				break;
+		}
+		return true;
+	}
 }
 
 /* ==================================================================================================== */
