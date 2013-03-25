@@ -1,58 +1,62 @@
 'use strict';
 
 require.config({
+	'baseUrl': 'scripts',
 	'packages': [
 		{
 			'name': 'Flexie',
-			'location': 'scripts/vendor',
+			'location': 'vendor',
 			'main': 'flexie.1.0.3.js'
 		},
 		{
 			'name': 'Handlebars',
-			'location': 'scripts/vendor',
+			'location': 'vendor',
 			'main': 'handlebars-1.0.rc.1.js'
 		},
 		{
 			'name': 'ennovum.Environment',
-			'location': 'scripts/ennovum',
+			'location': 'ennovum',
 			'main': 'environment.js'
 		},
 		{
 			'name': 'ennovum.Utils',
-			'location': 'scripts/ennovum',
+			'location': 'ennovum',
 			'main': 'utils.js'
 		},
 		{
 			'name': 'ennovum.Observable',
-			'location': 'scripts/ennovum',
+			'location': 'ennovum',
 			'main': 'observable.js'
 		},
 		{
 			'name': 'ennovum.Queue',
-			'location': 'scripts/ennovum',
+			'location': 'ennovum',
 			'main': 'queue.js'
 		},
 		{
 			'name': 'ennovum.Model',
-			'location': 'scripts/ennovum/model',
+			'location': 'ennovum/model',
 			'main': 'model.js'
 		},
 		{
 			'name': 'ennovum.Worker',
-			'location': 'scripts/ennovum/worker',
+			'location': 'ennovum/worker',
 			'main': 'worker.js'
 		},
 		{
 			'name': 'ennovum.Armadillog',
-			'location': 'scripts/ennovum/armadillog',
+			'location': 'ennovum/armadillog',
 			'main': 'armadillog.js'
 		},
 		{
 			'name': 'armadillog.Layout',
-			'location': 'scripts/armadillog',
+			'location': 'armadillog',
 			'main': 'layout.js'
 		}
 	],
+	'paths': {
+		'text': 'vendor/text.2.0.5'
+	},
 	'shim': {
 		'Flexie': {
 			'exports': 'Flexie'
@@ -91,21 +95,21 @@ require(
 				'contentScrollEl': window,
 				'contentDropEl': document.querySelector('#main')
 			};
-		
+
 			var armadillog = new mArmadillog.Armadillog(config);
 			var layout = new mLayout.Layout(config);
-	
+
 			var descriptionEl = document.querySelector('#description');
 			var descriptionLineEl;
 			var descriptionLineList = [];
-			
+
 			for (var i = 0, l = descriptionEl.childNodes.length; i < l; i++) {
 				descriptionLineEl = descriptionEl.childNodes[i];
 				if (descriptionLineEl.tagName) {
 					descriptionLineList.push(descriptionLineEl.textContent);
 				}
 			}
-			
+
 			armadillog.contentTextSet(
 				descriptionLineList.join("\n"),
 				'Welcome message');

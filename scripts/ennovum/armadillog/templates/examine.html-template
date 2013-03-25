@@ -1,0 +1,6 @@
+<div class="examine-raw-box">
+    <div class="textinput examine-raw-content" contenteditable="true"></div>
+</div>
+<div class="examine-filtered-box">
+    <div class="textinput examine-filtered-content" contenteditable="true"></div>
+</div>

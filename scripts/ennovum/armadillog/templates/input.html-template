@@ -1,0 +1,16 @@
+<div class="input-clear-box">
+    <span class="textinput input-clear-label"></span>
+    <a href="#input-clear" class="button input-clear-button">Clear</a>
+</div>
+<div class="input-file-box">
+    <input type="file" class="input-file-input" style="position: absolute; left: -1000000px; top: -1000000px;" />
+    <a href="#input-file" class="button input-file-button">Import from file</a>
+</div>
+<div class="input-paste-box">
+    <textarea rows="10" cols="80" class="textinput input-paste-input"></textarea>
+    <a href="#input-paste" class="button input-paste-button">Paste</a>
+</div>
+<div class="input-url-box">
+    <input type="text" class="textinput input-url-input" />
+    <a href="#input-web" class="button input-url-button">Import from URL</a>
+</div>

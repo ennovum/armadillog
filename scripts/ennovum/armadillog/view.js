@@ -4,11 +4,27 @@ window.define && define(
 	[
 		'ennovum.Environment',
 		'ennovum.Utils',
-		'Handlebars'
+		'Handlebars',
+		'text!./templates/input.html-template',
+		'text!./templates/filter.html-template',
+		'text!./templates/filter-item.html-template',
+		'text!./templates/examine.html-template',
+		'text!./templates/content.html-template',
+		'text!./templates/content-line-item.html-template'
 	],
-	function (mEnvironment, mUtils, Handlebars) {
+	function (
+		mEnvironment,
+		mUtils,
+		Handlebars,
+		templateInput,
+		templateFilter,
+		templateFilterItem,
+		templateExamine,
+		templateContent,
+		templateContentLineItem
+	) {
 /* ==================================================================================================== */
-		
+
 // debug console logs switch
 var DEBUG = false;
 
@@ -20,8 +36,8 @@ var iArmadillogView = {
 	filterViewGet: function (context) {},
 	filterItemViewGet: function (context) {},
 	examineViewGet: function (context) {},
-	contentViewGet: function () {context},
-	contentLineItemViewGet: function () {context}
+	contentViewGet: function (context) {},
+	contentLineItemViewGet: function (context) {}
 };
 
 /**
@@ -36,15 +52,15 @@ var ArmadillogView = function ArmadillogView() {
  * ArmadillogView prototype
  */
 ArmadillogView.prototype = {
-	
+
 	/**
 	 * Initializes instance
-	 * 
+	 *
 	 * @param {object} config configuration object
 	 */
 	init: function ArmadillogView_init(config) {
 		DEBUG && console && console.log('ArmadillogView', 'init', arguments);
-		
+
 		switch (true) {
 			case !this.viewInit():
 				return false;
@@ -53,13 +69,13 @@ ArmadillogView.prototype = {
 
 		return true;
 	},
-	
+
 	/**
 	 * Inits view
 	 */
 	viewInit: function () {
 		DEBUG && console && console.log('ArmadillogView', 'viewInit', arguments);
-		
+
 		switch (true) {
 			case !this.inputViewInit():
 			case !this.filterViewInit():
@@ -70,51 +86,32 @@ ArmadillogView.prototype = {
 				return false;
 				break;
 		}
-		
+
 		return true;
 	},
-	
+
 	/**
 	 * Inits input view
 	 */
 	inputViewInit: function () {
 		DEBUG && console && console.log('ArmadillogView', 'inputViewInit', arguments);
-		
-		this.inputViewSource = '' +
-			'<div class="input-clear-box">' +
-				'<span class="textinput input-clear-label"></span>'+
-				'<a href="#input-clear" class="button input-clear-button">Clear</a>' +
-			'</div>' +
-			'<div class="input-file-box">' +
-				'<input type="file" class="input-file-input" style="position: absolute; left: -1000000px; top: -1000000px;" />' +
-				'<a href="#input-file" class="button input-file-button">Import from file</a>' +
-			'</div>' +
-			'<div class="input-paste-box">' +
-				'<textarea rows="10" cols="80" class="textinput input-paste-input"></textarea>' +
-				'<a href="#input-paste" class="button input-paste-button">Paste</a>' +
-			'</div>' +
-			'<div class="input-url-box">' +
-				'<input type="text" class="textinput input-url-input" />' +
-				'<a href="#input-web" class="button input-url-button">Import from URL</a>' +
-			'</div>' +
-			'';
-		
-		this.inputViewTemplate = Handlebars.compile(this.inputViewSource);
-		
+
+		this.inputViewTemplate = Handlebars.compile(templateInput);
+
 		return true;
 	},
-	
+
 	/**
 	 * Returns input view
-	 * 
+	 *
 	 * @param {object} context context object
 	 */
 	inputViewGet: function (context) {
 		DEBUG && console && console.log('ArmadillogView', 'inputViewGet', arguments);
-		
+
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.inputViewTemplate(context);
-		
+
 		return {
 			'clearBoxEl': containerEl.querySelector('.input-clear-box'),
 			'clearLabelEl': containerEl.querySelector('.input-clear-label'),
@@ -130,39 +127,29 @@ ArmadillogView.prototype = {
 			'urlButtonEl': containerEl.querySelector('.input-url-button')
 		};
 	},
-	
+
 	/**
 	 * Inits filter view
 	 */
 	filterViewInit: function () {
 		DEBUG && console && console.log('ArmadillogView', 'filterViewInit', arguments);
-		
-		this.filterViewSource = '' +
-			'<div class="filter-list hidden">' +
-			'</div>' +
-			'<div class="filter-button-box">' +
-				'<a href="#filter-clear" class="button filter-button-clear">Clear</a>' +
-				'<a href="#filter-add" class="button filter-button-add">New filter</a>' +
-				'<a href="#filter-submit" class="button filter-button-submit">Submit filters</a>' +
-			'</div>' +
-			'';
-			
-		this.filterViewTemplate = Handlebars.compile(this.filterViewSource);
+
+		this.filterViewTemplate = Handlebars.compile(templateFilter);
 
 		return true;
 	},
-	
+
 	/**
 	 * Returns filter view
-	 * 
+	 *
 	 * @param {object} context context object
 	 */
 	filterViewGet: function (context) {
 		DEBUG && console && console.log('ArmadillogView', 'filterViewGet', arguments);
-		
+
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.filterViewTemplate(context);
-		
+
 		return {
 			'listEl': containerEl.querySelector('.filter-list'),
 			'buttonBoxEl': containerEl.querySelector('.filter-button-box'),
@@ -171,63 +158,29 @@ ArmadillogView.prototype = {
 			'submitButtonEl': containerEl.querySelector('.filter-button-submit'),
 		};
 	},
-	
+
 	/**
 	 * Inits filter item view
 	 */
 	filterItemViewCreate: function () {
 		DEBUG && console && console.log('ArmadillogView', 'filterItemViewCreate', arguments);
-		
-		this.filterItemViewSource = '' +
-			'<div class="filter-item">' +
-				'<div class="filter-header">' +
-					'<div class="filter-title">Filter #{{id}}</div>' +
-					'<div class="filter-mute">' +
-						'<input type="checkbox" id="filter-{{id}}-mute-checkbox" class="filter-mute-checkbox" />' +
-						'<label for="filter-{{id}}-mute-checkbox" class="filter-mute-label">Mute</label>' +
-					'</div>' +
-					'<a href="#filter-move-up" class="filter-move-up">Move up</a>' +
-					'<a href="#filter-move-down" class="filter-move-down">Move down</a>' +
-					'<a href="#filter-remove" class="filter-remove">Remove</a>' +
-				'</div>' +
-				'<div class="filter-affect-type-list">' +
-					'{{#each filterAffectTypes}}' +
-					'<div class="filter-affect-type-item">' +
-						'<input id="filter-{{../id}}-affect-type-radio-{{this.value}}" name="filter-{{../id}}-affect-type-radio" type="radio" value="{{this.value}}" class="filter-affect-type-radio"{{#if this.default}} checked="checked"{{/if}} />' +
-						'<label for="filter-{{../id}}-affect-type-radio-{{this.value}}" class="filter-affect-type-label">{{this.label}}</label>' +
-					'</div>' +
-					'{{/each}}' +
-				'</div>' +
-				'<div class="filter-value-box">' +
-					'<input type="text" class="textinput filter-value-input" />' +
-				'</div>' +
-				'<div class="filter-value-type-list">' +
-					'{{#each filterValueTypes}}' +
-					'<div class="filter-value-type-item">' +
-						'<input id="filter-{{../id}}-value-type-radio-{{this.value}}" name="filter-{{../id}}-value-type-radio" type="radio" value="{{this.value}}" class="filter-value-type-radio"{{#if this.default}} checked="checked"{{/if}} />' +
-						'<label for="filter-{{../id}}-value-type-radio-{{this.value}}" class="filter-value-type-label">{{this.label}}</label>' +
-					'</div>' +
-					'{{/each}}' +
-				'</div>' +
-			'</div>' +
-			'';
-			
-		this.filterItemViewTemplate = Handlebars.compile(this.filterItemViewSource);
+
+		this.filterItemViewTemplate = Handlebars.compile(templateFilterItem);
 
 		return true;
 	},
-	
+
 	/**
 	 * Returns filter item view
-	 * 
+	 *
 	 * @param {object} context context object
 	 */
 	filterItemViewGet: function (context) {
 		DEBUG && console && console.log('ArmadillogView', 'filterItemViewGet', arguments);
-		
+
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.filterItemViewTemplate(context);
-		
+
 		var filterItemAffectTypeList = [];
 		for (var i = 0, l = context.filterAffectTypes.length; i < l; i++) {
 			filterItemAffectTypeList.push({
@@ -236,7 +189,7 @@ ArmadillogView.prototype = {
 				'labelEl': containerEl.querySelectorAll('.filter-affect-type-label')[i],
 			});
 		}
-		
+
 		var filterItemValueTypeList = [];
 		for (var i = 0, l = context.filterValueTypes.length; i < l; i++) {
 			filterItemValueTypeList.push({
@@ -245,7 +198,7 @@ ArmadillogView.prototype = {
 				'labelEl': containerEl.querySelectorAll('.filter-value-type-label')[i],
 			});
 		}
-		
+
 		return {
 			'el': containerEl.querySelector('.filter-item'),
 			'headerEl': containerEl.querySelector('.filter-header'),
@@ -264,38 +217,29 @@ ArmadillogView.prototype = {
 			'valueTypeList': filterItemValueTypeList
 		};
 	},
-	
+
 	/**
 	 * Inits examine view
 	 */
 	examineViewInit: function () {
 		DEBUG && console && console.log('ArmadillogView', 'examineViewInit', arguments);
-		
-		this.examineViewSource = '' +
-			'<div class="examine-raw-box">' +
-				'<div class="textinput examine-raw-content" contenteditable="true"></div>' +
-			'</div>' +
-			'<div class="examine-filtered-box">' +
-				'<div class="textinput examine-filtered-content" contenteditable="true"></div>' +
-			'</div>' +
-			'';
-			
-		this.examineViewTemplate = Handlebars.compile(this.examineViewSource);
+
+		this.examineViewTemplate = Handlebars.compile(templateExamine);
 
 		return true;
 	},
-	
+
 	/**
 	 * Returns examine view
-	 * 
+	 *
 	 * @param {object} context context object
 	 */
 	examineViewGet: function (context) {
 		DEBUG && console && console.log('ArmadillogView', 'examineViewGet', arguments);
-		
+
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.examineViewTemplate(context);
-		
+
 		return {
 			'rawBoxEl': containerEl.querySelector('.examine-raw-box'),
 			'rawContentEl': containerEl.querySelector('.examine-raw-content'),
@@ -303,76 +247,64 @@ ArmadillogView.prototype = {
 			'filteredContentEl': containerEl.querySelector('.examine-filtered-content')
 		};
 	},
-	
+
 	/**
 	 * Inits content view
 	 */
 	contentViewInit: function () {
 		DEBUG && console && console.log('ArmadillogView', 'contentViewInit', arguments);
-		
-		this.contentViewSource = '' +
-			'<div class="content-frame">' +
-				'<div class="content-line-list">' +
-				'</div>' +
-			'</div>' +
-			'';
-			
-		this.contentViewTemplate = Handlebars.compile(this.contentViewSource);
+
+		this.contentViewTemplate = Handlebars.compile(templateContent);
 
 		return true;
 	},
-	
+
 	/**
 	 * Returns content view
-	 * 
+	 *
 	 * @param {object} context context object
 	 */
 	contentViewGet: function (context) {
 		DEBUG && console && console.log('ArmadillogView', 'contentViewGet', arguments);
-		
+
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.contentViewTemplate(context);
-		
+
 		return {
 			'frameEl': containerEl.querySelector('.content-frame'),
 			'lineListEl': containerEl.querySelector('.content-line-list')
 		};
 	},
-	
+
 	/**
 	 * Inits content line view
 	 */
 	contentLineItemViewInit: function () {
 		DEBUG && console && console.log('ArmadillogView', 'contentLineItemViewInit', arguments);
-		
-		this.contentLineItemViewSource = '' +
-			'<div class="content-line-item" style="counter-increment: numeration {{number}};">' +
-			'</div>' +
-			'';
-			
-		this.contentLineItemViewTemplate = Handlebars.compile(this.contentLineItemViewSource);
+
+		this.contentLineItemViewTemplate = Handlebars.compile(templateContentLineItem);
 
 		return true;
 	},
-	
+
 	/**
 	 * Returns content line view
-	 * 
+	 *
 	 * @param {object} context context object
 	 */
 	contentLineItemViewGet: function (context) {
 		DEBUG && console && console.log('ArmadillogView', 'contentLineItemViewGet', arguments);
-		
+
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.contentLineItemViewTemplate(context);
-		
+
 		return {
 			'el': containerEl.querySelector('.content-line-item')
 		};
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	toString: function ArmadillogView_toString() {
 		return 'ennovum.ArmadillogView';

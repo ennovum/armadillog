@@ -1,0 +1,7 @@
+<div class="filter-list hidden">
+</div>
+<div class="filter-button-box">
+    <a href="#filter-clear" class="button filter-button-clear">Clear</a>
+    <a href="#filter-add" class="button filter-button-add">New filter</a>
+    <a href="#filter-submit" class="button filter-button-submit">Submit filters</a>
+</div>

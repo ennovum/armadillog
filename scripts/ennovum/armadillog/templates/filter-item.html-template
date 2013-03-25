@@ -1,0 +1,31 @@
+<div class="filter-item">
+    <div class="filter-header">
+        <div class="filter-title">Filter #{{id}}</div>
+        <div class="filter-mute">
+            <input type="checkbox" id="filter-{{id}}-mute-checkbox" class="filter-mute-checkbox" />
+            <label for="filter-{{id}}-mute-checkbox" class="filter-mute-label">Mute</label>
+        </div>
+        <a href="#filter-move-up" class="filter-move-up">Move up</a>
+        <a href="#filter-move-down" class="filter-move-down">Move down</a>
+        <a href="#filter-remove" class="filter-remove">Remove</a>
+    </div>
+    <div class="filter-affect-type-list">
+        {{#each filterAffectTypes}}
+        <div class="filter-affect-type-item">
+            <input id="filter-{{../id}}-affect-type-radio-{{this.value}}" name="filter-{{../id}}-affect-type-radio" type="radio" value="{{this.value}}" class="filter-affect-type-radio"{{#if this.default}} checked="checked"{{/if}} />
+            <label for="filter-{{../id}}-affect-type-radio-{{this.value}}" class="filter-affect-type-label">{{this.label}}</label>
+        </div>
+        {{/each}}
+    </div>
+    <div class="filter-value-box">
+        <input type="text" class="textinput filter-value-input" />
+    </div>
+    <div class="filter-value-type-list">
+        {{#each filterValueTypes}}
+        <div class="filter-value-type-item">
+            <input id="filter-{{../id}}-value-type-radio-{{this.value}}" name="filter-{{../id}}-value-type-radio" type="radio" value="{{this.value}}" class="filter-value-type-radio"{{#if this.default}} checked="checked"{{/if}} />
+            <label for="filter-{{../id}}-value-type-radio-{{this.value}}" class="filter-value-type-label">{{this.label}}</label>
+        </div>
+        {{/each}}
+    </div>
+</div>
