@@ -6,7 +6,7 @@ require.config({
 		{
 			'name': 'Flexie',
 			'location': 'vendor',
-			'main': 'flexie.1.0.3.js'
+			'main': 'flexie-1.0.3.js'
 		},
 		{
 			'name': 'Handlebars',
@@ -55,7 +55,7 @@ require.config({
 		}
 	],
 	'paths': {
-		'text': 'vendor/text.2.0.5'
+		'text': 'vendor/text-2.0.5'
 	},
 	'shim': {
 		'Flexie': {

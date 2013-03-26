@@ -32,25 +32,25 @@ var WorkerDownloader = function WorkerDownloader() {
  * WorkerDownloader prototype
  */
 WorkerDownloader.prototype = {
-	
+
 	/**
 	 * Initializes instance
 	 */
 	init: function WorkerDownloader_init() {
 		DEBUG && console && console.log('WorkerDownloader', 'init', arguments);
-		
+
 		this.workerFunction = new mWorkerFunction.WorkerFunction(
 			function (wid, data, success, failure) {
 				try {
 					var xhr = new XMLHttpRequest();
 					xhr.open('GET', data.url, false);
-					
+
 					if (data.responseType) {
 						xhr.responseType = data.responseType;
 					}
-					
+
 					xhr.send();
-	
+
 					if (xhr.status === 0 || xhr.status === 200) {
 						success(
 							wid,
@@ -60,36 +60,44 @@ WorkerDownloader.prototype = {
 							});
 					}
 					else {
-						failure(wid);
+						failure(
+							wid,
+							{
+								'error': 'request failed'
+							});
 					}
 				}
 				catch (e) {
-					failure(wid);
+					failure(
+						wid,
+						{
+							'error': e.message
+						});
 				}
 			});
-		
+
 		return true;
 	},
-	
+
 	/**
 	 * Destroys instance
 	 */
 	destroy: function WorkerDownloader_destroy() {
 		DEBUG && console && console.log('WorkerDownloader', 'destroy', arguments);
-		
+
 		this.workerFunction.destroy();
-		
+
 		return true;
 	},
-	
+
 	/**
 	 * Runs the worker
-	 * 
+	 *
 	 * @param {mixed} data Message data
 	 */
 	run: function WorkerDownloader_run(data, ready, error) {
 		DEBUG && console && console.log('WorkerDownloader', 'run', arguments);
-		
+
 		this.workerFunction.run(
 			{
 				'url': data.url
@@ -98,15 +106,16 @@ WorkerDownloader.prototype = {
 				data.result = workerData.result;
 				ready(data);
 			}.bind(this),
-			function () {
-				error();
+			function (workerData) {
+				data.error = workerData.error;
+				error(data);
 			}.bind(this));
-		
+
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	toString: function WorkerDownloader_toString() {
 		return 'ennovum.WorkerDownloader';
