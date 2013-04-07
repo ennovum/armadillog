@@ -4,9 +4,10 @@ window.define && define(
 	[
 		'ennovum.Environment',
 		'ennovum.Utils',
+		'ennovum.Queue',
 		'./function'
 	],
-	function (mEnvironment, mUtils, mWorkerFunction) {
+	function (mEnvironment, mUtils, mQueue, mWorkerFunction) {
 /* ==================================================================================================== */
 
 // debug console logs switch
@@ -25,7 +26,7 @@ var iWorkerDownloader = {
  */
 var WorkerDownloader = function WorkerDownloader() {
 	this.init.apply(this, arguments);
-	return mUtils.obj.implement({}, this, iWorkerDownloader);
+	return mUtils.obj.implement({}, this, [iWorkerDownloader, mQueue.iQueue]);
 };
 
 /**
@@ -39,8 +40,10 @@ WorkerDownloader.prototype = {
 	init: function WorkerDownloader_init() {
 		DEBUG && console && console.log('WorkerDownloader', 'init', arguments);
 
+		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
+
 		this.workerFunction = new mWorkerFunction.WorkerFunction(
-			function (wid, data, success, failure) {
+			function (data, success, failure) {
 				try {
 					var xhr = new XMLHttpRequest();
 					xhr.open('GET', data.url, false);
@@ -53,26 +56,26 @@ WorkerDownloader.prototype = {
 
 					if (xhr.status === 0 || xhr.status === 200) {
 						success(
-							wid,
 							{
 								'url': data.url,
 								'result': xhr.response
-							});
+							},
+							null);
 					}
 					else {
 						failure(
-							wid,
 							{
 								'error': 'request failed'
-							});
+							},
+							null);
 					}
 				}
 				catch (e) {
 					failure(
-						wid,
 						{
 							'error': e.message
-						});
+						},
+						null);
 				}
 			});
 
@@ -95,21 +98,26 @@ WorkerDownloader.prototype = {
 	 *
 	 * @param {mixed} data Message data
 	 */
-	run: function WorkerDownloader_run(data, ready, error) {
+	run: function WorkerDownloader_run(data, transferables, ready, error) {
 		DEBUG && console && console.log('WorkerDownloader', 'run', arguments);
 
-		this.workerFunction.run(
-			{
-				'url': data.url
-			},
-			function (workerData) {
-				data.result = workerData.result;
-				ready(data);
-			}.bind(this),
-			function (workerData) {
-				data.error = workerData.error;
-				error(data);
-			}.bind(this));
+		this.queue(function () {
+			this.workerFunction.run(
+				{
+					'url': data.url
+				},
+				transferables,
+				function (workerData) {
+					data.result = workerData.result;
+					ready(data);
+					this.dequeue();
+				}.bind(this),
+				function (workerData) {
+					data.error = workerData.error;
+					error(data);
+					this.dequeue();
+				}.bind(this));
+		}.bind(this));
 
 		return true;
 	},

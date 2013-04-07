@@ -25,7 +25,7 @@ var iWorkerFunction = {
  */
 var WorkerFunction = function WorkerFunction() {
 	this.init.apply(this, arguments);
-	return mUtils.obj.implement({}, this, iWorkerFunction);
+	return mUtils.obj.implement({}, this, [iWorkerFunction, mQueue.iQueue]);
 };
 
 /**
@@ -34,22 +34,26 @@ var WorkerFunction = function WorkerFunction() {
 WorkerFunction.prototype = {
 
 	SOURCE: [
-		'var ready = function (wid, data) {',
-		'    this.postMessage({',
-		'        "wid": wid,',
-		'        "success": true,',
-		'        "data": data',
-		'    });',
+		'var ready = function (data, transferables) {',
+		'    this.postMessage(',
+		'        {',
+		'            "success": true,',
+		'            "data": data',
+		'        },',
+		'        null,',
+		'        transferables);',
 		'};',
-		'var error = function (wid, data) {',
-		'    this.postMessage({',
-		'        "wid": wid,',
-		'        "success": false,',
-		'        "data": data',
-		'    });',
+		'var error = function (data, transferables) {',
+		'    this.postMessage(',
+		'        {',
+		'            "success": false,',
+		'            "data": data',
+		'        },',
+		'        null,',
+		'        transferables);',
 		'};',
 		'this.onmessage = function(event){',
-		'    (%FUNCTION%).call(this, event.data.wid, event.data.data, ready, error);',
+		'    (%FUNCTION%).call(this, event.data.data, ready, error);',
 		'};',
 	].join('\n'),
 
@@ -61,9 +65,9 @@ WorkerFunction.prototype = {
 	init: function WorkerFunction_init(func) {
 		DEBUG && console && console.log('WorkerFunction', 'init', arguments);
 
-		this.widSeq = 0;
-		this.workerData = {};
-		this.workerQueue = new mQueue.Queue();
+		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
+
+		this.workStack = [];
 
 		this.source = this.SOURCE.replace('%FUNCTION%', typeof func === 'string' ? func : func.toString());
 		this.sourceURL = URL.createObjectURL(new Blob([this.source], {'type': 'text/javascript'}));
@@ -71,7 +75,7 @@ WorkerFunction.prototype = {
 		this.worker = new Worker(this.sourceURL);
 
 		this.worker.onmessage = function WorkerFunction_workerInit_onmessage(event) {
-			this.messageHandler(event.data.wid, event.data.success, event.data.data);
+			this.messageHandler(event.data.success, event.data.data);
 		}.bind(this);
 
 		this.worker.onerror = function WorkerFunction_workerInit_onmessage(event) {
@@ -99,22 +103,21 @@ WorkerFunction.prototype = {
 	 *
 	 * @param {mixed} data Message data
 	 */
-	run: function WorkerFunction_run(data, ready, error) {
+	run: function WorkerFunction_run(data, transferables, ready, error) {
 		DEBUG && console && console.log('WorkerFunction', 'run', arguments);
 
-		var wid = this.widSeq++;
-
-		this.workerQueue.queue(function () {
-			this.worker.postMessage({
-				'wid': wid,
-				'data': data
-			});
+		this.queue(function () {
+			this.worker.postMessage(
+				{
+					'data': data
+				},
+				transferables);
 		}.bind(this));
 
-		this.workerData[wid] = {
+		this.workStack.push({
 			'ready': ready,
 			'error': error
-		};
+		});
 
 		return true;
 	},
@@ -124,22 +127,23 @@ WorkerFunction.prototype = {
 	 *
 	 * @param {mixed} data Message data
 	 */
-	messageHandler: function WorkerFunction_messageHandler(wid, success, data) {
+	messageHandler: function WorkerFunction_messageHandler(success, data) {
 		DEBUG && console && console.log('WorkerFunction', 'messageHandler', arguments);
 
+		var work = this.workStack.shift();
+
 		if (success) {
-			if (this.workerData[wid].ready) {
-				this.workerData[wid].ready.call(this.workerData[wid].ready, data);
+			if (work.ready) {
+				work.ready.call(work.ready, data);
 			}
 		}
 		else {
-			if (this.workerData[wid].error) {
-				this.workerData[wid].error.call(this.workerData[wid].error, data);
+			if (work.error) {
+				work.error.call(work.error, data);
 			}
 		}
 
-		this.workerQueue.dequeue();
-		delete this.workerData[wid];
+		this.dequeue();
 
 		return true;
 	},
