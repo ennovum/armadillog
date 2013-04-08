@@ -4,11 +4,6 @@ require.config({
 	'baseUrl': 'scripts',
 	'packages': [
 		{
-			'name': 'Flexie',
-			'location': 'vendor',
-			'main': 'flexie-1.0.3.js'
-		},
-		{
 			'name': 'Handlebars',
 			'location': 'vendor',
 			'main': 'handlebars-1.0.rc.1.js'
@@ -58,9 +53,6 @@ require.config({
 		'text': 'vendor/text-2.0.5'
 	},
 	'shim': {
-		'Flexie': {
-			'exports': 'Flexie'
-		},
 		'Handlebars': {
 			'exports': 'Handlebars'
 		}
@@ -70,10 +62,9 @@ require.config({
 require(
 	[
 		'ennovum.Armadillog',
-		'Flexie',
 		'armadillog.Layout'
 	],
-	function (mArmadillog, Flexie, mLayout) {
+	function (mArmadillog, mLayout) {
 		try {
 			var config = {
 				'bodyEl': document.querySelector('body'),
