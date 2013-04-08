@@ -3,7 +3,7 @@
     <a href="#input-clear" class="button input-clear-button">Clear</a>
 </div>
 <div class="input-file-box">
-    <input type="file" class="input-file-input" style="position: absolute; left: -1000000px; top: -1000000px;" />
+    <input type="file" class="input-file-input" style="position: absolute; left: -1000000px; top: -1000000px;" tabindex="-1" />
     <a href="#input-file" class="button input-file-button">Import from file</a>
 </div>
 <div class="input-paste-box">

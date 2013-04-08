@@ -22,13 +22,13 @@ var iUtilsObj = {
  * UtilsObj logic
  */
 var oUtilsObj = {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	implement: function Utils_obj_implement(base, instance, interfaceList) {
 		DEBUG && console && console.log('oUtilsObj', 'implement', arguments);
-		
+
 		switch (false) {
 			case base && typeof base === 'object':
 			case instance && typeof instance === 'object':
@@ -36,7 +36,7 @@ var oUtilsObj = {
 				console && console.error('oUtilsObj', 'implement', 'error: invalid input');
 				return;
 		};
-		
+
 		if (!Array.isArray(interfaceList)) {
 			interfaceList = [interfaceList];
 		}
@@ -46,28 +46,28 @@ var oUtilsObj = {
 				base[func] = instance[func].bind(instance);
 			}
 		}
-		
+
 		return base;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	mixin: function Utils_obj_mixin(base, mixin) {
 		DEBUG && console && console.log('oUtilsObj', 'mixin', arguments);
-		
+
 		for (var key in mixin) {
 			if (base[key]) {
 				console && console.error('oUtilsObj', 'mixin', 'cannot overwrite object field', key);
 				return false;
 			}
-			
+
 			base[key] = mixin[key].bind(mixin);
 		}
-		
+
 		return mixin;
 	}
-	
+
 };
 
 /**
@@ -91,11 +91,11 @@ var iUtilsDom = {
 var oUtilsDom = {
 
 	/**
-	 * 
+	 *
 	 */
 	createElement: function Utils_dom_createElement(tagName, attributes, textContent) {
 		DEBUG && console && console.log('oUtilsDom', 'createElement', arguments);
-		
+
 		switch (false) {
 			case typeof tagName === 'string':
 			case !attributes || typeof attributes === 'object':
@@ -103,115 +103,115 @@ var oUtilsDom = {
 				console && console.error('oUtilsDom', 'createElement', 'invalid input');
 				return;
 		};
-		
+
 		var el = document.createElement(tagName);
-		
+
 		if (attributes) {
 			for (var name in attributes) {
 				el.setAttribute(name, attributes[name]);
 			}
 		}
-		
+
 		if (textContent) {
 			el.appendChild(document.createTextNode(textContent));
 		}
-		
+
 		return el;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	classContains: function Utils_dom_classContains(el) {
 		DEBUG && console && console.log('oUtilsDom', 'classContains', arguments);
-		
+
 		if (!el) {
 			return;
 		}
-		
+
 		var classList = Array.prototype.slice.call(arguments, 1);
 		var elClassList = el.className.split(/[ ]+/);
 		var className;
 		var elClassIdx;
-		
+
 		for (var i = 0, l = classList.length; i < l; i++) {
 			className = classList[i];
-			
+
 			elClassIdx = elClassList.indexOf(className);
 			if (elClassIdx === -1) {
 				return false
 			}
 		}
-		
+
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	classAdd: function Utils_dom_classAdd(el) {
 		DEBUG && console && console.log('oUtilsDom', 'classAdd', arguments);
-		
+
 		if (!el) {
 			return;
 		}
-		
+
 		var classList = Array.prototype.slice.call(arguments, 1);
 		var elClassList = el.className.split(/[ ]+/);
 		var className;
 		var elClassIdx;
-		
+
 		for (var i = 0, l = classList.length; i < l; i++) {
 			className = classList[i];
-			
+
 			elClassIdx = elClassList.indexOf(className);
 			if (elClassIdx === -1) {
 				elClassList.push(className);
 			}
 		}
-		
+
 		className = elClassList.join(' ');
 		if (el.className !== className) {
 			el.className = className;
 		}
-		
+
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	classRemove: function Utils_dom_classRemove(el) {
 		DEBUG && console && console.log('oUtilsDom', 'classRemove', arguments);
-		
+
 		if (!el) {
 			return;
 		}
-		
+
 		var classList = Array.prototype.slice.call(arguments, 1);
 		var elClassList = el.className.split(/[ ]+/);
 		var className;
 		var elClassIdx;
-		
+
 		for (var i = 0, l = classList.length; i < l; i++) {
 			className = classList[i];
-			
+
 			elClassIdx = elClassList.indexOf(className);
 			if (elClassIdx !== -1) {
 				elClassList.splice(elClassIdx, 1);
 			}
 		}
-		
+
 		className = elClassList.join(' ');
 		if (el.className !== className) {
 			el.className = className;
 		}
-		
+
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	classToggle: function Utils_dom_classToggle(el, className) {
 		DEBUG && console && console.log('oUtilsDom', 'classToggle', arguments);
@@ -219,7 +219,7 @@ var oUtilsDom = {
 		if (!el) {
 			return;
 		}
-		
+
 		var classList = Array.prototype.slice.call(arguments, 1);
 		var elClassList = el.className.split(/[ ]+/);
 		var className = true;
@@ -227,7 +227,7 @@ var oUtilsDom = {
 
 		for (var i = 0, l = classList.length; i < l; i++) {
 			className = classList[i];
-			
+
 			elClassIdx = elClassList.indexOf(className);
 			if (elClassIdx === -1) {
 				this.classAdd(el, className);
@@ -239,9 +239,9 @@ var oUtilsDom = {
 
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	classDepend: function Utils_dom_classToggle(el, className, condition) {
 		DEBUG && console && console.log('oUtilsDom', 'classToggle', arguments);
@@ -249,7 +249,7 @@ var oUtilsDom = {
 		if (!el) {
 			return;
 		}
-		
+
 		if (condition) {
 			this.classAdd(el, className);
 		}
@@ -259,61 +259,61 @@ var oUtilsDom = {
 
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	classNth: function Utils_dom_classNth(num) {
 		DEBUG && console && console.log('oUtilsDom', 'classNth', arguments);
-		
+
 		switch (false) {
 			case typeof num === 'number':
 				console && console.error('oUtilsDom', 'classNth', 'invalid input');
 				return;
 		};
-		
+
 		switch (num) {
 			case 0:
 				return 'el-zero';
 				break;
-				
+
 			case 1:
 				return 'el-1st';
 				break;
-				
+
 			case 2:
 				return 'el-2nd';
 				break;
 		}
-		
+
 		return 'el-' + num + 'th';
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	classEvenOdd: function Utils_dom_classEvenOdd(num) {
 		DEBUG && console && console.log('oUtilsDom', 'classEvenOdd', arguments);
-		
+
 		switch (false) {
 			case typeof num === 'number':
 				console && console.error('oUtilsDom', 'classEvenOdd', 'invalid input');
 				return;
 		};
-		
+
 		return num % 2 ? 'el-odd' : 'el-even';
 	},
-	
+
 	/**
 	 *
 	 */
 	triggerEvent: function Utils_dom_triggerEvent(el, eventType) {
 		DEBUG && console && console.log('oUtilsDom', 'triggerEvent', arguments);
-		
+
 		if (!el) {
 			return;
 		}
-		
+
 		if (document.createEvent) {
 			var event = document.createEvent('HTMLEvents');
 			event.initEvent(eventType, true, true);
@@ -323,7 +323,7 @@ var oUtilsDom = {
 			var event = document.createEventObject();
 			return el.fireEvent('on' + eventType, event)
 		}
-		
+
 		return true;
 	}
 
@@ -341,16 +341,16 @@ var iUtilsString = {
  * UtilsString logic
  */
 var oUtilsString = {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	trim: function Utils_string_trim(subject) {
 		DEBUG && console && console.log('oUtilsString', 'trim', arguments);
-		
+
 		return subject.replace(/(^\s|\s$)/g, '');
 	},
-    
+
     //
     ESCAPE_XML_ENTITIES: {
     	'&': '&amp;',
@@ -359,9 +359,9 @@ var oUtilsString = {
     	'"': '&quot;',
     	"'": '&apos;',
     },
-    
+
     /**
-     * 
+     *
      */
     escapeXML: function Utils_string_escapeXML(subject) {
         DEBUG && console && console.log('oUtilsString', 'escapeXML', arguments);
@@ -370,7 +370,7 @@ var oUtilsString = {
         	return this.ESCAPE_XML_ENTITIES[match];
         }.bind(this));
     }
-	
+
 };
 
 /**
@@ -384,16 +384,16 @@ var iUtilsRegexp = {
  * UtilsRegexp logic
  */
 var oUtilsRegexp = {
-	
+
     /**
-     * 
+     *
      */
     escape: function Utils_regexp_escape(subject) {
         DEBUG && console && console.log('oUtilsRegexp', 'escape', arguments);
 
         return subject.replace(/[\[\]\{\}\?\+\*\.\\\|\(\)\^\$]/g, '\\$&');
     }
-    
+
 };
 
 /**
@@ -407,9 +407,9 @@ var iUtilsFunc = {
  * UtilsFunc logic
  */
 var oUtilsFunc = {
-	
+
     /**
-     * 
+     *
      */
     async: function Utils_func_async(callback) {
         DEBUG && console && console.log('oUtilsFunc', 'async', arguments);
@@ -418,7 +418,7 @@ var oUtilsFunc = {
 
         return true;
     }
-    
+
 };
 
 /**
@@ -432,12 +432,12 @@ var iUtilsUrl = {
  * UtilsUrl logic
  */
 var oUtilsUrl = {
-	
+
     //
     URL_PARTS_REGEXP: /^([a-zA-Z]+:\/\/)?((?:www\.)?(?:[a-zA-Z0-9\-\_\.%]*[a-zA-Z]+\.[a-zA-Z]{1,4}))?(:[0-9]+)?(\/[a-zA-Z0-9\-\_\.%/]?)?(\?[a-zA-Z0-9\-\_\.%=&]*)?(#[a-zA-Z0-9\-\_]*)?$/,
-    
+
     /**
-     * 
+     *
      */
     validate: function Utils_url_validate(url) {
         DEBUG && console && console.log('oUtilsUrl', 'validate', arguments);
@@ -447,7 +447,7 @@ var oUtilsUrl = {
 		if (!match || !match[2]) {
 			return null;
 		}
-		
+
 		var urlValid = '';
 		urlValid += match[1] ? match[1] : 'http://';
 		urlValid += match[2];
@@ -455,10 +455,10 @@ var oUtilsUrl = {
 		urlValid += match[4] ? match[4] : '/';
 		urlValid += match[5] || '';
 		urlValid += match[6] || '';
-		
+
         return urlValid;
     }
-    
+
 };
 
 /* ==================================================================================================== */
