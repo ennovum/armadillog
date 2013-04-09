@@ -711,23 +711,28 @@ ArmadillogCore.prototype = {
 			}
 
 			var regexp = null;
+			var filterItemValue = filterItem.value;
 
-			switch (filterItem.valueType) {
-				case this.FILTER_VALUE_TYPE_TEXT:
-					try {
-						regexp = new RegExp(mUtils.regexp.escape(filterItem.value), 'gi');
-					}
-					catch (err) {
-					}
-					break;
+			if (filterItemValue) {
+				switch (filterItem.valueType) {
+					case this.FILTER_VALUE_TYPE_TEXT:
+						try {
+							regexp = new RegExp(mUtils.regexp.escape(filterItemValue), 'gi');
+						}
+						catch (err) {
+							// nothing
+						}
+						break;
 
-				case this.FILTER_VALUE_TYPE_REGEXP:
-					try {
-						regexp = new RegExp(filterItem.value, 'gi');
-					}
-					catch (err) {
-					}
-					break;
+					case this.FILTER_VALUE_TYPE_REGEXP:
+						try {
+							regexp = new RegExp(filterItemValue, 'gi');
+						}
+						catch (err) {
+							// nothing
+						}
+						break;
+				}
 			}
 
 			filterItem.regexp = regexp;
