@@ -4,7 +4,7 @@ window.define && define(
 	[
 		'ennovum.Environment',
 		'ennovum.Utils',
-		'./core'
+		'./components/core'
 	],
 	function (mEnvironment, mUtils, mArmadillogCore) {
 /* ==================================================================================================== */
@@ -33,15 +33,15 @@ var Armadillog = function Armadillog() {
  * Armadillog prototype
  */
 Armadillog.prototype = {
-	
+
 	/**
 	 * Initializes instance
-	 * 
+	 *
 	 * @param {object} config configuration object
 	 */
 	init: function Armadillog_init(config) {
 		DEBUG && console && console.log('Armadillog', 'init', arguments);
-		
+
 		switch (true) {
 			case !this.browserCheck():
 			case !this.configSet(config):
@@ -52,13 +52,13 @@ Armadillog.prototype = {
 
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	browserCheck: function () {
 		DEBUG && console && console.log('Armadillog', 'browserCheck', arguments);
-		
+
 		switch (true) {
 			case !document.querySelector:
 			case !window.File:
@@ -72,25 +72,25 @@ Armadillog.prototype = {
 				return false;
 				break;
 		}
-		
+
 		return true;
 	},
-	
+
 	/**
 	 * Initializes config
-	 * 
+	 *
 	 * @param {object} config configuration object
 	 */
 	configSet: function (config) {
 		DEBUG && console && console.log('Armadillog', 'configSet', arguments);
-		
+
 		switch (false) {
 			case !!config:
 			case typeof config === 'object':
 				console && console.error('Armadillog', 'configSet', 'invalid input');
 				return false;
 		};
-		
+
 		this.config = {
 			bodyEl: config.bodyEl || null,
 
@@ -114,47 +114,47 @@ Armadillog.prototype = {
 			contentScrollEl: config.contentScrollEl || null,
 			contentDropEl: config.contentDropEl || null
 		};
-		
+
 		return true;
 	},
-	
+
 	/**
 	 * Initializes data
 	 */
 	dataInit: function Armadillog_dataInit() {
 		DEBUG && console && console.log('Armadillog', 'dataInit', arguments);
-		
+
 		this.armadillogCore = new mArmadillogCore.ArmadillogCore(this.config);
-		
+
 		return true;
 	},
-	
+
 	/**
 	 * Clears content
 	 */
 	contentClear: function Armadillog_contentClear() {
 		DEBUG && console && console.log('Armadillog', 'contentClear', arguments);
-		
+
 		this.armadillogCore.contentClear();
-		
+
 		return true;
 	},
-	
+
 	/**
 	 * Sets a piece of source
-	 * 
+	 *
 	 * @param {string} text a piece of source text
 	 */
 	contentTextSet: function Armadillog_contentTextSet(text, label) {
 		DEBUG && console && console.log('Armadillog', 'contentTextSet', arguments);
-		
+
 		this.armadillogCore.contentTextSet(text, label);
-		
+
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	toString: function Armadillog_toString() {
 		return 'ennovum.Armadillog';

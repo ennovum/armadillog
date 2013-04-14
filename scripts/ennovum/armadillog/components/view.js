@@ -5,12 +5,12 @@ window.define && define(
 		'ennovum.Environment',
 		'ennovum.Utils',
 		'Handlebars',
-		'text!./templates/input.html-template',
-		'text!./templates/filter.html-template',
-		'text!./templates/filter-item.html-template',
-		'text!./templates/examine.html-template',
-		'text!./templates/content.html-template',
-		'text!./templates/content-line-item.html-template'
+		'text!./../templates/input.html-template',
+		'text!./../templates/filter.html-template',
+		'text!./../templates/filter-item.html-template',
+		'text!./../templates/examine.html-template',
+		'text!./../templates/content.html-template',
+		'text!./../templates/content-line-item.html-template'
 	],
 	function (
 		mEnvironment,
