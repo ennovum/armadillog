@@ -20,6 +20,8 @@ var iModelMap = {
 	'get': function (key) {},
 	'set': function (key, value) {},
 	'del': function (key) {},
+	'has': function (key) {},
+	'toMap': function () {},
 	'toString': function () {}
 };
 
@@ -35,48 +37,48 @@ var ModelMap = function ModelMap() {
  * ModelMap prototype
  */
 ModelMap.prototype = {
-	
+
 	/**
 	 * Initializes instance
 	 */
 	init: function ModelMap_init() {
 		DEBUG && console && console.log('ModelMap', 'init', arguments);
-		
+
 		this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
 		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
-		
+
 		this.map = {};
-		
+
 		this.eventMap = {
 			'model-insert': [],
 			'model-update': [],
 			'model-delete': [],
 			'model-forward': []
 		};
-		
+
 		this.valueListenerMap = {};
-		
+
 		if (arguments.length) {
 			this.set.apply(this, arguments);
 		}
 
 		return true;
 	},
-	
+
 	/**
 	 * Returns a value at the given key
-	 * 
+	 *
 	 * @param {string} key key of the value to return
 	 */
 	get: function ModelMap_get(key) {
 		DEBUG && console && console.log('ModelMap', 'get', arguments);
-		
+
 		return this.map[key];
 	},
-	
+
 	/**
 	 * Sets the given values at the given keys
-	 * 
+	 *
 	 * @param {string} key key of the value to be set
 	 * @param {mixed} value value to be set
 	 */
@@ -85,20 +87,20 @@ ModelMap.prototype = {
 
 		var insertList = [];
 		var updateList = [];
-		
+
 		for (var i = 0, l = arguments.length; i < l; i += 2) {
 			key = '' + arguments[i];
 			value = arguments[i + 1];
 
 			if (key in this.map) {
 				var valueOld = this.map[key];
-				
+
 				if (value !== valueOld) {
 					this.map[key] = value;
-			
+
 					this.valueOff(key, valueOld);
 					this.valueOn(key, value);
-	
+
 					updateList.push({
 						'key': key,
 						'valueNew': value,
@@ -108,16 +110,16 @@ ModelMap.prototype = {
 			}
 			else {
 				this.map[key] = value;
-				
+
 				this.valueOn(key, value);
-		
+
 				insertList.push({
 					'key': key,
 					'valueNew': value
 				});
 			}
 		}
-		
+
 		if (insertList.length) {
 			this.eventAdd('model-insert', insertList);
 		}
@@ -128,23 +130,23 @@ ModelMap.prototype = {
 
 		return true;
 	},
-	
+
 	/**
 	 * Removes a value at the given key
-	 * 
+	 *
 	 * @param {string} key key of the value to be deleted
 	 */
 	del: function ModelMap_del(key) {
 		DEBUG && console && console.log('ModelMap', 'del', arguments);
-		
+
 		var deleteList = [];
 
 		for (var i = 0, l = arguments.length; i < l; i++) {
 			key = '' + arguments[i];
-			
+
 			if (key in this.map) {
 				var valueOld = this.map[key];
-				
+
 				delete this.map[key];
 
 				this.valueOff(key, valueOld);
@@ -162,16 +164,35 @@ ModelMap.prototype = {
 
 		return true;
 	},
-	
+
+	/**
+	 * Checks if the given key exists
+	 *
+	 * @param {string} key key to be checked
+	 */
+	has: function ModelMap_has(key) {
+		DEBUG && console && console.log('ModelMap', 'has', arguments);
+
+		for (var i = 0, l = arguments.length; i < l; i++) {
+			key = '' + arguments[i];
+
+			if (key in this.map) {
+				return true;
+			}
+		}
+
+		return false;
+	},
+
 	/**
 	 * Attaches event forwarding
-	 * 
+	 *
 	 * @param {number} key key of the value to attach
 	 * @param {mixed} value value to attach
 	 */
 	valueOn: function ModelMap_valueOn(key, value) {
 		DEBUG && console && console.log('ModelMap', 'valueOn', arguments);
-		
+
 		if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
 			value.on(
 				[
@@ -191,13 +212,13 @@ ModelMap.prototype = {
 						}]);
 				}.bind(this));
 		}
-		
+
 		return true;
 	},
-		
+
 	/**
 	 * Detaches event forwarding
-	 * 
+	 *
 	 * @param {number} key key of the value to detach
 	 * @param {mixed} value value to detach
 	 */
@@ -213,16 +234,16 @@ ModelMap.prototype = {
 					'model-forward'
 				],
 				this.valueListenerMap[key]);
-			
+
 			this.valueListenerMap[key] = null;
 		}
-		
+
 		return true;
 	},
-	
+
 	/**
 	 * Adds the event to the event map and queues event map flush
-	 * 
+	 *
 	 * @param {string} event event name
 	 * @param {dataList} event data list
 	 */
@@ -238,15 +259,24 @@ ModelMap.prototype = {
 					this.eventMap[event] = [];
 				}
 			}
-			
+
 			this.dequeue();
 		}.bind(this));
-		
+
 		return true;
 	},
-		
+
 	/**
-	 * 
+	 * Returns raw map
+	 */
+	toMap: function ModelList_toMap() {
+		DEBUG && console && console.log('ModelList', 'toMap', arguments);
+
+		return this.map;
+	},
+
+	/**
+	 *
 	 */
 	toString: function ModelMap_toString() {
 		return 'ennovum.model.ModelMap';

@@ -9,7 +9,7 @@ window.define && define(
 	],
 	function (mEnvironment, mUtils, mObservable, mQueue) {
 /* ==================================================================================================== */
-		
+
 // debug console logs switch
 var DEBUG = false;
 
@@ -43,16 +43,16 @@ var ModelList = function ModelList() {
  * ModelList prototype
  */
 ModelList.prototype = {
-	
+
 	/**
 	 * Initializes instance
 	 */
 	init: function ModelList_init() {
 		DEBUG && console && console.log('ModelList', 'init', arguments);
-		
+
 		this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
 		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
-		
+
 		this.list = [];
 
 		this.eventMap = {
@@ -61,7 +61,7 @@ ModelList.prototype = {
 			'model-delete': [],
 			'model-forward': []
 		};
-		
+
 		this.valueListenerList = [];
 
 		if (arguments.length) {
@@ -70,43 +70,43 @@ ModelList.prototype = {
 
 		return true;
 	},
-	
+
 	/**
 	 * Returns a value at the given index
-	 * 
+	 *
 	 * @param {number} index index of the value to return
 	 */
 	getAt: function ModelList_getAt(index) {
 		DEBUG && console && console.log('ModelList', 'getAt', arguments);
-		
+
 		return this.list[index];
 	},
-	
+
 	/**
 	 * Sets the given values at the given indexes
-	 * 
+	 *
 	 * @param {number} index index of the value to be set
 	 * @param {mixed} value value to be set
 	 */
 	setAt: function ModelList_setAt(index, value) {
 		DEBUG && console && console.log('ModelList', 'setAt', arguments);
-		
+
 		var insertList = [];
 		var updateList = [];
-		
+
 		for (var i = 0, l = arguments.length; i < l; i += 2) {
 			index = ~~arguments[i];
 			value = arguments[i + 1];
-			
+
 			if (index < this.list.length) {
 				var valueOld = this.list[index];
-				
+
 				if (value !== valueOld) {
 					this.list[index] = value;
-			
+
 					this.valueOff(index, valueOld);
 					this.valueOn(index, value);
-	
+
 					updateList.push({
 						'index': index,
 						'valueNew': value,
@@ -116,16 +116,16 @@ ModelList.prototype = {
 			}
 			else {
 				this.list[index] = value;
-		
+
 				this.valueOn(index, value);
-	
+
 				insertList.push({
 					'index': index,
 					'valueNew': value
 				});
 			}
 		}
-		
+
 		if (insertList.length) {
 			this.eventAdd('model-insert', insertList);
 		}
@@ -136,25 +136,25 @@ ModelList.prototype = {
 
 		return true;
 	},
-	
+
 	/**
 	 * Removes a value at the given index
-	 * 
+	 *
 	 * @param {number} index index of the value to be deleted
 	 */
 	delAt: function ModelList_delAt(index) {
 		DEBUG && console && console.log('ModelList', 'delAt', arguments);
-		
+
 		var deleteList = [];
-		
+
 		for (var i = 0, l = arguments.length; i < l; i++) {
 			index = ~~arguments[i];
-			
+
 			if (index < this.list.length) {
 				var valueOld = this.list[index];
-				
+
 				this.list[index] = value;
-		
+
 				this.valueOff(index, valueOld);
 
 				deleteList.push({
@@ -163,7 +163,7 @@ ModelList.prototype = {
 				});
 			}
 		}
-		
+
 		if (deleteList.length) {
 			this.eventAdd('model-delete', deleteList);
 		}
@@ -176,12 +176,12 @@ ModelList.prototype = {
 	 */
 	push: function ModelList_push(/*, value1, ..., valueN*/) {
 		DEBUG && console && console.log('ModelList', 'push', arguments);
-		
+
 		var index = this.list.length;
-		
+
 		var insertValueList = Array.prototype.slice.call(arguments);
 		var insertList = [];
-		
+
 		this.list.push.apply(this.list, arguments);
 
 		for (var i = 0, l = insertValueList.length; i < l; i++) {
@@ -199,17 +199,17 @@ ModelList.prototype = {
 
 		return true;
 	},
-	
+
 	/**
 	 * Pops a value from the list
 	 */
 	pop: function ModelList_pop() {
 		DEBUG && console && console.log('ModelList', 'pop', arguments);
-		
+
 		if (this.list.length === 0) {
 			return false;
 		}
-		
+
 		var index = this.list.length - 1;
 		var valueOld = this.list.pop();
 
@@ -224,17 +224,17 @@ ModelList.prototype = {
 
 		return valueOld;
 	},
-	
+
 	/**
 	 * Shifts a value from the list
 	 */
 	shift: function ModelList_shift() {
 		DEBUG && console && console.log('ModelList', 'shift', arguments);
-		
+
 		if (this.list.length === 0) {
 			return false;
 		}
-		
+
 		var index = 0;
 		var valueOld = this.list.shift();
 
@@ -249,13 +249,13 @@ ModelList.prototype = {
 
 		return valueOld;
 	},
-	
+
 	/**
 	 * Unshifts values to the list
 	 */
 	unshift: function ModelList_unshift(/*, value1, ..., valueN*/) {
 		DEBUG && console && console.log('ModelList', 'unshift', arguments);
-		
+
 		var index = 0;
 
 		var insertValueList = Array.prototype.slice.call(arguments);
@@ -278,30 +278,30 @@ ModelList.prototype = {
 
 		return true;
 	},
-	
+
 	/**
 	 * Removes a given count of values from the list starting at the given index, then adds new values starting at the same place
-	 * 
+	 *
 	 * @param {number} index index of a first value to splice
 	 * @param {number} count values to splice count
 	 */
 	splice: function ModelList_splice(index, count/*, value1, ..., valueN*/) {
 		DEBUG && console && console.log('ModelList', 'splice', arguments);
-		
+
 		if (typeof index !== 'number' || index < 0) {
 			return false;
 		}
-		
+
 		if (typeof count !== 'number' || count < 0) {
 			count = this.list.length - index;
 		}
-		
+
 		var insertValueList = Array.prototype.slice.call(arguments, 2);
 		var insertList = [];
 
 		var deleteValueList = this.list.slice(index, index + count);
 		var deleteList = [];
-		
+
 		this.list.splice.apply(this.list, arguments);
 
 		for (var i = 0, l = insertValueList.length; i < l; i++) {
@@ -325,45 +325,45 @@ ModelList.prototype = {
 				'valueOld': deleteValueList[i]
 			});
 		}
-		
+
 		if (deleteList.length) {
 			this.eventAdd('model-delete', deleteList);
 		}
 
 		return true;
 	},
-	
+
 	/**
 	 * Returns the list length
 	 */
 	length: function ModelList_length() {
 		DEBUG && console && console.log('ModelList', 'length', arguments);
-		
+
 		return this.list.length;
 	},
-	
+
 	/**
 	 * Returns an index of the given value
-	 * 
+	 *
 	 * @param {mixed} value value to return index of
 	 */
 	indexOf: function ModelList_indexOf(value) {
 		DEBUG && console && console.log('ModelList', 'indexOf', arguments);
-		
+
 		return this.list.indexOf(value);
 
 		return true;
 	},
-	
+
 	/**
 	 * Attaches event forwarding
-	 * 
+	 *
 	 * @param {number} index index of the value to attach
 	 * @param {mixed} value value to attach
 	 */
 	valueOn: function ModelList_valueOn(index, value) {
 		DEBUG && console && console.log('ModelList', 'valueOn', arguments);
-		
+
 		if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
 			value.on(
 				[
@@ -386,16 +386,16 @@ ModelList.prototype = {
 
 		return true;
 	},
-	
+
 	/**
 	 * Detaches event forwarding
-	 * 
+	 *
 	 * @param {number} index index of the value to detach
 	 * @param {mixed} value value to detach
 	 */
 	valueOff: function ModelList_valueOff(index, value) {
 		DEBUG && console && console.log('ModelList', 'valueOff', arguments);
-		
+
 		if (this.valueListenerList[index]) {
 			value.off(
 				[
@@ -405,16 +405,16 @@ ModelList.prototype = {
 					'model-forward'
 				],
 				this.valueListenerList[index + '']);
-			
+
 			this.valueListenerList[index] = null;
 		}
 
 		return true;
 	},
-	
+
 	/**
 	 * Adds the event to the event map and queues event map flush
-	 * 
+	 *
 	 * @param {string} event event name
 	 * @param {dataList} event data list
 	 */
@@ -430,24 +430,24 @@ ModelList.prototype = {
 					this.eventMap[event] = [];
 				}
 			}
-			
+
 			this.dequeue();
 		}.bind(this));
-		
+
 		return true;
 	},
-	
+
 	/**
-	 * 
+	 * Returns raw list
 	 */
 	toArray: function ModelList_toArray() {
 		DEBUG && console && console.log('ModelList', 'toArray', arguments);
 
 		return this.list;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 */
 	toString: function ModelList_toString() {
 		return 'ennovum.model.ModelList';
