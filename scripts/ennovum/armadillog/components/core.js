@@ -48,6 +48,8 @@ ArmadillogCore.prototype = {
 	FILTER_VALUE_TYPE_TEXT: '1',
 	FILTER_VALUE_TYPE_REGEXP: '2',
 
+	FILTER_LIST_STORAGE_NAME: 'filterList',
+
 	FILTER_TAG_FILTERED_BEGIN_SYMBOL: '\uff00\uff80',
 	FILTER_TAG_FILTERED_END_SYMBOL: '\uff01\uff81',
 	FILTER_TAG_FILTERED_BEGIN_HTML: '<span class="filtered">',
@@ -77,6 +79,7 @@ ArmadillogCore.prototype = {
 			case !this.dataInit():
 			case !this.viewInit():
 			case !this.uiInit():
+			case !this.storageInit():
 				return false;
 				break;
 		}
@@ -99,6 +102,7 @@ ArmadillogCore.prototype = {
 			case !window.Array.prototype.some:
 			case !window.Worker:
 			case !window.URL || !window.URL.createObjectURL:
+			case !window.localStorage:
 				console && console.error('ArmadillogCore', 'browserCheck', 'unsupported browser');
 				alert('You are using an uncompatible browser!');
 				return false;
@@ -188,6 +192,21 @@ ArmadillogCore.prototype = {
 			case !this.filterUiInit():
 			case !this.examineUiInit():
 			case !this.contentUiInit():
+				return false;
+				break;
+		}
+
+		return true;
+	},
+
+	/**
+	 * Initializes storage
+	 */
+	storageInit: function ArmadillogCore_storageInit() {
+		DEBUG && console && console.log('ArmadillogCore', 'storageInit', arguments);
+
+		switch (true) {
+			case !this.filterStorageInit():
 				return false;
 				break;
 		}
@@ -498,33 +517,50 @@ ArmadillogCore.prototype = {
 	},
 
 	/**
-	 * Creates an empty filter item
+	 * Initializes filter storage
 	 */
-	filterItemCreate: function ArmadillogCore_filterItemCreate() {
+	filterStorageInit: function ArmadillogCore_filterStorageInit() {
+		DEBUG && console && console.log('ArmadillogCore', 'filterStorageInit', arguments);
+
+		this.filterStorageLoad();
+
+		return true;
+	},
+
+	/**
+	 * Creates a filter item
+	 *
+	 * @param {object} data filter item data
+	 */
+	filterItemCreate: function ArmadillogCore_filterItemCreate(data) {
 		DEBUG && console && console.log('ArmadillogCore', 'filterItemCreate', arguments);
+
+		if (!data || typeof data !== 'object') {
+			data = {};
+		}
 
 		var filterItemMMap = new mModel.ModelMap();
 		filterItemMMap.set(
 			'id',
 			this.filterItemIdSeq++,
 			'mute',
-			false,
+			'mute' in data ? data.mute : false,
 			'affectType',
-			this.FILTER_AFFECT_TYPE_SHOW_LINE,
+			'affectType' in data ? data.affectType : this.FILTER_AFFECT_TYPE_SHOW_LINE,
 			'value',
-			'',
+			'value' in data ? data.value : '',
 			'valueType',
-			this.FILTER_VALUE_TYPE_TEXT);
+			'valueType' in data ? data.valueType : this.FILTER_VALUE_TYPE_TEXT);
 
 		filterItemMMap.set(
 			'view',
-			this.filterItemViewCreate(filterItemMMap))
+			this.filterItemViewCreate(filterItemMMap));
 
 		return filterItemMMap;
 	},
 
 	/**
-	 * Creates a filter view stricture
+	 * Creates a filter item view stricture
 	 *
 	 * @param {object} filterItemMMap filter item data
 	 */
@@ -536,6 +572,44 @@ ArmadillogCore.prototype = {
 			'filterAffectTypes': this.filterAffectTypes,
 			'filterValueTypes': this.filterValueTypes
 		});
+	},
+
+	/**
+	 * Creates a filter item regexp
+	 *
+	 * @param {object} filterItemMMap filter item data
+	 */
+	filterItemRegexpCreate: function ArmadillogCore_filterItemRegexpCreate(filterItemMMap) {
+		DEBUG && console && console.log('ArmadillogCore', 'filterItemRegexpCreate', arguments);
+
+		var regexp = null;
+		var filterItemValue = filterItemMMap.get('value');
+
+		if (filterItemValue) {
+			switch (filterItemMMap.get('valueType')) {
+				case this.FILTER_VALUE_TYPE_TEXT:
+					try {
+						regexp = new RegExp(mUtils.regexp.escape(filterItemValue), 'gi');
+					}
+					catch (err) {
+						// nothing
+					}
+					break;
+
+				case this.FILTER_VALUE_TYPE_REGEXP:
+					try {
+						regexp = new RegExp(filterItemValue, 'gi');
+					}
+					catch (err) {
+						// nothing
+					}
+					break;
+			}
+		}
+
+		filterItemMMap.set('regexp', regexp);
+
+		return true;
 	},
 
 	/**
@@ -717,33 +791,6 @@ ArmadillogCore.prototype = {
 				return false;
 			}
 
-			var regexp = null;
-			var filterItemValue = filterItemMMap.get('value');
-
-			if (filterItemValue) {
-				switch (filterItemMMap.get('valueType')) {
-					case this.FILTER_VALUE_TYPE_TEXT:
-						try {
-							regexp = new RegExp(mUtils.regexp.escape(filterItemValue), 'gi');
-						}
-						catch (err) {
-							// nothing
-						}
-						break;
-
-					case this.FILTER_VALUE_TYPE_REGEXP:
-						try {
-							regexp = new RegExp(filterItemValue, 'gi');
-						}
-						catch (err) {
-							// nothing
-						}
-						break;
-				}
-			}
-
-			filterItemMMap.set('regexp', regexp);
-
 			filterItemMMap.dequeue('filter-submit');
 		}
 
@@ -770,6 +817,8 @@ ArmadillogCore.prototype = {
 
 			this.filterItemUiInit(filterItemMMap);
 		}
+
+		this.filterStorageSave();
 
 		this.contentFilterApply();
 
@@ -812,10 +861,22 @@ ArmadillogCore.prototype = {
 				filterItemValueTypeItem.radioEl.checked = (filterItemMMap.get('valueType') === filterItemValueTypeItem.radioEl.value);
 			}
 
-			this.filterView.listEl.insertBefore(
-				filterItemMMap.get('view').el,
-				filterItemNextMMap ? filterItemNextMMap.get('view').el : null);
+			// TODO: better handling situation in which next item exists, but it's view.el is non in DOM yet.
+			try {
+				this.filterView.listEl.insertBefore(
+					filterItemMMap.get('view').el,
+					filterItemNextMMap ? filterItemNextMMap.get('view').el : null);
+			}
+			catch (err) {
+				this.filterView.listEl.insertBefore(
+					filterItemMMap.get('view').el,
+					null);
+			}
+
+			this.filterItemRegexpCreate(filterItemMMap); // TODO work on better place for it
 		}
+
+		this.filterStorageSave();
 
 		this.contentFilterApply();
 
@@ -839,7 +900,67 @@ ArmadillogCore.prototype = {
 			this.filterView.listEl.removeChild(filterItemMMap.get('view').el);
 		}
 
+		this.filterStorageSave();
+
 		this.contentFilterApply();
+
+		return true;
+	},
+
+	/**
+	 *
+	 */
+	filterStorageLoad: function ArmadillogCore_filterStorageLoad() {
+		DEBUG && console && console.log('ArmadillogCore', 'filterStorageLoad', arguments);
+
+		var storageFilterList = [];
+		var filterItemMMap;
+
+		try {
+			storageFilterList = JSON.parse(window.localStorage.getItem(this.FILTER_LIST_STORAGE_NAME) || []);
+		}
+		catch (err) {
+			// nothing
+		}
+
+		this.filterMList.queue('filter-storage-load');
+
+		for (var i = 0, l = storageFilterList.length; i < l; i++) {
+			filterItemMMap = this.filterItemCreate(storageFilterList[i]);
+			this.filterMList.push(filterItemMMap);
+		}
+
+		this.filterMList.dequeue('filter-storage-load');
+
+		return true;
+	},
+
+	/**
+	 *
+	 */
+	filterStorageSave: function ArmadillogCore_filterStorageSave() {
+		DEBUG && console && console.log('ArmadillogCore', 'filterStorageSave', arguments);
+
+		var storageFilterList = [];
+		var filterItemMMap;
+
+		for (var i = 0, l = this.filterMList.length(); i < l; i++) {
+			filterItemMMap = this.filterMList.getAt(i);
+
+			storageFilterList.push({
+				'mute': filterItemMMap.get('mute'),
+				'affectType': filterItemMMap.get('affectType'),
+				'value': filterItemMMap.get('value'),
+				'valueType': filterItemMMap.get('valueType')
+			});
+		}
+
+		try {
+			window.localStorage.setItem(this.FILTER_LIST_STORAGE_NAME, JSON.stringify(storageFilterList));
+		}
+		catch (err) {
+			// nothing
+		}
 
 		return true;
 	},
