@@ -60,10 +60,10 @@ ArmadillogCore.prototype = {
 	FILTER_TAG_HIGHLIGHT_END_HTML: '</span>',
 
 	CONTENT_OVERFLOW_CHUNK_SIZE: 5000,
-	CONTENT_OVERFLOW_DELAY: 500,
+	CONTENT_OVERFLOW_DELAY: 1000,
 
-	CONTENT_FILE_UPDATE_DELAY: 5000,
-	CONTENT_URL_UPDATE_DELAY: 5000,
+	CONTENT_FILE_UPDATE_DELAY: 1000,
+	CONTENT_URL_UPDATE_DELAY: 1000,
 
 	/**
 	 * Initializes instance
@@ -269,6 +269,7 @@ ArmadillogCore.prototype = {
 				if (!this.busy) {
 					var files = evt.target.files;
 					if (files.length) {
+						this.contentClear();
 						this.contentFileSet(files[0], files[0].name);
 					}
 				}
@@ -292,6 +293,7 @@ ArmadillogCore.prototype = {
 			'click',
 			function ArmadillogCore_inputUiInit_inputPasteButtonElClickHandler(evt) {
 				if (!this.busy && this.inputView.pasteInputEl.value) {
+					this.contentClear();
 					this.contentTextSet(this.inputView.pasteInputEl.value, '(pasted text)');
 					this.inputView.pasteInputEl.value = '';
 				}
@@ -315,6 +317,7 @@ ArmadillogCore.prototype = {
 			'click',
 			function ArmadillogCore_inputUiInit_inputUrlButtonElClickHandler(evt) {
 				if (!this.busy && this.inputView.urlInputEl.value) {
+					this.contentClear();
 					this.contentUrlSet(this.inputView.urlInputEl.value, this.inputView.urlInputEl.value);
 					this.inputView.urlInputEl.value = '';
 				}
@@ -1068,9 +1071,19 @@ ArmadillogCore.prototype = {
 		this.workerFileReader = new mWorker.WorkerDownloader();
 		this.workerTextLineSplitter = new mWorker.WorkerFunction(
 			function ArmadillogCore_contentDataInit_workerTextLineSplitter(data, success, error) {
+				var lineList = data.text.split(/\r?\n/g);
+				for (var i = 0, l = lineList.length; i < l; i++) {
+					success(
+						{
+							'index': i,
+							'text': lineList[i]
+						},
+						null);
+				}
+
 				success(
 					{
-						'result': data.text.split(/\r?\n/)
+						'count': lineList.length
 					},
 					null);
 		});
@@ -1146,7 +1159,7 @@ ArmadillogCore.prototype = {
 			function ArmadillogCore_contentUiInit_contentDropElDragstartHandler(evt) {
 				this.contentDragging = true;
 
-				//evt.preventDefault();
+				// evt.preventDefault();
 				evt.stopPropagation();
 			}.bind(this),
 			false);
@@ -1177,11 +1190,13 @@ ArmadillogCore.prototype = {
 				if (!this.contentDragging) {
 					var files = evt.dataTransfer.files;
 					if (files.length) {
+						this.contentClear();
 						this.contentFileSet(files[0], files[0].name);
 					}
 
 					var data = evt.dataTransfer.getData('text/plain');
 					if (data) {
+						this.contentClear();
 						this.contentTextSet(data, '(dragged text)');
 					}
 				}
@@ -1313,7 +1328,10 @@ ArmadillogCore.prototype = {
 	contentClear: function ArmadillogCore_contentClear() {
 		DEBUG && console && console.log('ArmadillogCore', 'contentClear', arguments);
 
+		this.contentFile = null;
 		this.contentFileUpdateUnschedule();
+
+		this.contentUrl = null;
 		this.contentUrlUpdateUnschedule();
 
 		this.contentLineMList.splice(0, this.contentLineMList.length());
@@ -1348,18 +1366,6 @@ ArmadillogCore.prototype = {
 			function ArmadillogCore_contentFileSet_workerFileReaderFailure() {
 				alert('An error occured, please try another input method.');
 			}.bind(this));
-/*
-
-		var fileReader = new FileReader();
-
-		fileReader.addEventListener(
-			'load',
-			function (evt) {
-				this.contentTextSet(evt.target.result, label);
-			}.bind(this));
-
-		fileReader.readAsText(file);
-*/
 
 		return true;
 	},
@@ -1370,17 +1376,22 @@ ArmadillogCore.prototype = {
 	contentFileUpdate: function ArmadillogCore_contentFileUpdate() {
 		DEBUG && console && console.log('ArmadillogCore', 'contentFileUpdate', arguments);
 
-		var file = this.contentFile;
+		if (!this.contentFile || this.busy) {
+			return;
+		}
 
 		this.workerFileReader.run(
 			{
-				'url': URL.createObjectURL(file)
+				'url': URL.createObjectURL(this.contentFile)
 			},
 			null,
 			function ArmadillogCore_contentFileUpdate_workerFileReaderSuccess(data) {
 				URL.revokeObjectURL(data.url);
-				this.contentTextUpdate(data.result);
-				this.contentFileUpdateSchedule();
+
+				if (this.contentFile) {
+					this.contentTextUpdate(data.result);
+					this.contentFileUpdateSchedule();
+				}
 			}.bind(this),
 			function ArmadillogCore_contentFileUpdate_workerFileReaderFailure() {
 				alert('An error occured, please try another input method.');
@@ -1412,6 +1423,7 @@ ArmadillogCore.prototype = {
 
 		if (this.contentFileUpdateTimeout) {
 			window.clearTimeout(this.contentFileUpdateTimeout);
+			this.contentFileUpdateTimeout = null;
 		}
 
 		return true;
@@ -1454,18 +1466,22 @@ ArmadillogCore.prototype = {
 	 * Updates the content url
 	 */
 	contentUrlUpdate: function ArmadillogCore_contentUrlUpdate() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentFileUpdate', arguments);
+		DEBUG && console && console.log('ArmadillogCore', 'contentUrlUpdate', arguments);
 
-		var url = this.contentUrl;
+		if (!this.contentUrl || this.busy) {
+			return;
+		}
 
 		this.workerFileReader.run(
 			{
-				'url': url
+				'url': this.contentUrl
 			},
 			null,
 			function ArmadillogCore_contentUrlUpdate_workerFileReaderSuccess(data) {
-				this.contentTextUpdate(data.result);
-				this.contentUrlUpdateSchedule();
+				if (this.contentUrl) {
+					this.contentTextUpdate(data.result);
+					this.contentUrlUpdateSchedule();
+				}
 			}.bind(this),
 			function ArmadillogCore_contentUrlUpdate_workerFileReaderFailure() {
 				alert('An error occured, please try another input method.');
@@ -1497,6 +1513,7 @@ ArmadillogCore.prototype = {
 
 		if (this.contentUrlUpdateTimeout) {
 			window.clearTimeout(this.contentUrlUpdateTimeout);
+			this.contentUrlUpdateTimeout = null;
 		}
 
 		return true;
@@ -1511,7 +1528,7 @@ ArmadillogCore.prototype = {
 	contentTextSet: function ArmadillogCore_contentTextSet(text, label) {
 		DEBUG && console && console.log('ArmadillogCore', 'contentTextSet', arguments);
 
-		this.contentClear();
+		this.contentLineMList.queue('content-text-set');
 
 		this.workerTextLineSplitter.run(
 			{
@@ -1519,66 +1536,29 @@ ArmadillogCore.prototype = {
 			},
 			null,
 			function ArmadillogCore_contentTextSet_workerTextLineSplitterSuccess(data) {
-				var contentTextLineList = data.result;
-				var contentTextLineItem;
-				var contentLineList = [];
-				var contentLineItemMMap
-
-				this.contentLineMList.queue('content-text-set');
-
-				for (var i = 0, l = contentTextLineList.length; i < l; i++) {
-					contentTextLineItem = contentTextLineList[i];
-
-					contentLineItemMMap = new mModel.ModelMap(
+				if ('text' in data) {
+					var contentLineItemMMap = new mModel.ModelMap(
 						'textRaw',
-						contentTextLineItem,
+						data.text,
 						'textFiltered',
-						contentTextLineItem,
+						data.text,
 						'hidden',
 						false,
 						'view',
 						null);
 
-					contentLineList.push(contentLineItemMMap);
+					this.contentLineListFilter([contentLineItemMMap]);
+
+					this.contentLineMList.setAt(data.index, contentLineItemMMap);
 				}
 
-				this.contentLineListFilter(contentLineList);
+				if ('count' in data) {
+					this.inputView.clearLabelEl.innerHTML = label || '(unknown)';
 
-				this.contentLineMList.push.apply(this.contentLineMList, contentLineList);
-
-				this.contentLineMList.dequeue('content-text-set');
-
-				this.inputView.clearLabelEl.innerHTML = label || '(unknown)';
-			}.bind(this));
-/*
-		var contentTextLineList = text.split(/\r?\n/);
-
-		var contentLineList = [];
-
-		this.contentLineMList.queue();
-
-		for (var i = 0, l = contentTextLineList.length; i < l; i++) {
-			var contentLineItemMMap = new mModel.ModelMap(
-				'textRaw',
-				contentTextLineList[i],
-				'textFiltered',
-				contentTextLineList[i],
-				'hidden',
-				false,
-				'view',
-				null);
-
-			contentLineList.push(contentLineItemMMap);
-		}
-
-		this.contentLineListFilter(contentLineList);
-
-		this.contentLineMList.push.apply(this.contentLineMList, contentLineList);
-
-		this.contentLineMList.dequeue();
-
-		this.inputView.clearLabelEl.innerHTML = label || '(unknown)';
-*/
+					this.contentLineMList.dequeue('content-text-set');
+				}
+			}.bind(this),
+			null);
 
 		return true;
 	},
@@ -1591,31 +1571,24 @@ ArmadillogCore.prototype = {
 	contentTextUpdate: function ArmadillogCore_contentTextUpdate(text) {
 		DEBUG && console && console.log('ArmadillogCore', 'contentTextUpdate', arguments);
 
+		this.contentLineMList.queue('content-text-update');
+
 		this.workerTextLineSplitter.run(
 			{
 				'text': text
 			},
 			null,
 			function ArmadillogCore_contentTextUpdate_workerTextLineSplitterSuccess(data) {
-				var contentTextLineList = data.result;
-				var contentTextLineItem;
-				var contentLineList = [];
-				var contentLineItemMMap;
-
-				this.contentLineMList.queue('content-text-update');
-
-				for (var i = 0, l = contentTextLineList.length; i < l; i++) {
-					contentTextLineItem = contentTextLineList[i];
-
-					contentLineItemMMap = this.contentLineMList.getAt(i);
+				if ('text' in data) {
+					var contentLineItemMMap = this.contentLineMList.getAt(data.index);
 
 					if (contentLineItemMMap) {
-						if (contentLineItemMMap.get('textRaw') !== contentTextLineItem) {
+						if (contentLineItemMMap.get('textRaw') !== data.text) {
 							contentLineItemMMap.set(
 								'textRaw',
-								contentTextLineItem,
+								data.text,
 								'textFiltered',
-								contentTextLineItem);
+								data.text);
 
 							this.contentLineListFilter([contentLineItemMMap]);
 						}
@@ -1623,36 +1596,35 @@ ArmadillogCore.prototype = {
 					else {
 						contentLineItemMMap = new mModel.ModelMap(
 							'textRaw',
-							contentTextLineItem,
+							data.text,
 							'textFiltered',
-							contentTextLineItem,
+							data.text,
 							'hidden',
 							false,
 							'view',
 							null);
 
-						contentLineList.push(contentLineItemMMap);
+						this.contentLineListFilter([contentLineItemMMap]);
 					}
+
+					this.contentLineMList.setAt(data.index, contentLineItemMMap);
 				}
 
-				if (contentTextLineList.length < this.contentLineMList.length()) {
-					this.contentLineMList.splice(contentTextLineList.length);
+				if ('count' in data) {
+					if (data.count < this.contentLineMList.length()) {
+						this.contentLineMList.splice(data.count);
+					}
+
+					this.contentLineMList.queue(function ArmadillogCore_contentTextUpdate_contentTailing() {
+						this.contentTailingDo();
+
+						this.contentLineMList.dequeue();
+					}.bind(this));
+
+					this.contentLineMList.dequeue('content-text-update');
 				}
-
-				if (contentLineList.length) {
-					this.contentLineListFilter(contentLineList);
-
-					this.contentLineMList.push.apply(this.contentLineMList, contentLineList);
-				}
-
-				this.contentLineMList.queue(function ArmadillogCore_contentTextUpdate_contentTailing() {
-					this.contentTailingDo();
-
-					this.contentLineMList.dequeue();
-				}.bind(this));
-
-				this.contentLineMList.dequeue('content-text-update');
-			}.bind(this));
+			}.bind(this),
+			null);
 
 		return true;
 	},
@@ -1796,7 +1768,6 @@ ArmadillogCore.prototype = {
 		chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
 
 		var contentLineIndex, contentLineItemMMap;
-		var documentFragment = document.createDocumentFragment();
 
 		for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
 			contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
@@ -1967,7 +1938,7 @@ ArmadillogCore.prototype = {
 			if (!this.busy) {
 				this.busy = true;
 
-				this.contentView.frameEl.removeChild(this.contentView.lineListEl);
+				// this.contentView.frameEl.removeChild(this.contentView.lineListEl);
 				mUtils.dom.classAdd(this.bodyEl, 'busy');
 			}
 		}
@@ -1979,7 +1950,7 @@ ArmadillogCore.prototype = {
 			if (this.busyTaskList.length === 0) {
 				this.busy = false;
 
-				this.contentView.frameEl.appendChild(this.contentView.lineListEl);
+				// this.contentView.frameEl.appendChild(this.contentView.lineListEl);
 				mUtils.dom.classRemove(this.bodyEl, 'busy');
 			}
 		}

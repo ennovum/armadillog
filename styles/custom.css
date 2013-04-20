@@ -533,10 +533,6 @@ body {
 	text-align: left;
 }
 
-.busy #armadillog-content-box .content-line-list {
-	display: none;
-}
-
 #armadillog-content-box .content-line-item {
 	position: relative;
 	min-height: 17px;

@@ -73,7 +73,7 @@ ArmadillogView.prototype = {
 	/**
 	 * Inits view
 	 */
-	viewInit: function () {
+	viewInit: function ArmadillogView_viewInit() {
 		DEBUG && console && console.log('ArmadillogView', 'viewInit', arguments);
 
 		switch (true) {
@@ -93,7 +93,7 @@ ArmadillogView.prototype = {
 	/**
 	 * Inits input view
 	 */
-	inputViewInit: function () {
+	inputViewInit: function ArmadillogView_inputViewInit() {
 		DEBUG && console && console.log('ArmadillogView', 'inputViewInit', arguments);
 
 		this.inputViewTemplate = Handlebars.compile(templateInput);
@@ -106,7 +106,7 @@ ArmadillogView.prototype = {
 	 *
 	 * @param {object} context context object
 	 */
-	inputViewGet: function (context) {
+	inputViewGet: function ArmadillogView_inputViewGet(context) {
 		DEBUG && console && console.log('ArmadillogView', 'inputViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
@@ -131,7 +131,7 @@ ArmadillogView.prototype = {
 	/**
 	 * Inits filter view
 	 */
-	filterViewInit: function () {
+	filterViewInit: function ArmadillogView_filterViewInit() {
 		DEBUG && console && console.log('ArmadillogView', 'filterViewInit', arguments);
 
 		this.filterViewTemplate = Handlebars.compile(templateFilter);
@@ -144,7 +144,7 @@ ArmadillogView.prototype = {
 	 *
 	 * @param {object} context context object
 	 */
-	filterViewGet: function (context) {
+	filterViewGet: function ArmadillogView_filterViewGet(context) {
 		DEBUG && console && console.log('ArmadillogView', 'filterViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
@@ -162,7 +162,7 @@ ArmadillogView.prototype = {
 	/**
 	 * Inits filter item view
 	 */
-	filterItemViewCreate: function () {
+	filterItemViewCreate: function ArmadillogView_filterItemViewCreate() {
 		DEBUG && console && console.log('ArmadillogView', 'filterItemViewCreate', arguments);
 
 		this.filterItemViewTemplate = Handlebars.compile(templateFilterItem);
@@ -175,7 +175,7 @@ ArmadillogView.prototype = {
 	 *
 	 * @param {object} context context object
 	 */
-	filterItemViewGet: function (context) {
+	filterItemViewGet: function ArmadillogView_filterItemViewGet(context) {
 		DEBUG && console && console.log('ArmadillogView', 'filterItemViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
@@ -221,7 +221,7 @@ ArmadillogView.prototype = {
 	/**
 	 * Inits examine view
 	 */
-	examineViewInit: function () {
+	examineViewInit: function ArmadillogView_examineViewInit() {
 		DEBUG && console && console.log('ArmadillogView', 'examineViewInit', arguments);
 
 		this.examineViewTemplate = Handlebars.compile(templateExamine);
@@ -234,7 +234,7 @@ ArmadillogView.prototype = {
 	 *
 	 * @param {object} context context object
 	 */
-	examineViewGet: function (context) {
+	examineViewGet: function ArmadillogView_examineViewGet(context) {
 		DEBUG && console && console.log('ArmadillogView', 'examineViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
@@ -251,7 +251,7 @@ ArmadillogView.prototype = {
 	/**
 	 * Inits content view
 	 */
-	contentViewInit: function () {
+	contentViewInit: function ArmadillogView_contentViewInit() {
 		DEBUG && console && console.log('ArmadillogView', 'contentViewInit', arguments);
 
 		this.contentViewTemplate = Handlebars.compile(templateContent);
@@ -264,7 +264,7 @@ ArmadillogView.prototype = {
 	 *
 	 * @param {object} context context object
 	 */
-	contentViewGet: function (context) {
+	contentViewGet: function ArmadillogView_contentViewGet(context) {
 		DEBUG && console && console.log('ArmadillogView', 'contentViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
@@ -279,7 +279,7 @@ ArmadillogView.prototype = {
 	/**
 	 * Inits content line view
 	 */
-	contentLineItemViewInit: function () {
+	contentLineItemViewInit: function ArmadillogView_contentLineItemViewInit() {
 		DEBUG && console && console.log('ArmadillogView', 'contentLineItemViewInit', arguments);
 
 		this.contentLineItemViewTemplate = Handlebars.compile(templateContentLineItem);
@@ -292,7 +292,7 @@ ArmadillogView.prototype = {
 	 *
 	 * @param {object} context context object
 	 */
-	contentLineItemViewGet: function (context) {
+	contentLineItemViewGet: function ArmadillogView_contentLineItemViewGet(context) {
 		DEBUG && console && console.log('ArmadillogView', 'contentLineItemViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
