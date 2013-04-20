@@ -16,6 +16,7 @@ var DEBUG = false;
  * Worker interface
  */
 var iWorkerFunction = {
+	'configure': function (config) {},
 	'run': function (data, ready, error) {},
 	'destroy': function () {}
 };
@@ -34,26 +35,32 @@ var WorkerFunction = function WorkerFunction() {
 WorkerFunction.prototype = {
 
 	SOURCE: [
-		'var ready = function (data, transferables) {',
-		'    this.postMessage(',
-		'        {',
-		'            "success": true,',
-		'            "data": data',
-		'        },',
-		'        null,',
-		'        transferables);',
+		'var ready = function (wid) {',
+		'    return function (data, transferables) {',
+		'        postMessage(',
+		'            {',
+		'                "wid": wid,',
+		'                "success": true,',
+		'                "data": data',
+		'            },',
+		'            null,',
+		'            transferables);',
+		'    };',
 		'};',
-		'var error = function (data, transferables) {',
-		'    this.postMessage(',
-		'        {',
-		'            "success": false,',
-		'            "data": data',
-		'        },',
-		'        null,',
-		'        transferables);',
+		'var error = function (wid) {',
+		'    return function (data, transferables) {',
+		'        postMessage(',
+		'            {',
+		'                "wid": wid,',
+		'                "success": false,',
+		'                "data": data',
+		'            },',
+		'            null,',
+		'            transferables);',
+		'    };',
 		'};',
 		'this.onmessage = function(event){',
-		'    (%FUNCTION%).call(this, event.data.data, ready, error);',
+		'    (%FUNCTION%).call(this, event.data.data, ready(event.data.wid), error(event.data.wid));',
 		'};',
 	].join('\n'),
 
@@ -62,25 +69,66 @@ WorkerFunction.prototype = {
 	 *
 	 * @param {mixed} func Worker body function
 	 */
-	init: function WorkerFunction_init(func) {
+	init: function WorkerFunction_init(callback, config) {
 		DEBUG && console && console.log('WorkerFunction', 'init', arguments);
 
 		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
 
-		this.workStack = [];
+		switch (false) {
+			case callback && typeof callback === 'function':
+			case !config || typeof config === 'object':
+				console && console.error('WorkerFunction', 'init', 'invalid input');
+				return false;
+				break;
+		}
 
-		this.source = this.SOURCE.replace('%FUNCTION%', typeof func === 'string' ? func : func.toString());
+		this.config = {};
+		this.configure({
+			'disableNativeWorker': config && 'disableNativeWorker' in config ? config['disableNativeWorker'] : false
+		});
+
+		this.callback = callback;
+
+		this.widSeq = 0;
+		this.workMap = {};
+
+		this.source = this.SOURCE.replace('%FUNCTION%', this.callback.toString());
 		this.sourceURL = URL.createObjectURL(new Blob([this.source], {'type': 'text/javascript'}));
 
-		this.worker = new Worker(this.sourceURL);
+		try {
+			this.worker = new Worker(this.sourceURL);
 
-		this.worker.onmessage = function WorkerFunction_workerInit_onmessage(event) {
-			this.messageHandler(event.data.success, event.data.data);
-		}.bind(this);
+			this.worker.onmessage = function WorkerFunction_workerInit_onmessage(event) {
+				this.messageHandler(event.data.wid, event.data.success, event.data.data);
+			}.bind(this);
 
-		this.worker.onerror = function WorkerFunction_workerInit_onmessage(event) {
-			this.errorHandler(event.message, event.filename, event.lineno);
-		}.bind(this);
+			this.worker.onerror = function WorkerFunction_workerInit_onmessage(event) {
+				this.errorHandler(event.data.wid, event.message, event.filename, event.lineno);
+			}.bind(this);
+		}
+		catch (err) {
+			this.worker = null;
+		}
+
+		return true;
+	},
+
+	/**
+	 *
+	 */
+	configure: function WorkerFunction_configure(config) {
+		DEBUG && console && console.log('WorkerFunction', 'configure', arguments);
+
+		switch (false) {
+			case typeof config === 'object':
+				console && console.error('WorkerFunction', 'configure', 'invalid input');
+				return false;
+				break;
+		}
+
+		if (config && 'disableNativeWorker' in config) {
+			this.config['disableNativeWorker'] = !!config['disableNativeWorker'];
+		}
 
 		return true;
 	},
@@ -106,18 +154,45 @@ WorkerFunction.prototype = {
 	run: function WorkerFunction_run(data, transferables, ready, error) {
 		DEBUG && console && console.log('WorkerFunction', 'run', arguments);
 
-		this.queue(function () {
-			this.worker.postMessage(
-				{
-					'data': data
-				},
-				transferables);
-		}.bind(this));
+		switch (false) {
+			case !transferables || transferables === null || Array.isArray(transferables):
+			case !ready || typeof ready === 'function':
+			case !error || typeof error === 'function':
+				console && console.error('WorkerFunction', 'run', 'invalid input');
+				return false;
+				break;
+		}
 
-		this.workStack.push({
+		var wid = '' + (this.widSeq++);
+		var work = {
 			'ready': ready,
 			'error': error
-		});
+		};
+
+		this.workMap[wid] = work;
+
+		this.queue(function () {
+			if (!this.worker || this.config.disableNativeWorker) {
+				this.callback(
+					data,
+					function (data) {
+						this.messageHandler(wid, true, data);
+					}.bind(this),
+					function (data) {
+						this.messageHandler(wid, false, data);
+					}.bind(this));
+			}
+			else {
+				this.worker.postMessage(
+					{
+						'wid': wid,
+						'data': data
+					},
+					transferables);
+			}
+		}.bind(this));
+
+		this.dequeue();
 
 		return true;
 	},
@@ -127,10 +202,10 @@ WorkerFunction.prototype = {
 	 *
 	 * @param {mixed} data Message data
 	 */
-	messageHandler: function WorkerFunction_messageHandler(success, data) {
+	messageHandler: function WorkerFunction_messageHandler(wid, success, data) {
 		DEBUG && console && console.log('WorkerFunction', 'messageHandler', arguments);
 
-		var work = this.workStack.shift();
+		var work = this.workMap[wid];
 
 		if (success) {
 			if (work.ready) {
@@ -143,8 +218,6 @@ WorkerFunction.prototype = {
 			}
 		}
 
-		this.dequeue();
-
 		return true;
 	},
 
@@ -153,10 +226,16 @@ WorkerFunction.prototype = {
 	 *
 	 * @param {mixed} data Error data
 	 */
-	errorHandler: function WorkerFunction_errorHandler(message, filename, lineno) {
+	errorHandler: function WorkerFunction_errorHandler(wid, message, filename, lineno) {
 		DEBUG && console && console.log('WorkerFunction', 'errorHandler', arguments);
 
-		DEBUG && console && console.error(message, filename, lineno);
+		console && console.error(message, filename, lineno);
+
+		var work = this.workMap[wid];
+
+		if (work.error) {
+			work.error.call(work.error, {'error': message});
+		}
 
 		return true;
 	},

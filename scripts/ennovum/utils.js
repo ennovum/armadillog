@@ -56,13 +56,24 @@ var oUtilsObj = {
 	mixin: function Utils_obj_mixin(base, mixin) {
 		DEBUG && console && console.log('oUtilsObj', 'mixin', arguments);
 
+		switch (false) {
+			case base && typeof base === 'object':
+			case mixin && typeof mixin === 'object':
+				console && console.error('oUtilsObj', 'mixin', 'error: invalid input');
+				return;
+		};
+
 		for (var key in mixin) {
-			if (base[key]) {
-				console && console.error('oUtilsObj', 'mixin', 'cannot overwrite object field', key);
-				return false;
+			if (key in base) {
+				continue;
 			}
 
-			base[key] = mixin[key].bind(mixin);
+			if (typeof mixin[key] === 'function') {
+				base[key] = mixin[key].bind(mixin);
+			}
+			else {
+				base[key] = mixin[key];
+			}
 		}
 
 		return mixin;
