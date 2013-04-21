@@ -95,19 +95,8 @@ require(
 			var armadillog = new mArmadillog.Armadillog(config);
 			var layout = new mLayout.Layout(config);
 
-			var descriptionEl = document.querySelector('#description');
-			var descriptionLineEl;
-			var descriptionLineList = [];
-
-			for (var i = 0, l = descriptionEl.childNodes.length; i < l; i++) {
-				descriptionLineEl = descriptionEl.childNodes[i];
-				if (descriptionLineEl.tagName) {
-					descriptionLineList.push(descriptionLineEl.textContent);
-				}
-			}
-
 			armadillog.contentTextSet(
-				descriptionLineList.join("\n"),
+				document.querySelector('#description').textContent,
 				'Welcome message');
 		}
 		catch (err) {

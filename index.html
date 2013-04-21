@@ -5,8 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
 	<meta charset="utf-8">
-	<title>Armadillog - logs reading tool</title>
-	<meta name="description" content="Logs reading tool. Input a piece of text or a file, apply a set of filters and check out the result. You can narrow the output down to the point where you see only what is relevant to your current need.">
+	<title>Armadillog - web console log</title>
+	<meta name="description" content="Web console log. Input a file or a piece of text, apply a set of filters and check out the result. You can narrow the output down to the point where you see exactly what is relevant to your current need.">
 	<meta name="author" content="Grzegorz Wasiak">
 	<meta name="viewport" content="width=device-width">
 	<link rel="shortcut icon" href="styles/armadillog.png" />
@@ -39,28 +39,44 @@
 			</ul>
 		</div>
 	</div>
-	<div id="description">
-		<br />
-		<br />
-		<br />
-		<p>Welcome!</p>
-		<br />
-		<br />
-		<p>Armadillog is a tool which makes it easier and faster to go through a large amount of text, e. g. application logs.</p>
-		<p>Input a piece of text or a file, apply a set of filters and check out the result.</p>
-		<p>You can narrow the output down to the point where you see only what is relevant to your current need.</p>
-		<br />
-		<br />
-		<p>It's still a work in progress, so please feel free to send me any bug reports or feature requests.</p>
-		<br />
-		<br />
-		<p>Grzegorz Wasiak</p>
-		<p>@ennovum</p>
-		<p>armadillog@ennovum.net</p>
-		<br />
-		<br />
-		<br />
-	</div>
+	<pre id="description">
+
+
+
+Welcome!
+
+Armadillog is a web console log. It makes it easier and faster to sift through application logs etc.
+Input a file or a piece of text, apply a set of filters and check out the result.
+You can narrow the output down to the point where you see exactly what is relevant to your current need.
+Input files are automatically being followed - constantly checked for modifications so the console is up to date.
+
+It's still a work in progress, so please feel free to send me any bug reports or feature requests.
+
+Grzegorz Wasiak
+@ennovum
+armadillog@ennovum.net
+
+
+
+CHANGELOG:
+
+0.0.3
+- persistent filter data (local storage)
+- box model based layout
+- massive data model related refactoring
+- performance &amp; workers related refactoring
+- visual adjustments
+- minor bug fixes
+
+0.0.2
+- Examine tab
+- minor bug fixes
+
+0.0.1
+- Armadillog - web console
+
+
+	</pre>
 	<div id="armadillog-input-wrapper" class="hidden drawer-wrapper">
 		<div id="armadillog-input-box" class="drawer">
 		</div>
