@@ -39,6 +39,11 @@ require.config({
 			'main': 'worker.js'
 		},
 		{
+			'name': 'ennovum.Buffer',
+			'location': 'ennovum',
+			'main': 'buffer.js'
+		},
+		{
 			'name': 'ennovum.Armadillog',
 			'location': 'ennovum/armadillog',
 			'main': 'armadillog.js'

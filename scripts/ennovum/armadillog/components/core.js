@@ -1376,7 +1376,7 @@ ArmadillogCore.prototype = {
 	contentFileUpdate: function ArmadillogCore_contentFileUpdate() {
 		DEBUG && console && console.log('ArmadillogCore', 'contentFileUpdate', arguments);
 
-		if (!this.contentFile || this.busy) {
+		if (!this.contentFile || this.busy || this.contentLineMList.queued()) {
 			return;
 		}
 
@@ -1468,7 +1468,7 @@ ArmadillogCore.prototype = {
 	contentUrlUpdate: function ArmadillogCore_contentUrlUpdate() {
 		DEBUG && console && console.log('ArmadillogCore', 'contentUrlUpdate', arguments);
 
-		if (!this.contentUrl || this.busy) {
+		if (!this.contentUrl || this.busy || this.contentLineMList.queued()) {
 			return;
 		}
 
