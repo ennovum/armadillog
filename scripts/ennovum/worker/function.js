@@ -64,6 +64,8 @@ WorkerFunction.prototype = {
 		'};',
 	].join('\n'),
 
+	DISABLE_NATIVE_WORKER_STORAGE_NAME: 'disableNativeWorker',
+
 	/**
 	 * Initializes instance
 	 *
@@ -172,7 +174,7 @@ WorkerFunction.prototype = {
 		this.workMap[wid] = work;
 
 		this.queue(function () {
-			if (!this.worker || this.config.disableNativeWorker) {
+			if (!this.worker || this.config.disableNativeWorker || localStorage.getItem(this.DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
 				this.callback(
 					data,
 					function (data) {
