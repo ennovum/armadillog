@@ -65,6 +65,8 @@ ArmadillogCore.prototype = {
 	CONTENT_FILE_UPDATE_DELAY: 1000,
 	CONTENT_URL_UPDATE_DELAY: 1000,
 
+	CONTENT_TAILING_DELAY: 1000,
+
 	/**
 	 * Initializes instance
 	 *
@@ -1615,12 +1617,6 @@ ArmadillogCore.prototype = {
 						this.contentLineMList.splice(data.count);
 					}
 
-					this.contentLineMList.queue(function ArmadillogCore_contentTextUpdate_contentTailing() {
-						this.contentTailingDo();
-
-						this.contentLineMList.dequeue();
-					}.bind(this));
-
 					this.contentLineMList.dequeue('content-text-update');
 				}
 			}.bind(this),
@@ -1700,6 +1696,7 @@ ArmadillogCore.prototype = {
 			}
 			else {
 				this.busySet(false, 'contentLineViewListInsert');
+				this.contentTailingDo();
 			}
 		}.bind(this));
 
@@ -1750,6 +1747,7 @@ ArmadillogCore.prototype = {
 			}
 			else {
 				this.busySet(false, 'contentLineViewListUpdate');
+				this.contentTailingDo();
 			}
 		}.bind(this));
 
@@ -1790,6 +1788,7 @@ ArmadillogCore.prototype = {
 			}
 			else {
 				this.busySet(false, 'contentLineViewListDelete');
+				this.contentTailingDo();
 			}
 		}.bind(this));
 
@@ -1907,7 +1906,7 @@ ArmadillogCore.prototype = {
 				window.scrollTo(window.scrollX, window.scrollMaxY);
 			}
 			else {
-				this.contentScrollEl.scrollTo(this.contentScrollEl.scrollLeft, this.contentScrollEl.scrollHeight);
+				this.contentScrollEl.scrollTop = this.contentScrollEl.scrollHeight;
 			}
 		}
 

@@ -89,7 +89,7 @@ require(
 				'examineBoxEl': document.querySelector('#armadillog-examine-box'),
 				'examineFoldEl': document.querySelector('#armadillog-examine-fold'),
 				'contentBoxEl': document.querySelector('#armadillog-content-box'),
-				'contentScrollEl': window,
+				'contentScrollEl': document.querySelector('#main'),
 				'contentDropEl': document.querySelector('#main')
 			};
 
