@@ -79,6 +79,11 @@ if (!Array.isArray) {
 	}
 }
 
+// requestAnimationFrame
+if (!window.requestAnimationFrame) {
+	window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || undefined;
+}
+
 /* ==================================================================================================== */
 		return null;
 	});

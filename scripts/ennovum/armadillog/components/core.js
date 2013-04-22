@@ -59,8 +59,8 @@ ArmadillogCore.prototype = {
 	FILTER_TAG_HIGHLIGHT_BEGIN_HTML: '<span class="highlight">',
 	FILTER_TAG_HIGHLIGHT_END_HTML: '</span>',
 
-	CONTENT_OVERFLOW_CHUNK_SIZE: 5000,
-	CONTENT_OVERFLOW_DELAY: 1000,
+	CONTENT_OVERFLOW_CHUNK_SIZE: 1000,
+	CONTENT_OVERFLOW_DELAY: 200,
 
 	CONTENT_FILE_UPDATE_DELAY: 1000,
 	CONTENT_URL_UPDATE_DELAY: 1000,
@@ -1664,42 +1664,44 @@ ArmadillogCore.prototype = {
 	contentLineViewListInsert: function ArmadillogCore_contentLineViewListInsert(contentLineViewList, chunkIndex, chunkSize) {
 		DEBUG && console.log('ArmadillogCore', 'contentLineViewListInsert', arguments);
 
-		this.busySet(true, 'contentLineViewListInsert');
+		requestAnimationFrame(function () {
+			this.busySet(true, 'contentLineViewListInsert');
 
-		chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
-		chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
+			chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
+			chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
 
-		var contentLineIndex, contentLineItemMMap, contentLineItemView;
-		var documentFragment = document.createDocumentFragment();
+			var contentLineIndex, contentLineItemMMap, contentLineItemView;
+			var documentFragment = document.createDocumentFragment();
 
-		for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
-			contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
-			contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
+			for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
+				contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
+				contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
 
-			contentLineItemView = this.contentLineItemViewCreate(contentLineIndex, contentLineItemMMap);
-			contentLineItemMMap.set('view', contentLineItemView);
+				contentLineItemView = this.contentLineItemViewCreate(contentLineIndex, contentLineItemMMap);
+				contentLineItemMMap.set('view', contentLineItemView);
 
-			contentLineItemView.el.setAttribute('data-index', contentLineIndex);
+				contentLineItemView.el.setAttribute('data-index', contentLineIndex);
 
-			documentFragment.appendChild(contentLineItemView.el);
-		}
+				documentFragment.appendChild(contentLineItemView.el);
+			}
 
-		this.contentLineViewListUpdate(contentLineViewList, chunkIndex, Math.min(chunkSize, this.CONTENT_OVERFLOW_CHUNK_SIZE));
+			this.contentLineViewListUpdate(contentLineViewList, chunkIndex, Math.min(chunkSize, this.CONTENT_OVERFLOW_CHUNK_SIZE));
 
-		this.contentView.lineListEl.insertBefore(
-			documentFragment,
-			this.contentView.lineListEl.childNodes[contentLineViewList[chunkIndex].contentLineIndex] || null);
+			this.contentView.lineListEl.insertBefore(
+				documentFragment,
+				this.contentView.lineListEl.childNodes[contentLineViewList[chunkIndex].contentLineIndex] || null);
 
-		if (chunkSize > this.CONTENT_OVERFLOW_CHUNK_SIZE) {
-			setTimeout(
-				function ArmadillogCore_contentLineViewListInsert_contentOverflowChunk() {
-					this.contentLineViewListInsert(contentLineViewList, chunkIndex + this.CONTENT_OVERFLOW_CHUNK_SIZE);
-				}.bind(this),
-				this.CONTENT_OVERFLOW_DELAY);
-		}
-		else {
-			this.busySet(false, 'contentLineViewListInsert');
-		}
+			if (chunkSize > this.CONTENT_OVERFLOW_CHUNK_SIZE) {
+				setTimeout(
+					function ArmadillogCore_contentLineViewListInsert_contentOverflowChunk() {
+						this.contentLineViewListInsert(contentLineViewList, chunkIndex + this.CONTENT_OVERFLOW_CHUNK_SIZE);
+					}.bind(this),
+					this.CONTENT_OVERFLOW_DELAY);
+			}
+			else {
+				this.busySet(false, 'contentLineViewListInsert');
+			}
+		}.bind(this));
 
 		return true;
 	},
@@ -1714,40 +1716,42 @@ ArmadillogCore.prototype = {
 	contentLineViewListUpdate: function ArmadillogCore_contentLineViewListUpdate(contentLineViewList, chunkIndex, chunkSize) {
 		DEBUG && console.log('ArmadillogCore', 'contentLineViewListUpdate', arguments);
 
-		this.busySet(true, 'contentLineViewListUpdate');
+		requestAnimationFrame(function () {
+			this.busySet(true, 'contentLineViewListUpdate');
 
-		chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
-		chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
+			chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
+			chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
 
-		var contentLineIndex, contentLineItemMMap;
+			var contentLineIndex, contentLineItemMMap;
 
-		for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
-			contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
-			contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
+			for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
+				contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
+				contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
 
-			var text = contentLineItemMMap.get('textFiltered');
-			if (text === null) {
-				text = contentLineItemMMap.get('textRaw');
+				var text = contentLineItemMMap.get('textFiltered');
+				if (text === null) {
+					text = contentLineItemMMap.get('textRaw');
+				}
+
+				text = mUtils.string.escapeXML(text).replace(this.filterTagRegexp, this.filterTagMatch);
+
+				var contentLineEl = contentLineItemMMap.get('view').el;
+
+				contentLineEl.innerHTML = text || '';
+				mUtils.dom.classDepend(contentLineEl, this.HIDDEN_CLASS, contentLineItemMMap.get('hidden'));
 			}
 
-			text = mUtils.string.escapeXML(text).replace(this.filterTagRegexp, this.filterTagMatch);
-
-			var contentLineEl = contentLineItemMMap.get('view').el;
-
-			contentLineEl.innerHTML = text || '';
-			mUtils.dom.classDepend(contentLineEl, this.HIDDEN_CLASS, contentLineItemMMap.get('hidden'));
-		}
-
-		if (chunkSize > this.CONTENT_OVERFLOW_CHUNK_SIZE) {
-			setTimeout(
-				function ArmadillogCore_contentLineViewListUpdate_contentOverflowChunk() {
-					this.contentLineViewListUpdate(contentLineViewList, chunkIndex + this.CONTENT_OVERFLOW_CHUNK_SIZE);
-				}.bind(this),
-				this.CONTENT_OVERFLOW_DELAY);
-		}
-		else {
-			this.busySet(false, 'contentLineViewListUpdate');
-		}
+			if (chunkSize > this.CONTENT_OVERFLOW_CHUNK_SIZE) {
+				setTimeout(
+					function ArmadillogCore_contentLineViewListUpdate_contentOverflowChunk() {
+						this.contentLineViewListUpdate(contentLineViewList, chunkIndex + this.CONTENT_OVERFLOW_CHUNK_SIZE);
+					}.bind(this),
+					this.CONTENT_OVERFLOW_DELAY);
+			}
+			else {
+				this.busySet(false, 'contentLineViewListUpdate');
+			}
+		}.bind(this));
 
 		return true;
 	},
@@ -1762,30 +1766,32 @@ ArmadillogCore.prototype = {
 	contentLineViewListDelete: function ArmadillogCore_contentLineViewListDelete(contentLineViewList, chunkIndex, chunkSize) {
 		DEBUG && console.log('ArmadillogCore', 'contentLineViewListDelete', arguments);
 
-		this.busySet(true, 'contentLineViewListDelete');
+		requestAnimationFrame(function () {
+			this.busySet(true, 'contentLineViewListDelete');
 
-		chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
-		chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
+			chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
+			chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
 
-		var contentLineIndex, contentLineItemMMap;
+			var contentLineIndex, contentLineItemMMap;
 
-		for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
-			contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
-			contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
+			for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
+				contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
+				contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
 
-			this.contentView.lineListEl.removeChild(contentLineItemMMap.get('view').el);
-		}
+				this.contentView.lineListEl.removeChild(contentLineItemMMap.get('view').el);
+			}
 
-		if (chunkSize > this.CONTENT_OVERFLOW_CHUNK_SIZE) {
-			setTimeout(
-				function ArmadillogCore_contentLineViewListDelete_contentOverflowChunk() {
-					this.contentLineViewListDelete(contentLineViewList, chunkIndex + this.CONTENT_OVERFLOW_CHUNK_SIZE);
-				}.bind(this),
-				this.CONTENT_OVERFLOW_DELAY);
-		}
-		else {
-			this.busySet(false, 'contentLineViewListDelete');
-		}
+			if (chunkSize > this.CONTENT_OVERFLOW_CHUNK_SIZE) {
+				setTimeout(
+					function ArmadillogCore_contentLineViewListDelete_contentOverflowChunk() {
+						this.contentLineViewListDelete(contentLineViewList, chunkIndex + this.CONTENT_OVERFLOW_CHUNK_SIZE);
+					}.bind(this),
+					this.CONTENT_OVERFLOW_DELAY);
+			}
+			else {
+				this.busySet(false, 'contentLineViewListDelete');
+			}
+		}.bind(this));
 
 		return true;
 	},
