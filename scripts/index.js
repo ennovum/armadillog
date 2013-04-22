@@ -66,10 +66,11 @@ require.config({
 
 require(
 	[
+		'ennovum.Environment',
 		'ennovum.Armadillog',
 		'armadillog.Layout'
 	],
-	function (mArmadillog, mLayout) {
+	function (mEnvironment, mArmadillog, mLayout) {
 		try {
 			var config = {
 				'bodyEl': document.querySelector('body'),
@@ -100,6 +101,6 @@ require(
 				'Welcome message');
 		}
 		catch (err) {
-			console && console.error(err.message);
+			console.error(err.message);
 		}
 	});

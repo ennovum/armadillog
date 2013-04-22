@@ -42,7 +42,7 @@ ModelMap.prototype = {
 	 * Initializes instance
 	 */
 	init: function ModelMap_init() {
-		DEBUG && console && console.log('ModelMap', 'init', arguments);
+		DEBUG && console.log('ModelMap', 'init', arguments);
 
 		this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
 		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
@@ -71,7 +71,7 @@ ModelMap.prototype = {
 	 * @param {string} key key of the value to return
 	 */
 	get: function ModelMap_get(key) {
-		DEBUG && console && console.log('ModelMap', 'get', arguments);
+		DEBUG && console.log('ModelMap', 'get', arguments);
 
 		return this.map[key];
 	},
@@ -83,7 +83,7 @@ ModelMap.prototype = {
 	 * @param {mixed} value value to be set
 	 */
 	set: function ModelMap_set(key, value) {
-		DEBUG && console && console.log('ModelMap', 'set', arguments);
+		DEBUG && console.log('ModelMap', 'set', arguments);
 
 		var insertList = [];
 		var updateList = [];
@@ -137,7 +137,7 @@ ModelMap.prototype = {
 	 * @param {string} key key of the value to be deleted
 	 */
 	del: function ModelMap_del(key) {
-		DEBUG && console && console.log('ModelMap', 'del', arguments);
+		DEBUG && console.log('ModelMap', 'del', arguments);
 
 		var deleteList = [];
 
@@ -171,7 +171,7 @@ ModelMap.prototype = {
 	 * @param {string} key key to be checked
 	 */
 	has: function ModelMap_has(key) {
-		DEBUG && console && console.log('ModelMap', 'has', arguments);
+		DEBUG && console.log('ModelMap', 'has', arguments);
 
 		for (var i = 0, l = arguments.length; i < l; i++) {
 			key = '' + arguments[i];
@@ -191,7 +191,7 @@ ModelMap.prototype = {
 	 * @param {mixed} value value to attach
 	 */
 	valueOn: function ModelMap_valueOn(key, value) {
-		DEBUG && console && console.log('ModelMap', 'valueOn', arguments);
+		DEBUG && console.log('ModelMap', 'valueOn', arguments);
 
 		if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
 			value.on(
@@ -223,7 +223,7 @@ ModelMap.prototype = {
 	 * @param {mixed} value value to detach
 	 */
 	valueOff: function ModelMap_valueOff(key, value) {
-		DEBUG && console && console.log('ModelMap', 'valueOff', arguments);
+		DEBUG && console.log('ModelMap', 'valueOff', arguments);
 
 		if (this.valueListenerMap[key]) {
 			value.off(
@@ -248,7 +248,7 @@ ModelMap.prototype = {
 	 * @param {dataList} event data list
 	 */
 	eventAdd: function ModelMap_eventAdd(event, dataList) {
-		DEBUG && console && console.log('ModelMap', 'eventAdd', arguments);
+		DEBUG && console.log('ModelMap', 'eventAdd', arguments);
 
 		this.eventMap[event].push.apply(this.eventMap[event], dataList);
 
@@ -270,7 +270,7 @@ ModelMap.prototype = {
 	 * Returns raw map
 	 */
 	toMap: function ModelList_toMap() {
-		DEBUG && console && console.log('ModelList', 'toMap', arguments);
+		DEBUG && console.log('ModelList', 'toMap', arguments);
 
 		return this.map;
 	},

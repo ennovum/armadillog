@@ -59,7 +59,7 @@ ArmadillogView.prototype = {
 	 * @param {object} config configuration object
 	 */
 	init: function ArmadillogView_init(config) {
-		DEBUG && console && console.log('ArmadillogView', 'init', arguments);
+		DEBUG && console.log('ArmadillogView', 'init', arguments);
 
 		switch (true) {
 			case !this.viewInit():
@@ -74,7 +74,7 @@ ArmadillogView.prototype = {
 	 * Inits view
 	 */
 	viewInit: function ArmadillogView_viewInit() {
-		DEBUG && console && console.log('ArmadillogView', 'viewInit', arguments);
+		DEBUG && console.log('ArmadillogView', 'viewInit', arguments);
 
 		switch (true) {
 			case !this.inputViewInit():
@@ -94,7 +94,7 @@ ArmadillogView.prototype = {
 	 * Inits input view
 	 */
 	inputViewInit: function ArmadillogView_inputViewInit() {
-		DEBUG && console && console.log('ArmadillogView', 'inputViewInit', arguments);
+		DEBUG && console.log('ArmadillogView', 'inputViewInit', arguments);
 
 		this.inputViewTemplate = Handlebars.compile(templateInput);
 
@@ -107,7 +107,7 @@ ArmadillogView.prototype = {
 	 * @param {object} context context object
 	 */
 	inputViewGet: function ArmadillogView_inputViewGet(context) {
-		DEBUG && console && console.log('ArmadillogView', 'inputViewGet', arguments);
+		DEBUG && console.log('ArmadillogView', 'inputViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.inputViewTemplate(context);
@@ -132,7 +132,7 @@ ArmadillogView.prototype = {
 	 * Inits filter view
 	 */
 	filterViewInit: function ArmadillogView_filterViewInit() {
-		DEBUG && console && console.log('ArmadillogView', 'filterViewInit', arguments);
+		DEBUG && console.log('ArmadillogView', 'filterViewInit', arguments);
 
 		this.filterViewTemplate = Handlebars.compile(templateFilter);
 
@@ -145,7 +145,7 @@ ArmadillogView.prototype = {
 	 * @param {object} context context object
 	 */
 	filterViewGet: function ArmadillogView_filterViewGet(context) {
-		DEBUG && console && console.log('ArmadillogView', 'filterViewGet', arguments);
+		DEBUG && console.log('ArmadillogView', 'filterViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.filterViewTemplate(context);
@@ -163,7 +163,7 @@ ArmadillogView.prototype = {
 	 * Inits filter item view
 	 */
 	filterItemViewCreate: function ArmadillogView_filterItemViewCreate() {
-		DEBUG && console && console.log('ArmadillogView', 'filterItemViewCreate', arguments);
+		DEBUG && console.log('ArmadillogView', 'filterItemViewCreate', arguments);
 
 		this.filterItemViewTemplate = Handlebars.compile(templateFilterItem);
 
@@ -176,7 +176,7 @@ ArmadillogView.prototype = {
 	 * @param {object} context context object
 	 */
 	filterItemViewGet: function ArmadillogView_filterItemViewGet(context) {
-		DEBUG && console && console.log('ArmadillogView', 'filterItemViewGet', arguments);
+		DEBUG && console.log('ArmadillogView', 'filterItemViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.filterItemViewTemplate(context);
@@ -222,7 +222,7 @@ ArmadillogView.prototype = {
 	 * Inits examine view
 	 */
 	examineViewInit: function ArmadillogView_examineViewInit() {
-		DEBUG && console && console.log('ArmadillogView', 'examineViewInit', arguments);
+		DEBUG && console.log('ArmadillogView', 'examineViewInit', arguments);
 
 		this.examineViewTemplate = Handlebars.compile(templateExamine);
 
@@ -235,7 +235,7 @@ ArmadillogView.prototype = {
 	 * @param {object} context context object
 	 */
 	examineViewGet: function ArmadillogView_examineViewGet(context) {
-		DEBUG && console && console.log('ArmadillogView', 'examineViewGet', arguments);
+		DEBUG && console.log('ArmadillogView', 'examineViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.examineViewTemplate(context);
@@ -252,7 +252,7 @@ ArmadillogView.prototype = {
 	 * Inits content view
 	 */
 	contentViewInit: function ArmadillogView_contentViewInit() {
-		DEBUG && console && console.log('ArmadillogView', 'contentViewInit', arguments);
+		DEBUG && console.log('ArmadillogView', 'contentViewInit', arguments);
 
 		this.contentViewTemplate = Handlebars.compile(templateContent);
 
@@ -265,7 +265,7 @@ ArmadillogView.prototype = {
 	 * @param {object} context context object
 	 */
 	contentViewGet: function ArmadillogView_contentViewGet(context) {
-		DEBUG && console && console.log('ArmadillogView', 'contentViewGet', arguments);
+		DEBUG && console.log('ArmadillogView', 'contentViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.contentViewTemplate(context);
@@ -280,7 +280,7 @@ ArmadillogView.prototype = {
 	 * Inits content line view
 	 */
 	contentLineItemViewInit: function ArmadillogView_contentLineItemViewInit() {
-		DEBUG && console && console.log('ArmadillogView', 'contentLineItemViewInit', arguments);
+		DEBUG && console.log('ArmadillogView', 'contentLineItemViewInit', arguments);
 
 		this.contentLineItemViewTemplate = Handlebars.compile(templateContentLineItem);
 
@@ -293,7 +293,7 @@ ArmadillogView.prototype = {
 	 * @param {object} context context object
 	 */
 	contentLineItemViewGet: function ArmadillogView_contentLineItemViewGet(context) {
-		DEBUG && console && console.log('ArmadillogView', 'contentLineItemViewGet', arguments);
+		DEBUG && console.log('ArmadillogView', 'contentLineItemViewGet', arguments);
 
 		var containerEl = mUtils.dom.createElement('div');
 		containerEl.innerHTML = this.contentLineItemViewTemplate(context);

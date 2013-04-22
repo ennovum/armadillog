@@ -40,7 +40,7 @@ Armadillog.prototype = {
 	 * @param {object} config configuration object
 	 */
 	init: function Armadillog_init(config) {
-		DEBUG && console && console.log('Armadillog', 'init', arguments);
+		DEBUG && console.log('Armadillog', 'init', arguments);
 
 		switch (true) {
 			case !this.browserCheck():
@@ -57,7 +57,7 @@ Armadillog.prototype = {
 	 *
 	 */
 	browserCheck: function () {
-		DEBUG && console && console.log('Armadillog', 'browserCheck', arguments);
+		DEBUG && console.log('Armadillog', 'browserCheck', arguments);
 
 		switch (true) {
 			case !document.querySelector:
@@ -67,7 +67,7 @@ Armadillog.prototype = {
 			case !window.Blob:
 			case !window.Array.prototype.some:
 			case !window.Worker:
-				console && console.error('Armadillog', 'browserCheck', 'unsupported browser');
+				console.error('Armadillog', 'browserCheck', 'unsupported browser');
 				alert('You are using an uncompatible browser!');
 				return false;
 				break;
@@ -82,12 +82,12 @@ Armadillog.prototype = {
 	 * @param {object} config configuration object
 	 */
 	configSet: function (config) {
-		DEBUG && console && console.log('Armadillog', 'configSet', arguments);
+		DEBUG && console.log('Armadillog', 'configSet', arguments);
 
 		switch (false) {
 			case !!config:
 			case typeof config === 'object':
-				console && console.error('Armadillog', 'configSet', 'invalid input');
+				console.error('Armadillog', 'configSet', 'invalid input');
 				return false;
 		};
 
@@ -122,7 +122,7 @@ Armadillog.prototype = {
 	 * Initializes data
 	 */
 	dataInit: function Armadillog_dataInit() {
-		DEBUG && console && console.log('Armadillog', 'dataInit', arguments);
+		DEBUG && console.log('Armadillog', 'dataInit', arguments);
 
 		this.armadillogCore = new mArmadillogCore.ArmadillogCore(this.config);
 
@@ -133,7 +133,7 @@ Armadillog.prototype = {
 	 * Clears content
 	 */
 	contentClear: function Armadillog_contentClear() {
-		DEBUG && console && console.log('Armadillog', 'contentClear', arguments);
+		DEBUG && console.log('Armadillog', 'contentClear', arguments);
 
 		this.armadillogCore.contentClear();
 
@@ -146,7 +146,7 @@ Armadillog.prototype = {
 	 * @param {string} text a piece of source text
 	 */
 	contentTextSet: function Armadillog_contentTextSet(text, label) {
-		DEBUG && console && console.log('Armadillog', 'contentTextSet', arguments);
+		DEBUG && console.log('Armadillog', 'contentTextSet', arguments);
 
 		this.armadillogCore.contentTextSet(text, label);
 

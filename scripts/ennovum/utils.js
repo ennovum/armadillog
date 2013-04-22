@@ -27,13 +27,13 @@ var oUtilsObj = {
 	 *
 	 */
 	implement: function Utils_obj_implement(base, instance, interfaceList) {
-		DEBUG && console && console.log('oUtilsObj', 'implement', arguments);
+		DEBUG && console.log('oUtilsObj', 'implement', arguments);
 
 		switch (false) {
 			case base && typeof base === 'object':
 			case instance && typeof instance === 'object':
 			case interfaceList && typeof interfaceList === 'object':
-				console && console.error('oUtilsObj', 'implement', 'error: invalid input');
+				console.error('oUtilsObj', 'implement', 'error: invalid input');
 				return;
 		};
 
@@ -54,12 +54,12 @@ var oUtilsObj = {
 	 *
 	 */
 	mixin: function Utils_obj_mixin(base, mixin) {
-		DEBUG && console && console.log('oUtilsObj', 'mixin', arguments);
+		DEBUG && console.log('oUtilsObj', 'mixin', arguments);
 
 		switch (false) {
 			case base && typeof base === 'object':
 			case mixin && typeof mixin === 'object':
-				console && console.error('oUtilsObj', 'mixin', 'error: invalid input');
+				console.error('oUtilsObj', 'mixin', 'error: invalid input');
 				return;
 		};
 
@@ -105,13 +105,13 @@ var oUtilsDom = {
 	 *
 	 */
 	createElement: function Utils_dom_createElement(tagName, attributes, textContent) {
-		DEBUG && console && console.log('oUtilsDom', 'createElement', arguments);
+		DEBUG && console.log('oUtilsDom', 'createElement', arguments);
 
 		switch (false) {
 			case typeof tagName === 'string':
 			case !attributes || typeof attributes === 'object':
 			case !textContent || typeof textContent === 'string':
-				console && console.error('oUtilsDom', 'createElement', 'invalid input');
+				console.error('oUtilsDom', 'createElement', 'invalid input');
 				return;
 		};
 
@@ -134,7 +134,7 @@ var oUtilsDom = {
 	 *
 	 */
 	classContains: function Utils_dom_classContains(el) {
-		DEBUG && console && console.log('oUtilsDom', 'classContains', arguments);
+		DEBUG && console.log('oUtilsDom', 'classContains', arguments);
 
 		if (!el) {
 			return;
@@ -161,7 +161,7 @@ var oUtilsDom = {
 	 *
 	 */
 	classAdd: function Utils_dom_classAdd(el) {
-		DEBUG && console && console.log('oUtilsDom', 'classAdd', arguments);
+		DEBUG && console.log('oUtilsDom', 'classAdd', arguments);
 
 		if (!el) {
 			return;
@@ -193,7 +193,7 @@ var oUtilsDom = {
 	 *
 	 */
 	classRemove: function Utils_dom_classRemove(el) {
-		DEBUG && console && console.log('oUtilsDom', 'classRemove', arguments);
+		DEBUG && console.log('oUtilsDom', 'classRemove', arguments);
 
 		if (!el) {
 			return;
@@ -225,7 +225,7 @@ var oUtilsDom = {
 	 *
 	 */
 	classToggle: function Utils_dom_classToggle(el, className) {
-		DEBUG && console && console.log('oUtilsDom', 'classToggle', arguments);
+		DEBUG && console.log('oUtilsDom', 'classToggle', arguments);
 
 		if (!el) {
 			return;
@@ -255,7 +255,7 @@ var oUtilsDom = {
 	 *
 	 */
 	classDepend: function Utils_dom_classToggle(el, className, condition) {
-		DEBUG && console && console.log('oUtilsDom', 'classToggle', arguments);
+		DEBUG && console.log('oUtilsDom', 'classToggle', arguments);
 
 		if (!el) {
 			return;
@@ -275,11 +275,11 @@ var oUtilsDom = {
 	 *
 	 */
 	classNth: function Utils_dom_classNth(num) {
-		DEBUG && console && console.log('oUtilsDom', 'classNth', arguments);
+		DEBUG && console.log('oUtilsDom', 'classNth', arguments);
 
 		switch (false) {
 			case typeof num === 'number':
-				console && console.error('oUtilsDom', 'classNth', 'invalid input');
+				console.error('oUtilsDom', 'classNth', 'invalid input');
 				return;
 		};
 
@@ -304,11 +304,11 @@ var oUtilsDom = {
 	 *
 	 */
 	classEvenOdd: function Utils_dom_classEvenOdd(num) {
-		DEBUG && console && console.log('oUtilsDom', 'classEvenOdd', arguments);
+		DEBUG && console.log('oUtilsDom', 'classEvenOdd', arguments);
 
 		switch (false) {
 			case typeof num === 'number':
-				console && console.error('oUtilsDom', 'classEvenOdd', 'invalid input');
+				console.error('oUtilsDom', 'classEvenOdd', 'invalid input');
 				return;
 		};
 
@@ -319,7 +319,7 @@ var oUtilsDom = {
 	 *
 	 */
 	triggerEvent: function Utils_dom_triggerEvent(el, eventType) {
-		DEBUG && console && console.log('oUtilsDom', 'triggerEvent', arguments);
+		DEBUG && console.log('oUtilsDom', 'triggerEvent', arguments);
 
 		if (!el) {
 			return;
@@ -357,7 +357,7 @@ var oUtilsString = {
 	 *
 	 */
 	trim: function Utils_string_trim(subject) {
-		DEBUG && console && console.log('oUtilsString', 'trim', arguments);
+		DEBUG && console.log('oUtilsString', 'trim', arguments);
 
 		return subject.replace(/(^\s|\s$)/g, '');
 	},
@@ -375,7 +375,7 @@ var oUtilsString = {
      *
      */
     escapeXML: function Utils_string_escapeXML(subject) {
-        DEBUG && console && console.log('oUtilsString', 'escapeXML', arguments);
+        DEBUG && console.log('oUtilsString', 'escapeXML', arguments);
 
         return subject.replace(/[<>"'&]{1}/g, function Utils_string_escapeXML_match(match) {
         	return this.ESCAPE_XML_ENTITIES[match];
@@ -400,7 +400,7 @@ var oUtilsRegexp = {
      *
      */
     escape: function Utils_regexp_escape(subject) {
-        DEBUG && console && console.log('oUtilsRegexp', 'escape', arguments);
+        DEBUG && console.log('oUtilsRegexp', 'escape', arguments);
 
         return subject.replace(/[\[\]\{\}\?\+\*\.\\\|\(\)\^\$]/g, '\\$&');
     }
@@ -423,7 +423,7 @@ var oUtilsFunc = {
      *
      */
     async: function Utils_func_async(callback) {
-        DEBUG && console && console.log('oUtilsFunc', 'async', arguments);
+        DEBUG && console.log('oUtilsFunc', 'async', arguments);
 
 		setTimeout(callback, 0);
 
@@ -451,7 +451,7 @@ var oUtilsUrl = {
      *
      */
     validate: function Utils_url_validate(url) {
-        DEBUG && console && console.log('oUtilsUrl', 'validate', arguments);
+        DEBUG && console.log('oUtilsUrl', 'validate', arguments);
 
 		var match = url.match(this.URL_PARTS_REGEXP);
 

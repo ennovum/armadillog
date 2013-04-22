@@ -16,7 +16,7 @@ if (!Function.prototype.bind) {
 			// closest thing possible to the ECMAScript 5 internal IsCallable function
 			throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
 		}
- 
+
 		var aArgs = Array.prototype.slice.call(arguments, 1),
 			fToBind = this,
 			fNOP = function () {},
@@ -25,17 +25,28 @@ if (!Function.prototype.bind) {
 					this instanceof fNOP && oThis ? this : oThis,
 					aArgs.concat(Array.prototype.slice.call(arguments)));
 			};
- 
+
 		fNOP.prototype = this.prototype;
 		fBound.prototype = new fNOP();
- 
+
 		return fBound;
 	};
 }
 
-//
+// console
 if (!window.console) {
-	window.console = null;
+	window.console = {
+		'console': window.console,
+		'log': function console_log() {
+			this.console && this.console.log.apply(this.console, arguments);
+		},
+		'warn': function console_warn() {
+			this.console && this.console.warn.apply(this.console, arguments);
+		},
+		'error': function console_error() {
+			this.console && this.console.error.apply(this.console, arguments);
+		}
+	};
 }
 
 // BlobBuilder

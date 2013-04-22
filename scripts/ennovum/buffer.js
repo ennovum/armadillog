@@ -45,7 +45,7 @@ Buffer.prototype = {
 	 * Initializes instance
 	 */
 	init: function Buffer_init() {
-		DEBUG && console && console.log('Buffer', 'init', arguments);
+		DEBUG && console.log('Buffer', 'init', arguments);
 
 		this.list = [];
 		this.firstIndex = 0;
@@ -58,7 +58,7 @@ Buffer.prototype = {
 	 * Sets the value at the index
 	 */
 	setAt: function Buffer_setAt(outdex, value) {
-		DEBUG && console && console.log('Buffer', 'setAt', arguments);
+		DEBUG && console.log('Buffer', 'setAt', arguments);
 
 		var index = this.firstIndex + outdex;
 
@@ -90,7 +90,7 @@ Buffer.prototype = {
 	 * Gets a value at the index
 	 */
 	getAt: function Buffer_getAt(outdex) {
-		DEBUG && console && console.log('Buffer', 'getAt', arguments);
+		DEBUG && console.log('Buffer', 'getAt', arguments);
 
 		var index = this.firstIndex + outdex;
 
@@ -106,7 +106,7 @@ Buffer.prototype = {
 	 * Deletes the value at the index
 	 */
 	delAt: function Buffer_delAt(outdex) {
-		DEBUG && console && console.log('Buffer', 'delAt', arguments);
+		DEBUG && console.log('Buffer', 'delAt', arguments);
 
 		var index = this.firstIndex + outdex;
 
@@ -124,7 +124,7 @@ Buffer.prototype = {
 	 * Pushes to the buffer
 	 */
 	push: function Buffer_push(value) {
-		DEBUG && console && console.log('Buffer', 'push', arguments);
+		DEBUG && console.log('Buffer', 'push', arguments);
 
 		var outdex;
 
@@ -141,7 +141,7 @@ Buffer.prototype = {
 	 * Pops from the index
 	 */
 	pop: function Buffer_pop() {
-		DEBUG && console && console.log('Buffer', 'pop', arguments);
+		DEBUG && console.log('Buffer', 'pop', arguments);
 
 		var outdex = this.lastIndex - this.firstIndex;
 		var value = this.getAt(outdex);
@@ -155,7 +155,7 @@ Buffer.prototype = {
 	 * Unshifts to the index
 	 */
 	unshift: function Buffer_unshift(value) {
-		DEBUG && console && console.log('Buffer', 'unshift', arguments);
+		DEBUG && console.log('Buffer', 'unshift', arguments);
 
 		var outdex;
 
@@ -172,7 +172,7 @@ Buffer.prototype = {
 	 * Shifts from the index
 	 */
 	shift: function Buffer_shift() {
-		DEBUG && console && console.log('Buffer', 'shift', arguments);
+		DEBUG && console.log('Buffer', 'shift', arguments);
 
 		var outdex = 0;
 		var value = this.getAt(outdex);
@@ -186,7 +186,7 @@ Buffer.prototype = {
 	 * Splices buffer
 	 */
 	splice: function Buffer_indexOf(outdex, count, value) {
-		DEBUG && console && console.log('Buffer', 'splice', arguments);
+		DEBUG && console.log('Buffer', 'splice', arguments);
 
 		var index = this.firstIndex + outdex;
 
@@ -225,7 +225,7 @@ Buffer.prototype = {
 	 * Returns index of element or -1
 	 */
 	indexOf: function Buffer_indexOf(value) {
-		DEBUG && console && console.log('Buffer', 'indexOf', arguments);
+		DEBUG && console.log('Buffer', 'indexOf', arguments);
 
 		var index = this.list.indexOf(value);
 
@@ -241,7 +241,7 @@ Buffer.prototype = {
 	 * Returns length of the buffer
 	 */
 	length: function Buffer_length() {
-		DEBUG && console && console.log('Buffer', 'length', arguments);
+		DEBUG && console.log('Buffer', 'length', arguments);
 
 		return this.lastIndex - this.firstIndex + 1;
 	},

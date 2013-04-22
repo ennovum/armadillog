@@ -37,7 +37,7 @@ WorkerDownloader.prototype = {
 	 * Initializes instance
 	 */
 	init: function WorkerDownloader_init(config) {
-		DEBUG && console && console.log('WorkerDownloader', 'init', arguments);
+		DEBUG && console.log('WorkerDownloader', 'init', arguments);
 
 		this.callback = function (data, success, failure) {
 			try {

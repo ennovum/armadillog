@@ -71,7 +71,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} config configuration object
 	 */
 	init: function ArmadillogCore_init(config) {
-		DEBUG && console && console.log('ArmadillogCore', 'init', arguments);
+		DEBUG && console.log('ArmadillogCore', 'init', arguments);
 
 		switch (true) {
 			case !this.browserCheck():
@@ -91,7 +91,7 @@ ArmadillogCore.prototype = {
 	 *
 	 */
 	browserCheck: function ArmadillogCore_browserCheck() {
-		DEBUG && console && console.log('ArmadillogCore', 'browserCheck', arguments);
+		DEBUG && console.log('ArmadillogCore', 'browserCheck', arguments);
 
 		switch (true) {
 			case !document.querySelector:
@@ -103,7 +103,7 @@ ArmadillogCore.prototype = {
 			case !window.Worker:
 			case !window.URL || !window.URL.createObjectURL:
 			case !window.localStorage:
-				console && console.error('ArmadillogCore', 'browserCheck', 'unsupported browser');
+				console.error('ArmadillogCore', 'browserCheck', 'unsupported browser');
 				alert('You are using an uncompatible browser!');
 				return false;
 				break;
@@ -118,12 +118,12 @@ ArmadillogCore.prototype = {
 	 * @param {object} config configuration object
 	 */
 	configSet: function ArmadillogCore_configSet(config) {
-		DEBUG && console && console.log('ArmadillogCore', 'configSet', arguments);
+		DEBUG && console.log('ArmadillogCore', 'configSet', arguments);
 
 		switch (false) {
 			case !!config:
 			case typeof config === 'object':
-				console && console.error('ArmadillogCore', 'configSet', 'invalid input');
+				console.error('ArmadillogCore', 'configSet', 'invalid input');
 				return false;
 		};
 
@@ -144,7 +144,7 @@ ArmadillogCore.prototype = {
 	 * Initializes data
 	 */
 	dataInit: function ArmadillogCore_dataInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'dataInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'dataInit', arguments);
 
 		switch (true) {
 			case !this.inputDataInit():
@@ -163,7 +163,7 @@ ArmadillogCore.prototype = {
 	 * Initializes view
 	 */
 	viewInit: function ArmadillogCore_viewInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'viewInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'viewInit', arguments);
 
 		this.armadillogView = new mArmadillogView.ArmadillogView();
 
@@ -185,7 +185,7 @@ ArmadillogCore.prototype = {
 	 * Initializes UI
 	 */
 	uiInit: function ArmadillogCore_uiInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'uiInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'uiInit', arguments);
 
 		switch (true) {
 			case !this.inputUiInit():
@@ -203,7 +203,7 @@ ArmadillogCore.prototype = {
 	 * Initializes storage
 	 */
 	storageInit: function ArmadillogCore_storageInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'storageInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'storageInit', arguments);
 
 		switch (true) {
 			case !this.filterStorageInit():
@@ -218,7 +218,7 @@ ArmadillogCore.prototype = {
 	 * Initializes input data
 	 */
 	inputDataInit: function ArmadillogCore_inputDataInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'inputDataInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'inputDataInit', arguments);
 
 		// nothing
 
@@ -229,11 +229,11 @@ ArmadillogCore.prototype = {
 	 * Creates input view structure
 	 */
 	inputViewCreate: function ArmadillogCore_inputViewCreate() {
-		DEBUG && console && console.log('ArmadillogCore', 'inputViewCreate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'inputViewCreate', arguments);
 
 		this.inputBoxEl = this.config.inputBoxEl;
 		if (!this.inputBoxEl) {
-			console && console.error('ArmadillogCore', 'inputViewCreate', 'invalid inputBoxEl');
+			console.error('ArmadillogCore', 'inputViewCreate', 'invalid inputBoxEl');
 			return false;
 		};
 
@@ -250,7 +250,7 @@ ArmadillogCore.prototype = {
 	 * Initializes input UI
 	 */
 	inputUiInit: function ArmadillogCore_inputUiInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'inputUiInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'inputUiInit', arguments);
 
 		this.inputView.clearButtonEl.addEventListener(
 			'click',
@@ -333,7 +333,7 @@ ArmadillogCore.prototype = {
 	 * Initializes filter data
 	 */
 	filterDataInit: function ArmadillogCore_filterDataInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'filterDataInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterDataInit', arguments);
 
 		this.filterItemIdSeq = 1;
 
@@ -386,11 +386,11 @@ ArmadillogCore.prototype = {
 	 * Creates filter view structure
 	 */
 	filterViewCreate: function ArmadillogCore_filterViewCreate() {
-		DEBUG && console && console.log('ArmadillogCore', 'filterViewCreate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterViewCreate', arguments);
 
 		this.filterBoxEl = this.config.filterBoxEl;
 		if (!this.filterBoxEl) {
-			console && console.error('ArmadillogCore', 'filterViewCreate', 'invalid filterBoxEl');
+			console.error('ArmadillogCore', 'filterViewCreate', 'invalid filterBoxEl');
 			return false;
 		};
 
@@ -405,7 +405,7 @@ ArmadillogCore.prototype = {
 	 * Initializes filter UI
 	 */
 	filterUiInit: function ArmadillogCore_filterUiInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'filterUiInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterUiInit', arguments);
 
 		this.filterView.clearButtonEl.addEventListener(
 			'click',
@@ -523,7 +523,7 @@ ArmadillogCore.prototype = {
 	 * Initializes filter storage
 	 */
 	filterStorageInit: function ArmadillogCore_filterStorageInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'filterStorageInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterStorageInit', arguments);
 
 		this.filterStorageLoad();
 
@@ -536,7 +536,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} data filter item data
 	 */
 	filterItemCreate: function ArmadillogCore_filterItemCreate(data) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterItemCreate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterItemCreate', arguments);
 
 		if (!data || typeof data !== 'object') {
 			data = {};
@@ -568,7 +568,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} filterItemMMap filter item data
 	 */
 	filterItemViewCreate: function ArmadillogCore_filterItemViewCreate(filterItemMMap) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterItemViewCreate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterItemViewCreate', arguments);
 
 		return this.armadillogView.filterItemViewGet({
 			'id': filterItemMMap.get('id'),
@@ -583,7 +583,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} filterItemMMap filter item data
 	 */
 	filterItemRegexpCreate: function ArmadillogCore_filterItemRegexpCreate(filterItemMMap) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterItemRegexpCreate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterItemRegexpCreate', arguments);
 
 		var regexp = null;
 		var filterItemValue = filterItemMMap.get('value');
@@ -621,7 +621,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} filterItemMMap filter item data
 	 */
 	filterItemUiInit: function ArmadillogCore_filterItemUiInit(filterItemMMap) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterItemUiInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterItemUiInit', arguments);
 
 		filterItemMMap.get('view').moveUpEl.addEventListener(
 			'click',
@@ -673,7 +673,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} filterItemMMap filter item data
 	 */
 	filterItemMoveUp: function ArmadillogCore_filterItemMoveUp(filterItemMMap) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterItemMoveUp', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterItemMoveUp', arguments);
 
 		var filterItemIdx = this.filterMList.indexOf(filterItemMMap);
 
@@ -695,7 +695,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} filterItemMMap filter item data
 	 */
 	filterItemMoveDown: function ArmadillogCore_filterItemMoveDown(filterItemMMap) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterItemMoveDown', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterItemMoveDown', arguments);
 
 		var filterItemIdx = this.filterMList.indexOf(filterItemMMap);
 
@@ -717,7 +717,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} filterItemMMap filter item data
 	 */
 	filterItemRemove: function ArmadillogCore_filterItemRemove(filterItemMMap) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterItemRemove', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterItemRemove', arguments);
 
 		this.filterMList.splice(this.filterMList.indexOf(filterItemMMap), 1);
 
@@ -730,7 +730,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} filterItemMMap filter item data
 	 */
 	filterClear: function ArmadillogCore_filterClear() {
-		DEBUG && console && console.log('ArmadillogCore', 'filterClear', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterClear', arguments);
 
 		this.filterMList.queue('filter-clear');
 
@@ -747,7 +747,7 @@ ArmadillogCore.prototype = {
 	 * Submits the filter list
 	 */
 	filterSubmit: function ArmadillogCore_filterSubmit() {
-		DEBUG && console && console.log('ArmadillogCore', 'filterSubmit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterSubmit', arguments);
 
 		var filterItemMMap;
 
@@ -807,7 +807,7 @@ ArmadillogCore.prototype = {
 	 * @param {array} filterDataList model data list
 	 */
 	filterViewListInsert: function ArmadillogCore_filterViewListInsert(filterDataList) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterViewListInsert', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterViewListInsert', arguments);
 
 		this.filterViewListUpdate(filterDataList);
 
@@ -833,7 +833,7 @@ ArmadillogCore.prototype = {
 	 * @param {array} filterDataList model data list
 	 */
 	filterViewListUpdate: function ArmadillogCore_filterViewListUpdate(filterDataList) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterViewListUpdate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterViewListUpdate', arguments);
 
 		var filterIndex,
 			filterItemMMap,
@@ -891,7 +891,7 @@ ArmadillogCore.prototype = {
 	 * @param {array} filterDataList model data list
 	 */
 	filterViewListDelete: function ArmadillogCore_filterViewListDelete(filterDataList) {
-		DEBUG && console && console.log('ArmadillogCore', 'filterViewListDelete', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterViewListDelete', arguments);
 
 		var filterIndex,
 			filterItemMMap;
@@ -914,7 +914,7 @@ ArmadillogCore.prototype = {
 	 *
 	 */
 	filterStorageLoad: function ArmadillogCore_filterStorageLoad() {
-		DEBUG && console && console.log('ArmadillogCore', 'filterStorageLoad', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterStorageLoad', arguments);
 
 		var storageFilterList = [];
 		var filterItemMMap;
@@ -942,7 +942,7 @@ ArmadillogCore.prototype = {
 	 *
 	 */
 	filterStorageSave: function ArmadillogCore_filterStorageSave() {
-		DEBUG && console && console.log('ArmadillogCore', 'filterStorageSave', arguments);
+		DEBUG && console.log('ArmadillogCore', 'filterStorageSave', arguments);
 
 		var storageFilterList = [];
 		var filterItemMMap;
@@ -972,7 +972,7 @@ ArmadillogCore.prototype = {
 	 * Initializes examine data
 	 */
 	examineDataInit: function ArmadillogCore_examineDataInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'examineDataInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'examineDataInit', arguments);
 
 		// nothing
 
@@ -983,11 +983,11 @@ ArmadillogCore.prototype = {
 	 * Creates examine view structure
 	 */
 	examineViewCreate: function ArmadillogCore_examineViewCreate() {
-		DEBUG && console && console.log('ArmadillogCore', 'examineViewCreate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'examineViewCreate', arguments);
 
 		this.examineBoxEl = this.config.examineBoxEl;
 		if (!this.examineBoxEl) {
-			console && console.error('ArmadillogCore', 'examineViewCreate', 'invalid examineBoxEl');
+			console.error('ArmadillogCore', 'examineViewCreate', 'invalid examineBoxEl');
 			return false;
 		};
 
@@ -1002,7 +1002,7 @@ ArmadillogCore.prototype = {
 	 * Initializes examine UI
 	 */
 	examineUiInit: function ArmadillogCore_examineUiInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'examineUiInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'examineUiInit', arguments);
 
 		this.examineView.rawContentEl.addEventListener(
 			'keyup',
@@ -1030,7 +1030,7 @@ ArmadillogCore.prototype = {
 	 * @param {string} textFiltered examine filtered text
 	 */
 	examineContentSet: function ArmadillogCore_examineContentSet(textRaw, textFiltered) {
-		DEBUG && console && console.log('ArmadillogCore', 'examineContentSet', arguments);
+		DEBUG && console.log('ArmadillogCore', 'examineContentSet', arguments);
 
 		this.examineView.rawContentEl.innerHTML = mUtils.string.escapeXML(textRaw);
 		this.examineView.filteredContentEl.innerHTML = mUtils.string.escapeXML(textFiltered).replace(this.filterTagRegexp, this.filterTagMatch);
@@ -1042,7 +1042,7 @@ ArmadillogCore.prototype = {
 	 * Clears examine content
 	 */
 	examineContentClear: function ArmadillogCore_examineContentClear() {
-		DEBUG && console && console.log('ArmadillogCore', 'examineContentClear', arguments);
+		DEBUG && console.log('ArmadillogCore', 'examineContentClear', arguments);
 
 		this.examineView.rawContentEl.innerHTML = '';
 		this.examineView.filteredContentEl.innerHTML = '';
@@ -1054,7 +1054,7 @@ ArmadillogCore.prototype = {
 	 * Initializes content data
 	 */
 	contentDataInit: function ArmadillogCore_contentDataInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentDataInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentDataInit', arguments);
 
 		this.contentTailing = false;
 
@@ -1114,11 +1114,11 @@ ArmadillogCore.prototype = {
 	 * Creates content view structure
 	 */
 	contentViewCreate: function ArmadillogCore_contentViewCreate() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentViewCreate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentViewCreate', arguments);
 
 		this.contentBoxEl = this.config.contentBoxEl;
 		if (!this.contentBoxEl) {
-			console && console.error('ArmadillogCore', 'contentViewCreate', 'invalid contentBoxEl');
+			console.error('ArmadillogCore', 'contentViewCreate', 'invalid contentBoxEl');
 			return false;
 		};
 
@@ -1135,7 +1135,7 @@ ArmadillogCore.prototype = {
 	 * Initializes content UI
 	 */
 	contentUiInit: function ArmadillogCore_contentUiInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentUiInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentUiInit', arguments);
 
 		window.addEventListener(
 			'load',
@@ -1326,7 +1326,7 @@ ArmadillogCore.prototype = {
 	 * Clears content
 	 */
 	contentClear: function ArmadillogCore_contentClear() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentClear', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentClear', arguments);
 
 		this.contentFile = null;
 		this.contentFileUpdateUnschedule();
@@ -1349,7 +1349,7 @@ ArmadillogCore.prototype = {
 	 * @param {string} label content's label
 	 */
 	contentFileSet: function ArmadillogCore_contentFileSet(file, label) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentFileSet', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentFileSet', arguments);
 
 		this.contentFile = file;
 
@@ -1374,7 +1374,7 @@ ArmadillogCore.prototype = {
 	 * Updates the content file
 	 */
 	contentFileUpdate: function ArmadillogCore_contentFileUpdate() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentFileUpdate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentFileUpdate', arguments);
 
 		if (!this.contentFile || this.busy || this.contentLineMList.queued()) {
 			return;
@@ -1404,7 +1404,7 @@ ArmadillogCore.prototype = {
 	 * Schedules a content file update
 	 */
 	contentFileUpdateSchedule: function ArmadillogCore_contentFileUpdateSchedule() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentFileUpdateSchedule', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentFileUpdateSchedule', arguments);
 
 		if (this.CONTENT_FILE_UPDATE_DELAY > 0) {
 			this.contentFileUpdateTimeout = window.setTimeout(
@@ -1419,7 +1419,7 @@ ArmadillogCore.prototype = {
 	 * Unschedules a content file update
 	 */
 	contentFileUpdateUnschedule: function ArmadillogCore_contentFileUpdateUnschedule() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentFileUpdateUnschedule', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentFileUpdateUnschedule', arguments);
 
 		if (this.contentFileUpdateTimeout) {
 			window.clearTimeout(this.contentFileUpdateTimeout);
@@ -1436,7 +1436,7 @@ ArmadillogCore.prototype = {
 	 * @param {string} label content's label
 	 */
 	contentUrlSet: function ArmadillogCore_contentUrlSet(url, label) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentUrlSet', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentUrlSet', arguments);
 
 		url = mUtils.url.validate(url);
 		if (!url) {
@@ -1466,7 +1466,7 @@ ArmadillogCore.prototype = {
 	 * Updates the content url
 	 */
 	contentUrlUpdate: function ArmadillogCore_contentUrlUpdate() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentUrlUpdate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentUrlUpdate', arguments);
 
 		if (!this.contentUrl || this.busy || this.contentLineMList.queued()) {
 			return;
@@ -1494,7 +1494,7 @@ ArmadillogCore.prototype = {
 	 * Schedules a content url update
 	 */
 	contentUrlUpdateSchedule: function ArmadillogCore_contentUrlUpdateSchedule() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentUrlUpdateSchedule', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentUrlUpdateSchedule', arguments);
 
 		if (this.CONTENT_URL_UPDATE_DELAY > 0) {
 			this.contentUrlUpdateTimeout = window.setTimeout(
@@ -1509,7 +1509,7 @@ ArmadillogCore.prototype = {
 	 * Unschedules a content url update
 	 */
 	contentUrlUpdateUnschedule: function ArmadillogCore_contentUrlUpdateUnschedule() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentUrlUpdateUnschedule', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentUrlUpdateUnschedule', arguments);
 
 		if (this.contentUrlUpdateTimeout) {
 			window.clearTimeout(this.contentUrlUpdateTimeout);
@@ -1526,7 +1526,7 @@ ArmadillogCore.prototype = {
 	 * @param {string} label content's label
 	 */
 	contentTextSet: function ArmadillogCore_contentTextSet(text, label) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentTextSet', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentTextSet', arguments);
 
 		this.contentLineMList.queue('content-text-set');
 
@@ -1569,7 +1569,7 @@ ArmadillogCore.prototype = {
 	 * @param {string} text a piece of content
 	 */
 	contentTextUpdate: function ArmadillogCore_contentTextUpdate(text) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentTextUpdate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentTextUpdate', arguments);
 
 		this.contentLineMList.queue('content-text-update');
 
@@ -1633,7 +1633,7 @@ ArmadillogCore.prototype = {
 	 * Applies filters to content
 	 */
 	contentFilterApply: function ArmadillogCore_contentFilterApply() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentFilterApply', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentFilterApply', arguments);
 
 		this.contentLineListFilter(this.contentLineMList.toArray());
 
@@ -1647,7 +1647,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} contentLineItemMMap content line model object
 	 */
 	contentLineItemViewCreate: function ArmadillogCore_contentLineItemViewCreate(contentLineIndex, contentLineItemMMap) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentLineItemViewCreate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentLineItemViewCreate', arguments);
 
 		return this.armadillogView.contentLineItemViewGet({
 			'number': contentLineIndex + 1
@@ -1662,7 +1662,7 @@ ArmadillogCore.prototype = {
 	 * @param {number} chunkSize chunk size
 	 */
 	contentLineViewListInsert: function ArmadillogCore_contentLineViewListInsert(contentLineViewList, chunkIndex, chunkSize) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentLineViewListInsert', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentLineViewListInsert', arguments);
 
 		this.busySet(true, 'contentLineViewListInsert');
 
@@ -1712,7 +1712,7 @@ ArmadillogCore.prototype = {
 	 * @param {number} chunkSize chunk size
 	 */
 	contentLineViewListUpdate: function ArmadillogCore_contentLineViewListUpdate(contentLineViewList, chunkIndex, chunkSize) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentLineViewListUpdate', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentLineViewListUpdate', arguments);
 
 		this.busySet(true, 'contentLineViewListUpdate');
 
@@ -1760,7 +1760,7 @@ ArmadillogCore.prototype = {
 	 * @param {number} chunkSize chunk size
 	 */
 	contentLineViewListDelete: function ArmadillogCore_contentLineViewListDelete(contentLineViewList, chunkIndex, chunkSize) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentLineViewListDelete', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentLineViewListDelete', arguments);
 
 		this.busySet(true, 'contentLineViewListDelete');
 
@@ -1796,7 +1796,7 @@ ArmadillogCore.prototype = {
 	 * @param {object} contentLineList content line list model object
 	 */
 	contentLineListFilter: function ArmadillogCore_contentLineListFilter(contentLineList) {
-		DEBUG && console && console.log('ArmadillogCore', 'contentLineListFilter', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentLineListFilter', arguments);
 
 		var contentLineItemMMap;
 		var textFiltered;
@@ -1878,7 +1878,7 @@ ArmadillogCore.prototype = {
 	 * Checks whether to do content tailing
 	 */
 	contentTailingCheck: function ArmadillogCore_contentTailingCheck() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentTailingCheck', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentTailingCheck', arguments);
 
 		if (this.contentScrollEl === window) {
 			this.contentTailing = window.scrollY >= window.scrollMaxY
@@ -1894,7 +1894,7 @@ ArmadillogCore.prototype = {
 	 * Does content tailing
 	 */
 	contentTailingDo: function ArmadillogCore_contentTailingDo() {
-		DEBUG && console && console.log('ArmadillogCore', 'contentTailingDo', arguments);
+		DEBUG && console.log('ArmadillogCore', 'contentTailingDo', arguments);
 
 		if (this.contentTailing) {
 			if (this.contentScrollEl === window) {
@@ -1912,7 +1912,7 @@ ArmadillogCore.prototype = {
 	 * Initializes busy data
 	 */
 	busyDataInit: function ArmadillogCore_busyDataInit() {
-		DEBUG && console && console.log('ArmadillogCore', 'busyDataInit', arguments);
+		DEBUG && console.log('ArmadillogCore', 'busyDataInit', arguments);
 
 		this.busy = false;
 		this.busyTaskList = [];
@@ -1926,7 +1926,7 @@ ArmadillogCore.prototype = {
 	 * @param {boolean} busy busy flag value
 	 */
 	busySet: function ArmadillogCore_busySet(busy, task) {
-		DEBUG && console && console.log('ArmadillogCore', 'busySet', arguments);
+		DEBUG && console.log('ArmadillogCore', 'busySet', arguments);
 
 		var taskIndex = this.busyTaskList.indexOf(task);
 

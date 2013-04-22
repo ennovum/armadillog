@@ -38,7 +38,7 @@ Queue.prototype = {
 	 * Initializes instance
 	 */
 	init: function Queue_init() {
-		DEBUG && console && console.log('Queue', 'init', arguments);
+		DEBUG && console.log('Queue', 'init', arguments);
 
 		this.thingList = new mBuffer.Buffer();
 
@@ -49,7 +49,7 @@ Queue.prototype = {
 	 * Puts a thing to the queue
 	 */
 	queue: function Queue_queue(thing) {
-		DEBUG && console && console.log('Queue', 'queue', arguments);
+		DEBUG && console.log('Queue', 'queue', arguments);
 
 		this.thingList.push(thing);
 
@@ -64,7 +64,7 @@ Queue.prototype = {
 	 * Removes certain thing from the queue
 	 */
 	dequeue: function Queue_dequeue(thing) {
-		DEBUG && console && console.log('Queue', 'dequeue', arguments);
+		DEBUG && console.log('Queue', 'dequeue', arguments);
 
 		if (typeof thing === 'undefined') {
 			if (this.thingList.length() === 0) {
@@ -95,7 +95,7 @@ Queue.prototype = {
 	 * Runs the queue
 	 */
 	run: function Queue_run() {
-		DEBUG && console && console.log('Queue', 'run', arguments);
+		DEBUG && console.log('Queue', 'run', arguments);
 
 		var thingIndex = 0;
 		var thing = this.thingList.getAt(thingIndex);
@@ -115,7 +115,7 @@ Queue.prototype = {
 	 * Returns number of queued elements matching argument or any
 	 */
 	queued: function Queue_queued(thing) {
-		DEBUG && console && console.log('Queue', 'queued', arguments);
+		DEBUG && console.log('Queue', 'queued', arguments);
 
 		if (typeof thing === 'undefined') {
 			return this.thingList.length();

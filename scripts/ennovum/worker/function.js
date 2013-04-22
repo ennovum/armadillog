@@ -70,14 +70,14 @@ WorkerFunction.prototype = {
 	 * @param {mixed} func Worker body function
 	 */
 	init: function WorkerFunction_init(callback, config) {
-		DEBUG && console && console.log('WorkerFunction', 'init', arguments);
+		DEBUG && console.log('WorkerFunction', 'init', arguments);
 
 		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
 
 		switch (false) {
 			case callback && typeof callback === 'function':
 			case !config || typeof config === 'object':
-				console && console.error('WorkerFunction', 'init', 'invalid input');
+				console.error('WorkerFunction', 'init', 'invalid input');
 				return false;
 				break;
 		}
@@ -117,11 +117,11 @@ WorkerFunction.prototype = {
 	 *
 	 */
 	configure: function WorkerFunction_configure(config) {
-		DEBUG && console && console.log('WorkerFunction', 'configure', arguments);
+		DEBUG && console.log('WorkerFunction', 'configure', arguments);
 
 		switch (false) {
 			case typeof config === 'object':
-				console && console.error('WorkerFunction', 'configure', 'invalid input');
+				console.error('WorkerFunction', 'configure', 'invalid input');
 				return false;
 				break;
 		}
@@ -137,7 +137,7 @@ WorkerFunction.prototype = {
 	 * Destroys instance
 	 */
 	destroy: function WorkerFunction_destroy() {
-		DEBUG && console && console.log('WorkerFunction', 'destroy', arguments);
+		DEBUG && console.log('WorkerFunction', 'destroy', arguments);
 
 		URL.revokeObjectURL(this.sourceURL);
 
@@ -152,13 +152,13 @@ WorkerFunction.prototype = {
 	 * @param {mixed} data Message data
 	 */
 	run: function WorkerFunction_run(data, transferables, ready, error) {
-		DEBUG && console && console.log('WorkerFunction', 'run', arguments);
+		DEBUG && console.log('WorkerFunction', 'run', arguments);
 
 		switch (false) {
 			case !transferables || transferables === null || Array.isArray(transferables):
 			case !ready || typeof ready === 'function':
 			case !error || typeof error === 'function':
-				console && console.error('WorkerFunction', 'run', 'invalid input');
+				console.error('WorkerFunction', 'run', 'invalid input');
 				return false;
 				break;
 		}
@@ -203,7 +203,7 @@ WorkerFunction.prototype = {
 	 * @param {mixed} data Message data
 	 */
 	messageHandler: function WorkerFunction_messageHandler(wid, success, data) {
-		DEBUG && console && console.log('WorkerFunction', 'messageHandler', arguments);
+		DEBUG && console.log('WorkerFunction', 'messageHandler', arguments);
 
 		var work = this.workMap[wid];
 
@@ -227,9 +227,9 @@ WorkerFunction.prototype = {
 	 * @param {mixed} data Error data
 	 */
 	errorHandler: function WorkerFunction_errorHandler(wid, message, filename, lineno) {
-		DEBUG && console && console.log('WorkerFunction', 'errorHandler', arguments);
+		DEBUG && console.log('WorkerFunction', 'errorHandler', arguments);
 
-		console && console.error(message, filename, lineno);
+		console.error(message, filename, lineno);
 
 		var work = this.workMap[wid];
 
