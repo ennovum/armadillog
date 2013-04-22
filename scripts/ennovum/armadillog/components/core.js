@@ -97,14 +97,14 @@ ArmadillogCore.prototype = {
 
 		switch (true) {
 			case !document.querySelector:
-			case !window.File:
-			case !window.FileReader:
-			case !window.FileList:
-			case !window.Blob:
-			case !window.Array.prototype.some:
-			case !window.Worker:
-			case !window.URL || !window.URL.createObjectURL:
-			case !window.localStorage:
+			case !File:
+			case !FileReader:
+			case !FileList:
+			case !Blob:
+			case !Array.prototype.some:
+			case !Worker:
+			case !URL || !URL.createObjectURL:
+			case !localStorage:
 				console.error('ArmadillogCore', 'browserCheck', 'unsupported browser');
 				alert('You are using an uncompatible browser!');
 				return false;
@@ -922,7 +922,7 @@ ArmadillogCore.prototype = {
 		var filterItemMMap;
 
 		try {
-			storageFilterList = JSON.parse(window.localStorage.getItem(this.FILTER_LIST_STORAGE_NAME) || []);
+			storageFilterList = JSON.parse(localStorage.getItem(this.FILTER_LIST_STORAGE_NAME) || []);
 		}
 		catch (err) {
 			// nothing
@@ -961,7 +961,7 @@ ArmadillogCore.prototype = {
 		}
 
 		try {
-			window.localStorage.setItem(this.FILTER_LIST_STORAGE_NAME, JSON.stringify(storageFilterList));
+			localStorage.setItem(this.FILTER_LIST_STORAGE_NAME, JSON.stringify(storageFilterList));
 		}
 		catch (err) {
 			// nothing
@@ -1414,7 +1414,7 @@ ArmadillogCore.prototype = {
 		DEBUG && console.log('ArmadillogCore', 'contentFileUpdateSchedule', arguments);
 
 		if (this.CONTENT_FILE_UPDATE_DELAY > 0) {
-			this.contentFileUpdateTimeout = window.setTimeout(
+			this.contentFileUpdateTimeout = setTimeout(
 				this.contentFileUpdate.bind(this),
 				this.CONTENT_FILE_UPDATE_DELAY);
 		}
@@ -1429,7 +1429,7 @@ ArmadillogCore.prototype = {
 		DEBUG && console.log('ArmadillogCore', 'contentFileUpdateUnschedule', arguments);
 
 		if (this.contentFileUpdateTimeout) {
-			window.clearTimeout(this.contentFileUpdateTimeout);
+			clearTimeout(this.contentFileUpdateTimeout);
 			this.contentFileUpdateTimeout = null;
 		}
 
@@ -1509,7 +1509,7 @@ ArmadillogCore.prototype = {
 		DEBUG && console.log('ArmadillogCore', 'contentUrlUpdateSchedule', arguments);
 
 		if (this.CONTENT_URL_UPDATE_DELAY > 0) {
-			this.contentUrlUpdateTimeout = window.setTimeout(
+			this.contentUrlUpdateTimeout = setTimeout(
 				this.contentUrlUpdate.bind(this),
 				this.CONTENT_URL_UPDATE_DELAY);
 		}
@@ -1524,7 +1524,7 @@ ArmadillogCore.prototype = {
 		DEBUG && console.log('ArmadillogCore', 'contentUrlUpdateUnschedule', arguments);
 
 		if (this.contentUrlUpdateTimeout) {
-			window.clearTimeout(this.contentUrlUpdateTimeout);
+			clearTimeout(this.contentUrlUpdateTimeout);
 			this.contentUrlUpdateTimeout = null;
 		}
 
