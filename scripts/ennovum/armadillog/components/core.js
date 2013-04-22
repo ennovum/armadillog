@@ -1378,7 +1378,12 @@ ArmadillogCore.prototype = {
 	contentFileUpdate: function ArmadillogCore_contentFileUpdate() {
 		DEBUG && console.log('ArmadillogCore', 'contentFileUpdate', arguments);
 
-		if (!this.contentFile || this.busy || this.contentLineMList.queued()) {
+		if (!this.contentFile) {
+			return;
+		}
+
+		if (this.busy || this.contentLineMList.queued()) {
+			this.contentFileUpdateSchedule();
 			return;
 		}
 
@@ -1470,7 +1475,12 @@ ArmadillogCore.prototype = {
 	contentUrlUpdate: function ArmadillogCore_contentUrlUpdate() {
 		DEBUG && console.log('ArmadillogCore', 'contentUrlUpdate', arguments);
 
-		if (!this.contentUrl || this.busy || this.contentLineMList.queued()) {
+		if (!this.contentUrl) {
+			return;
+		}
+
+		if (this.busy || this.contentLineMList.queued()) {
+			this.contentUrlUpdateSchedule();
 			return;
 		}
 
@@ -1532,6 +1542,8 @@ ArmadillogCore.prototype = {
 
 		this.contentLineMList.queue('content-text-set');
 
+		this.contentTailingStop();
+
 		this.workerTextLineSplitter.run(
 			{
 				'text': text
@@ -1574,6 +1586,8 @@ ArmadillogCore.prototype = {
 		DEBUG && console.log('ArmadillogCore', 'contentTextUpdate', arguments);
 
 		this.contentLineMList.queue('content-text-update');
+
+		this.contentTailingCheck();
 
 		this.workerTextLineSplitter.run(
 			{
@@ -1696,6 +1710,7 @@ ArmadillogCore.prototype = {
 			}
 			else {
 				this.busySet(false, 'contentLineViewListInsert');
+
 				this.contentTailingDo();
 			}
 		}.bind(this));
@@ -1747,6 +1762,7 @@ ArmadillogCore.prototype = {
 			}
 			else {
 				this.busySet(false, 'contentLineViewListUpdate');
+
 				this.contentTailingDo();
 			}
 		}.bind(this));
@@ -1788,6 +1804,7 @@ ArmadillogCore.prototype = {
 			}
 			else {
 				this.busySet(false, 'contentLineViewListDelete');
+
 				this.contentTailingDo();
 			}
 		}.bind(this));
@@ -1909,6 +1926,17 @@ ArmadillogCore.prototype = {
 				this.contentScrollEl.scrollTop = this.contentScrollEl.scrollHeight;
 			}
 		}
+
+		return true;
+	},
+
+	/**
+	 * Stops content tailing
+	 */
+	contentTailingStop: function ArmadillogCore_contentTailingStop() {
+		DEBUG && console.log('ArmadillogCore', 'contentTailingStop', arguments);
+
+		this.contentTailing = false;
 
 		return true;
 	},
