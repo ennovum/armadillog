@@ -1106,8 +1106,8 @@ ArmadillogCore.prototype = {
 	examineContentSet: function ArmadillogCore_examineContentSet(textRaw, textFiltered) {
 		DEBUG && console.log('ArmadillogCore', 'examineContentSet', arguments);
 
-		this.examineView.rawContentEl.innerHTML = mUtils.string.escapeXML(textRaw);
-		this.examineView.filteredContentEl.innerHTML = mUtils.string.escapeXML(textFiltered);
+		this.examineView.rawContentEl.innerHTML = textRaw;
+		this.examineView.filteredContentEl.innerHTML = textFiltered;
 
 		return true;
 	},
@@ -1606,9 +1606,9 @@ ArmadillogCore.prototype = {
 				if ('text' in data) {
 					var contentLineItemMMap = new mModel.ModelMap(
 						'textRaw',
-						data.text,
+						mUtils.string.escapeXML(data.text),
 						'textFiltered',
-						data.text,
+						mUtils.string.escapeXML(data.text),
 						'hidden',
 						false,
 						'view',

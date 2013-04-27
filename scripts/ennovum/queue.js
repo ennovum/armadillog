@@ -73,7 +73,7 @@ Queue.prototype = {
 
 			this.thingList.shift();
 
-			mUtils.func.async(this.run.bind(this));
+			this.run();
 		}
 		else {
 			var thingIndex = this.thingList.indexOf(thing);
@@ -84,7 +84,7 @@ Queue.prototype = {
 			this.thingList.splice(thingIndex, 1);
 
 			if (thingIndex === 0) {
-				mUtils.func.async(this.run.bind(this));
+				this.run();
 			}
 		}
 
@@ -105,7 +105,7 @@ Queue.prototype = {
 		}
 
 		if (typeof thing === 'function') {
-			thing();
+			mUtils.func.async(thing);
 		}
 
 		return true;
