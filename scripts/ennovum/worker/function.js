@@ -35,6 +35,7 @@ var WorkerFunction = function WorkerFunction() {
 WorkerFunction.prototype = {
 
 	SOURCE: [
+		'"use strict"',
 		'var ready = function (wid) {',
 		'    return function (data, transferables) {',
 		'        postMessage(',
@@ -60,7 +61,7 @@ WorkerFunction.prototype = {
 		'    };',
 		'};',
 		'this.onmessage = function(event){',
-		'    (%FUNCTION%).call(this, event.data.data, ready(event.data.wid), error(event.data.wid));',
+		'    ({{function}}).call(this, event.data.data, ready(event.data.wid), error(event.data.wid));',
 		'};',
 	].join('\n'),
 
@@ -94,7 +95,7 @@ WorkerFunction.prototype = {
 		this.widSeq = 0;
 		this.workMap = {};
 
-		this.source = this.SOURCE.replace('%FUNCTION%', this.callback.toString());
+		this.source = this.SOURCE.replace('{{function}}', this.callback.toString());
 		this.sourceURL = URL.createObjectURL(new Blob([this.source], {'type': 'text/javascript'}));
 
 		try {

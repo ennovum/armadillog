@@ -50,17 +50,8 @@ ArmadillogCore.prototype = {
 
 	FILTER_LIST_STORAGE_NAME: 'filterList',
 
-	FILTER_TAG_FILTERED_BEGIN_SYMBOL: '\uff00\uff80',
-	FILTER_TAG_FILTERED_END_SYMBOL: '\uff01\uff81',
-	FILTER_TAG_FILTERED_BEGIN_HTML: '<span class="filtered">',
-	FILTER_TAG_FILTERED_END_HTML: '</span>',
-	FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: '\uff02\uff82',
-	FILTER_TAG_HIGHLIGHT_END_SYMBOL: '\uff03\uff83',
-	FILTER_TAG_HIGHLIGHT_BEGIN_HTML: '<span class="highlight">',
-	FILTER_TAG_HIGHLIGHT_END_HTML: '</span>',
-
-	CONTENT_OVERFLOW_CHUNK_SIZE: 1000,
-	CONTENT_OVERFLOW_DELAY: 200,
+	CONTENT_OVERFLOW_CHUNK_SIZE: 5000,
+	CONTENT_OVERFLOW_DELAY: 500,
 
 	CONTENT_FILE_UPDATE_DELAY: 1000,
 	CONTENT_URL_UPDATE_DELAY: 1000,
@@ -381,6 +372,113 @@ ArmadillogCore.prototype = {
 			}
 		];
 
+		this.filterWorkerCreate();
+
+		return true;
+	},
+
+	/**
+	 * Creates a filter worker
+	 */
+	filterWorkerCreate: function ArmadillogCore_filterWorkerCreate() {
+		DEBUG && console.log('ArmadillogCore', 'filterWorkerCreate', arguments);
+
+		this.workerFilter = new mWorker.WorkerFunction(
+			function ArmadillogCore_filterWorkerCreate_workerFilter(data, success, error) {
+				var textFiltered = data.text;
+				var filterList = JSON.parse(data.filterListJSON);
+
+			    var FILTER_TAG_FILTERED_BEGIN_SYMBOL = '\uff00\uff80';
+			    var FILTER_TAG_FILTERED_END_SYMBOL = '\uff01\uff81';
+			    var FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL = '\uff02\uff82';
+			    var FILTER_TAG_HIGHLIGHT_END_SYMBOL = '\uff03\uff83';
+
+				var hidden = false;
+				var filterItem;
+				var regexp, match;
+
+				for (var i = 0, l = filterList.length; i < l; i++) {
+					filterItem = filterList[i];
+
+					if (filterItem.mute || !filterItem.value || hidden) {
+						continue;
+					}
+
+					regexp = new RegExp('(' + filterItem.value + ')', 'gi');
+	                match = textFiltered.match(regexp);
+
+	                switch (filterItem.affectType) {
+	                    case '1': // FILTER_AFFECT_TYPE_SHOW_LINE
+	                        if (match) {
+	                            textFiltered = textFiltered.replace(regexp, FILTER_TAG_FILTERED_BEGIN_SYMBOL + '$1' + FILTER_TAG_FILTERED_END_SYMBOL);
+	                        }
+	                        else {
+	                            hidden = true;
+	                        }
+	                        break;
+
+	                    case '2': // FILTER_AFFECT_TYPE_SHOW
+	                        if (match) {
+	                            textFiltered = FILTER_TAG_FILTERED_BEGIN_SYMBOL + match.join(FILTER_TAG_FILTERED_END_SYMBOL + ' ' + FILTER_TAG_FILTERED_BEGIN_SYMBOL) + FILTER_TAG_FILTERED_END_SYMBOL;
+	                        }
+	                        else {
+	                            hidden = true;
+	                        }
+	                        break;
+
+	                    case '3': // FILTER_AFFECT_TYPE_HIDE_LINE
+	                        if (match) {
+	                            hidden = true;
+	                        }
+	                        break;
+
+	                    case '4': // FILTER_AFFECT_TYPE_HIDE
+	                        if (match) {
+	                            textFiltered = textFiltered.replace(match[0], '');
+	                        }
+	                        break;
+
+	                    case '5': // FILTER_AFFECT_TYPE_HIGHLIGHT_LINE
+	                        if (match) {
+	                            textFiltered = FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + textFiltered + FILTER_TAG_HIGHLIGHT_END_SYMBOL;
+	                        }
+	                        break;
+
+	                    case '6': // FILTER_AFFECT_TYPE_HIGHLIGHT
+	                        if (match) {
+	                            textFiltered = textFiltered.replace(regexp, FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + '$1' + FILTER_TAG_HIGHLIGHT_END_SYMBOL);
+	                        }
+	                        break;
+	                }
+				}
+
+				textFiltered = textFiltered.replace(
+					new RegExp(
+						[
+							FILTER_TAG_FILTERED_BEGIN_SYMBOL,
+							FILTER_TAG_FILTERED_END_SYMBOL,
+							FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL,
+							FILTER_TAG_HIGHLIGHT_END_SYMBOL
+						].join('|'),
+						'gi'),
+					function (match) {
+						switch (match) {
+							case FILTER_TAG_FILTERED_BEGIN_SYMBOL: return '<span class="filtered">';
+							case FILTER_TAG_FILTERED_END_SYMBOL: return '</span>';
+							case FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: return '<span class="highlight">';
+							case FILTER_TAG_HIGHLIGHT_END_SYMBOL: return '</span>';
+						}
+						return '';
+					});
+
+				success(
+					{
+						'text': textFiltered,
+						'hidden': hidden
+					},
+					null);
+		});
+
 		return true;
 	},
 
@@ -580,44 +678,6 @@ ArmadillogCore.prototype = {
 	},
 
 	/**
-	 * Creates a filter item regexp
-	 *
-	 * @param {object} filterItemMMap filter item data
-	 */
-	filterItemRegexpCreate: function ArmadillogCore_filterItemRegexpCreate(filterItemMMap) {
-		DEBUG && console.log('ArmadillogCore', 'filterItemRegexpCreate', arguments);
-
-		var regexp = null;
-		var filterItemValue = filterItemMMap.get('value');
-
-		if (filterItemValue) {
-			switch (filterItemMMap.get('valueType')) {
-				case this.FILTER_VALUE_TYPE_TEXT:
-					try {
-						regexp = new RegExp(mUtils.regexp.escape(filterItemValue), 'gi');
-					}
-					catch (err) {
-						// nothing
-					}
-					break;
-
-				case this.FILTER_VALUE_TYPE_REGEXP:
-					try {
-						regexp = new RegExp(filterItemValue, 'gi');
-					}
-					catch (err) {
-						// nothing
-					}
-					break;
-			}
-		}
-
-		filterItemMMap.set('regexp', regexp);
-
-		return true;
-	},
-
-	/**
 	 * Initializes filter item UI
 	 *
 	 * @param {object} filterItemMMap filter item data
@@ -814,18 +874,25 @@ ArmadillogCore.prototype = {
 		this.filterViewListUpdate(filterDataList);
 
 		var filterIndex,
-			filterItemMMap;
+			filterItemMMap,
+			filterDirty = false;
 
 		for (var i = 0, l = filterDataList.length; i < l; i++) {
 			filterIndex = filterDataList[i].filterIndex;
 			filterItemMMap = filterDataList[i].filterItemMMap;
 
 			this.filterItemUiInit(filterItemMMap);
+
+			if (filterItemMMap.get('value')) {
+				filterDirty = true;
+			}
 		}
 
 		this.filterStorageSave();
 
-		this.contentFilterApply();
+		if (filterDirty) {
+			this.contentFilterApply();
+		}
 
 		return true;
 	},
@@ -877,8 +944,6 @@ ArmadillogCore.prototype = {
 					filterItemMMap.get('view').el,
 					null);
 			}
-
-			this.filterItemRegexpCreate(filterItemMMap); // TODO work on better place for it
 		}
 
 		this.filterStorageSave();
@@ -896,18 +961,25 @@ ArmadillogCore.prototype = {
 		DEBUG && console.log('ArmadillogCore', 'filterViewListDelete', arguments);
 
 		var filterIndex,
-			filterItemMMap;
+			filterItemMMap,
+			filterDirty = false;
 
 		for (var i = 0, l = filterDataList.length; i < l; i++) {
 			filterIndex = filterDataList[i].filterIndex;
 			filterItemMMap = filterDataList[i].filterItemMMap;
 
 			this.filterView.listEl.removeChild(filterItemMMap.get('view').el);
+
+			if (filterItemMMap.get('value')) {
+				filterDirty = true;
+			}
 		}
 
 		this.filterStorageSave();
 
-		this.contentFilterApply();
+		if (filterDirty) {
+			this.contentFilterApply();
+		}
 
 		return true;
 	},
@@ -1035,7 +1107,7 @@ ArmadillogCore.prototype = {
 		DEBUG && console.log('ArmadillogCore', 'examineContentSet', arguments);
 
 		this.examineView.rawContentEl.innerHTML = mUtils.string.escapeXML(textRaw);
-		this.examineView.filteredContentEl.innerHTML = mUtils.string.escapeXML(textFiltered).replace(this.filterTagRegexp, this.filterTagMatch);
+		this.examineView.filteredContentEl.innerHTML = mUtils.string.escapeXML(textFiltered);
 
 		return true;
 	},
@@ -1089,25 +1161,6 @@ ArmadillogCore.prototype = {
 					},
 					null);
 		});
-
-		this.filterTagMap = {};
-		this.filterTagMap[this.FILTER_TAG_FILTERED_BEGIN_SYMBOL] = this.FILTER_TAG_FILTERED_BEGIN_HTML;
-		this.filterTagMap[this.FILTER_TAG_FILTERED_END_SYMBOL] = this.FILTER_TAG_FILTERED_END_HTML;
-		this.filterTagMap[this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL] = this.FILTER_TAG_HIGHLIGHT_BEGIN_HTML;
-		this.filterTagMap[this.FILTER_TAG_HIGHLIGHT_END_SYMBOL] = this.FILTER_TAG_HIGHLIGHT_END_HTML;
-
-		this.filterTagRegexp = RegExp(
-			'(' + [
-				mUtils.regexp.escape(this.FILTER_TAG_FILTERED_BEGIN_SYMBOL),
-				mUtils.regexp.escape(this.FILTER_TAG_FILTERED_END_SYMBOL),
-				mUtils.regexp.escape(this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL),
-				mUtils.regexp.escape(this.FILTER_TAG_HIGHLIGHT_END_SYMBOL)
-			].join('|') + ')',
-			'g');
-
-		this.filterTagMatch = function ArmadillogCore_contentDataInit_filterTagMatch(match) {
-			return this.filterTagMap[match];
-		}.bind(this);
 
 		return true;
 	},
@@ -1304,11 +1357,11 @@ ArmadillogCore.prototype = {
 				var contentLineViewList = [];
 
 				for (var i = 0, l = dataList.length; i < l; i++) {
-					var update = dataList[i].dataList.some(function (dataItem) {
-						return ~['textFiltered', 'hidden'].indexOf(dataItem.key);
-					});
-
-					if (update) {
+					if (
+						dataList[i].dataList.some(function (dataItem) {
+							return ~['textFiltered', 'hidden'].indexOf(dataItem.key);
+						})
+					) {
 						contentLineViewList.push({
 							'contentLineIndex': dataList[i].index,
 							'contentLineItemMMap': dataList[i].valueNew
@@ -1674,7 +1727,7 @@ ArmadillogCore.prototype = {
 	contentLineViewListInsert: function ArmadillogCore_contentLineViewListInsert(contentLineViewList, chunkIndex, chunkSize) {
 		DEBUG && console.log('ArmadillogCore', 'contentLineViewListInsert', arguments);
 
-		requestAnimationFrame(function () {
+		requestAnimationFrame(function ArmadillogCore_contentLineViewListInsert_animationFrame() {
 			this.busySet(true, 'contentLineViewListInsert');
 
 			chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
@@ -1728,28 +1781,24 @@ ArmadillogCore.prototype = {
 	contentLineViewListUpdate: function ArmadillogCore_contentLineViewListUpdate(contentLineViewList, chunkIndex, chunkSize) {
 		DEBUG && console.log('ArmadillogCore', 'contentLineViewListUpdate', arguments);
 
-		requestAnimationFrame(function () {
+		requestAnimationFrame(function ArmadillogCore_contentLineViewListUpdate_animationFrame() {
 			this.busySet(true, 'contentLineViewListUpdate');
 
 			chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
 			chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
 
 			var contentLineIndex, contentLineItemMMap;
+			var textFiltered, contentLineEl;
 
 			for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
 				contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
 				contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
 
-				var text = contentLineItemMMap.get('textFiltered');
-				if (text === null) {
-					text = contentLineItemMMap.get('textRaw');
-				}
+				contentLineEl = contentLineItemMMap.get('view').el;
 
-				text = mUtils.string.escapeXML(text).replace(this.filterTagRegexp, this.filterTagMatch);
+				textFiltered = contentLineItemMMap.get('textFiltered');
+				contentLineEl.innerHTML = textFiltered || '';
 
-				var contentLineEl = contentLineItemMMap.get('view').el;
-
-				contentLineEl.innerHTML = text || '';
 				mUtils.dom.classDepend(contentLineEl, this.HIDDEN_CLASS, contentLineItemMMap.get('hidden'));
 			}
 
@@ -1780,7 +1829,7 @@ ArmadillogCore.prototype = {
 	contentLineViewListDelete: function ArmadillogCore_contentLineViewListDelete(contentLineViewList, chunkIndex, chunkSize) {
 		DEBUG && console.log('ArmadillogCore', 'contentLineViewListDelete', arguments);
 
-		requestAnimationFrame(function () {
+		requestAnimationFrame(function ArmadillogCore_contentLineViewListDelete_animationFrame() {
 			this.busySet(true, 'contentLineViewListDelete');
 
 			chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
@@ -1820,78 +1869,72 @@ ArmadillogCore.prototype = {
 	contentLineListFilter: function ArmadillogCore_contentLineListFilter(contentLineList) {
 		DEBUG && console.log('ArmadillogCore', 'contentLineListFilter', arguments);
 
-		var contentLineItemMMap;
-		var textFiltered;
-		var hidden;
-		var filterItemMMap;
-		var match;
+		this.busySet(true, 'contentLineListFilter');
 
-		this.contentLineMList.queue('content-line-list-filter');
+		var filterItemMMap;
+		var filterList = [], filterItem, filterListJSON;
+		var contentLineItemMMap;
+
+		for (var i = 0, l = this.filterMList.length(); i < l; i++) {
+			filterItemMMap = this.filterMList.getAt(i);
+
+			filterItem = {
+				'affectType': filterItemMMap.get('affectType'),
+				'mute': filterItemMMap.get('mute')
+			};
+
+			switch (filterItemMMap.get('valueType')) {
+				case this.FILTER_VALUE_TYPE_TEXT:
+					try {
+						filterItem.value = mUtils.regexp.escape(filterItemMMap.get('value'));
+					}
+					catch (err) {
+						// nothing
+					}
+					break;
+
+				case this.FILTER_VALUE_TYPE_REGEXP:
+					try {
+						filterItem.value = filterItemMMap.get('value');
+					}
+					catch (err) {
+						// nothing
+					}
+					break;
+				}
+
+			filterList.push(filterItem);
+		}
+
+		filterListJSON = JSON.stringify(filterList);
 
 		for (var i = 0, l = contentLineList.length; i < l; i++) {
 			contentLineItemMMap = contentLineList[i];
 
-			textFiltered = contentLineItemMMap.get('textRaw');
-			hidden = false;
+			this.contentLineMList.queue('content-line-list-filter');
 
-			for (var j = 0, m = this.filterMList.length(); j < m; j++) {
-				filterItemMMap = this.filterMList.getAt(j);
+			this.workerFilter.run(
+				{
+					'text': contentLineItemMMap.get('textRaw'),
+					'filterListJSON': filterListJSON
+				},
+				null,
+				function ArmadillogCore_contentLineListFilter_workerFilterSuccess(contentLineItemMMap, data) {
+					contentLineItemMMap.set(
+						'textFiltered',
+						data.text,
+						'hidden',
+						data.hidden);
 
-				if (filterItemMMap.get('mute') || !filterItemMMap.get('regexp')) {
-					continue;
-				}
-
-				match = textFiltered.match(filterItemMMap.get('regexp'));
-
-				switch (filterItemMMap.get('affectType')) {
-					case this.FILTER_AFFECT_TYPE_SHOW_LINE:
-						if (match) {
-							textFiltered = textFiltered.replace(filterItemMMap.get('regexp'), this.FILTER_TAG_FILTERED_BEGIN_SYMBOL + '$&' + this.FILTER_TAG_FILTERED_END_SYMBOL);
-						}
-						else {
-							hidden = true;
-						}
-						break;
-
-					case this.FILTER_AFFECT_TYPE_SHOW:
-						if (match) {
-							textFiltered = this.FILTER_TAG_FILTERED_BEGIN_SYMBOL + match.join(this.FILTER_TAG_FILTERED_END_SYMBOL + ' ' + this.FILTER_TAG_FILTERED_BEGIN_SYMBOL) + this.FILTER_TAG_FILTERED_END_SYMBOL;
-						}
-						else {
-							hidden = true;
-						}
-						break;
-
-					case this.FILTER_AFFECT_TYPE_HIDE_LINE:
-						if (match) {
-							hidden = true;
-						}
-						break;
-
-					case this.FILTER_AFFECT_TYPE_HIDE:
-						if (match) {
-							textFiltered = textFiltered.replace(match[0], '');
-						}
-						break;
-
-					case this.FILTER_AFFECT_TYPE_HIGHLIGHT_LINE:
-						if (match) {
-							textFiltered = this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + textFiltered + this.FILTER_TAG_HIGHLIGHT_END_SYMBOL;
-						}
-						break;
-
-					case this.FILTER_AFFECT_TYPE_HIGHLIGHT:
-						if (match) {
-							textFiltered = textFiltered.replace(filterItemMMap.get('regexp'), this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + '$&' + this.FILTER_TAG_HIGHLIGHT_END_SYMBOL);
-						}
-						break;
-				}
-			}
-
-			contentLineItemMMap.set('textFiltered', textFiltered, 'hidden', hidden);
+					this.contentLineMList.dequeue('content-line-list-filter');
+				}.bind(this, contentLineItemMMap));
 		}
 
-		this.contentLineMList.dequeue('content-line-list-filter');
+		this.contentLineMList.queue(function () {
+			this.busySet(false, 'contentLineListFilter');
+
+			this.contentLineMList.dequeue();
+		}.bind(this));
 
 		return true;
 	},
@@ -1923,7 +1966,7 @@ ArmadillogCore.prototype = {
 				window.scrollTo(window.scrollX, window.scrollMaxY);
 			}
 			else {
-				this.contentScrollEl.scrollTop = this.contentScrollEl.scrollHeight;
+				this.contentScrollEl.scrollTop = this.contentScrollEl.scrollHeight - this.contentScrollEl.offsetHeight;
 			}
 		}
 

@@ -81,7 +81,9 @@ if (!Array.isArray) {
 
 // requestAnimationFrame
 if (!window.requestAnimationFrame) {
-	window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || undefined;
+	window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function (callback) {
+		setTimeout(callback, 1000 / 60);
+	};
 }
 
 /* ==================================================================================================== */
