@@ -23,6 +23,7 @@ var iBuffer = {
 	shift: function () {},
 	splice: function (outdex, count, value) {},
 	indexOf: function (value) {},
+	lastIndexOf: function (value) {},
 	length: function () {}
 };
 
@@ -185,7 +186,7 @@ Buffer.prototype = {
 	/**
 	 * Splices buffer
 	 */
-	splice: function Buffer_indexOf(outdex, count, value) {
+	splice: function Buffer_splice(outdex, count, value) {
 		DEBUG && console.log('Buffer', 'splice', arguments);
 
 		var index = this.firstIndex + outdex;
@@ -229,12 +230,18 @@ Buffer.prototype = {
 
 		var index = this.list.indexOf(value);
 
-		if (index === -1) {
-			return -1;
-		}
-		else {
-			return index - this.firstIndex;
-		}
+		return index === -1 ? -1 : index - this.firstIndex;
+	},
+
+	/**
+	 * Returns last index of element or -1
+	 */
+	lastIndexOf: function Buffer_lastIndexOf(value) {
+		DEBUG && console.log('Buffer', 'lastIndexOf', arguments);
+
+		var index = this.list.lastIndexOf(value);
+
+		return index === -1 ? -1 : index - this.firstIndex;
 	},
 
 	/**

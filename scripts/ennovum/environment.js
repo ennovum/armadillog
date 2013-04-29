@@ -79,6 +79,19 @@ if (!Array.isArray) {
 	}
 }
 
+// Array.prototype.lastIndexOf
+if (!Array.prototype.lastIndexOf) {
+	Array.prototype.lastIndexOf = function Array_lastIndexOf(value, fromIndex) {
+		fromIndex = typeof fromIndex === 'undefined' ? this.length - 1 : parseInt(fromIndex, 10);
+		for (var i = fromIndex; i >= 0; i--) {
+			if (this[i] === value) {
+				return i;
+			}
+		}
+		return -1;
+	}
+}
+
 // requestAnimationFrame
 if (!window.requestAnimationFrame) {
 	window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function (callback) {
