@@ -419,13 +419,30 @@ var iUtilsFunc = {
  */
 var oUtilsFunc = {
 
+	asyncList: [],
+	asyncTimeout: null,
+
     /**
      *
      */
     async: function Utils_func_async(callback) {
         DEBUG && console.log('oUtilsFunc', 'async', arguments);
 
-		setTimeout(callback, 0);
+        this.asyncList.push(callback);
+
+        if (!this.asyncTimeout) {
+			this.asyncTimeout = setTimeout(
+				function Utils_func_async_callback() {
+			        var asyncList = this.asyncList;
+			        this.asyncList = [];
+			        this.asyncTimeout = null;
+
+			        for (var i = 0, l = asyncList.length; i < l; i++) {
+						asyncList[i].call();
+			        }
+			    }.bind(this),
+			    0);
+	    }
 
         return true;
     }
