@@ -1,11 +1,11 @@
 'use strict';
 
 window.define && define(
-	[
-		'ennovum.Environment',
-		'ennovum.Utils'
-	],
-	function (mEnvironment, mUtils) {
+    [
+        'ennovum.Environment',
+        'ennovum.Utils'
+    ],
+    function (mEnvironment, mUtils) {
 /* ==================================================================================================== */
 
 // debug console logs switch
@@ -21,8 +21,8 @@ var iLayout = {
  * Layout constructor
  */
 var Layout = function Layout() {
-	this.init.apply(this, arguments);
-	return mUtils.obj.implement({}, this, iLayout);
+    this.init.apply(this, arguments);
+    return mUtils.obj.implement({}, this, iLayout);
 };
 
 /**
@@ -30,140 +30,140 @@ var Layout = function Layout() {
  */
 Layout.prototype = {
 
-	/**
-	 * Initializes instance
-	 *
-	 * @param {object} config configuration object
-	 */
-	init: function Layout_init(config) {
-		DEBUG && console.log('Layout', 'init', arguments);
+    /**
+     * Initializes instance
+     *
+     * @param {object} config configuration object
+     */
+    init: function Layout_init(config) {
+        DEBUG && console.log('Layout', 'init', arguments);
 
-		switch (true) {
-			case !this.configSet(config):
-			case !this.viewInit():
-			case !this.uiInit():
-			case !this.keyboardInit():
-				return false;
-				break;
-		}
+        switch (true) {
+            case !this.configSet(config):
+            case !this.viewInit():
+            case !this.uiInit():
+            case !this.keyboardInit():
+                return false;
+                break;
+        }
 
-		return true;
-	},
+        return true;
+    },
 
-	/**
-	 * Initializes config
-	 *
-	 * @param {object} config configuration object
-	 */
-	configSet: function Layout_configSet(config) {
-		DEBUG && console.log('Layout', 'configSet', arguments);
+    /**
+     * Initializes config
+     *
+     * @param {object} config configuration object
+     */
+    configSet: function Layout_configSet(config) {
+        DEBUG && console.log('Layout', 'configSet', arguments);
 
-		switch (false) {
-			case !!config:
-			case typeof config === 'object':
-				console.error('Layout', 'configSet', 'invalid input');
-				return false;
-		};
+        switch (false) {
+            case !!config:
+            case typeof config === 'object':
+                console.error('Layout', 'configSet', 'invalid input');
+                return false;
+        };
 
-		this.config = {
-			mainmenuInputEl: config.mainmenuInputEl || null,
-			inputWrapperEl: config.inputWrapperEl || null,
-			inputFoldEl: config.inputFoldEl || null,
-			mainmenuFilterEl: config.mainmenuFilterEl || null,
-			filterWrapperEl: config.filterWrapperEl || null,
-			filterFoldEl: config.filterFoldEl || null,
-			mainmenuExamineEl: config.mainmenuExamineEl || null,
-			examineWrapperEl: config.examineWrapperEl || null,
-			examineFoldEl: config.examineFoldEl || null,
-			contentBoxEl: config.contentBoxEl || null
-		};
+        this.config = {
+            mainmenuInputEl: config.mainmenuInputEl || null,
+            inputWrapperEl: config.inputWrapperEl || null,
+            inputFoldEl: config.inputFoldEl || null,
+            mainmenuFilterEl: config.mainmenuFilterEl || null,
+            filterWrapperEl: config.filterWrapperEl || null,
+            filterFoldEl: config.filterFoldEl || null,
+            mainmenuExamineEl: config.mainmenuExamineEl || null,
+            examineWrapperEl: config.examineWrapperEl || null,
+            examineFoldEl: config.examineFoldEl || null,
+            contentBoxEl: config.contentBoxEl || null
+        };
 
-		return true;
-	},
+        return true;
+    },
 
-	/**
-	 * Initializes view
-	 */
-	viewInit: function Layout_viewInit() {
-		DEBUG && console.log('Layout', 'viewInit', arguments);
+    /**
+     * Initializes view
+     */
+    viewInit: function Layout_viewInit() {
+        DEBUG && console.log('Layout', 'viewInit', arguments);
 
-		// nothing
+        // nothing
 
-		return true;
-	},
+        return true;
+    },
 
-	/**
-	 * Initializes UI
-	 */
-	uiInit: function Layout_uiInit() {
-		DEBUG && console.log('Layout', 'uiInit', arguments);
+    /**
+     * Initializes UI
+     */
+    uiInit: function Layout_uiInit() {
+        DEBUG && console.log('Layout', 'uiInit', arguments);
 
-		this.config.mainmenuInputEl.addEventListener(
-			'click',
-			function (evt) {
-				this.inputToggle();
-				evt.preventDefault();
-			}.bind(this));
+        this.config.mainmenuInputEl.addEventListener(
+            'click',
+            function (evt) {
+                this.inputToggle();
+                evt.preventDefault();
+            }.bind(this));
 
-		this.config.inputFoldEl.addEventListener(
-			'click',
-			function (evt) {
-				this.inputToggle();
-				evt.preventDefault();
-			}.bind(this));
+        this.config.inputFoldEl.addEventListener(
+            'click',
+            function (evt) {
+                this.inputToggle();
+                evt.preventDefault();
+            }.bind(this));
 
-		this.config.mainmenuFilterEl.addEventListener(
-			'click',
-			function (evt) {
-				this.filterToggle();
-				evt.preventDefault();
-			}.bind(this));
+        this.config.mainmenuFilterEl.addEventListener(
+            'click',
+            function (evt) {
+                this.filterToggle();
+                evt.preventDefault();
+            }.bind(this));
 
-		this.config.filterFoldEl.addEventListener(
-			'click',
-			function (evt) {
-				this.filterToggle();
-				evt.preventDefault();
-			}.bind(this));
+        this.config.filterFoldEl.addEventListener(
+            'click',
+            function (evt) {
+                this.filterToggle();
+                evt.preventDefault();
+            }.bind(this));
 
-		this.config.mainmenuExamineEl.addEventListener(
-			'click',
-			function (evt) {
-				this.examineToggle();
-				evt.preventDefault();
-			}.bind(this));
+        this.config.mainmenuExamineEl.addEventListener(
+            'click',
+            function (evt) {
+                this.examineToggle();
+                evt.preventDefault();
+            }.bind(this));
 
-		this.config.examineFoldEl.addEventListener(
-			'click',
-			function (evt) {
-				this.examineToggle();
-				evt.preventDefault();
-			}.bind(this));
+        this.config.examineFoldEl.addEventListener(
+            'click',
+            function (evt) {
+                this.examineToggle();
+                evt.preventDefault();
+            }.bind(this));
 
-		return true;
-	},
+        return true;
+    },
 
-	/**
-	 *
-	 */
-	keyboardInit: function Layout_keyboardInit() {
-		DEBUG && console.log('Layout', 'keyboardInit', arguments);
+    /**
+     *
+     */
+    keyboardInit: function Layout_keyboardInit() {
+        DEBUG && console.log('Layout', 'keyboardInit', arguments);
 
-		document.addEventListener(
-			'keyup',
-			function (evt) {
-				switch (evt.target.tagName.toLowerCase()) {
-					case 'input':
-					case 'textarea':
-						return;
-						break;
-				}
+        document.addEventListener(
+            'keyup',
+            function (evt) {
+                switch (evt.target.tagName.toLowerCase()) {
+                    case 'input':
+                    case 'textarea':
+                        return;
+                        break;
+                }
 
-				switch (true) {
-					case evt.keyCode === 73 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // i
-						this.inputToggle();
-						this.config.mainmenuInputEl.focus();
-						break;
+                switch (true) {
+                    case evt.keyCode === 73 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // i
+                        this.inputToggle();
+                        this.config.mainmenuInputEl.focus();
+                        break;
 
                     case evt.keyCode === 70 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // f
                         this.filterToggle();
@@ -180,11 +180,11 @@ Layout.prototype = {
                         this.filterHide();
                         this.examineHide();
                         break;
-				}
-			}.bind(this));
+                }
+            }.bind(this));
 
-		return true;
-	},
+        return true;
+    },
 
     /**
      *
@@ -276,18 +276,18 @@ Layout.prototype = {
         return true;
     },
 
-	/**
-	 *
-	 */
-	toString: function Layout_toString() {
-		return 'ennovum.Layout';
-	}
+    /**
+     *
+     */
+    toString: function Layout_toString() {
+        return 'ennovum.Layout';
+    }
 
 };
 
 /* ==================================================================================================== */
-		return {
-			'Layout': Layout,
-			'iLayout': iLayout
-		};
-	});
+        return {
+            'Layout': Layout,
+            'iLayout': iLayout
+        };
+    });
