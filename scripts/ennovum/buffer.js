@@ -84,7 +84,7 @@ Buffer.prototype = {
             this.lastIndex = index;
         }
 
-        return true;
+        return this.length();
     },
 
     /**
@@ -119,6 +119,8 @@ Buffer.prototype = {
         else if (index === this.lastIndex) {
             this.lastIndex -= 1;
         }
+
+        return this.length();
     },
 
     /**
@@ -135,7 +137,7 @@ Buffer.prototype = {
             this.setAt(outdex, value);
         }
 
-        return true;
+        return this.length();
     },
 
     /**
@@ -166,7 +168,7 @@ Buffer.prototype = {
             this.setAt(outdex, value);
         }
 
-        return true;
+        return this.length();
     },
 
     /**
@@ -195,6 +197,11 @@ Buffer.prototype = {
             throw new Error('splice failed: invalid input');
         }
 
+        var list = [];
+        for (var i = index, l = index + count; i < l; i++) {
+            list.push(this.list[i]);
+        }
+
         var newList = Array.prototype.slice.call(arguments, 2);
         var newCount = newList.length;
         var delta = newCount - count;
@@ -219,7 +226,7 @@ Buffer.prototype = {
             this.list[i] = newList[i - index];
         }
 
-        return true;
+        return list;
     },
 
     /**
