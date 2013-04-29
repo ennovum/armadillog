@@ -599,11 +599,12 @@ ArmadillogCore.prototype = {
                 var filterDataList = [];
 
                 for (var i = 0, l = dataList.length; i < l; i++) {
-                    var update = dataList[i].dataList.some(function (dataItem) {
-                        return ~['mute', 'affectType', 'value', 'valueType'].indexOf(dataItem.key);
-                    });
-
-                    if (update) {
+                    if (
+                        dataList[i].event === 'model-update' &&
+                        dataList[i].dataList.some(function (dataItem) {
+                            return ~['mute', 'affectType', 'value', 'valueType'].indexOf(dataItem.key);
+                        })
+                    ) {
                         filterDataList.push({
                             'filterIndex': dataList[i].index,
                             'filterItemMMap': dataList[i].valueNew
@@ -1358,6 +1359,7 @@ ArmadillogCore.prototype = {
 
                 for (var i = 0, l = dataList.length; i < l; i++) {
                     if (
+                        dataList[i].event === 'model-update' &&
                         dataList[i].dataList.some(function (dataItem) {
                             return ~['textFiltered', 'hidden'].indexOf(dataItem.key);
                         })
@@ -1704,7 +1706,7 @@ ArmadillogCore.prototype = {
     },
 
     /**
-     * Creates a content line view stricture
+     * Creates a content line view structure
      *
      * @param {number} contentLineIndex index in result source
      * @param {object} contentLineItemMMap content line model object
@@ -1712,9 +1714,32 @@ ArmadillogCore.prototype = {
     contentLineItemViewCreate: function ArmadillogCore_contentLineItemViewCreate(contentLineIndex, contentLineItemMMap) {
         DEBUG && console.log('ArmadillogCore', 'contentLineItemViewCreate', arguments);
 
-        return this.armadillogView.contentLineItemViewGet({
-            'number': contentLineIndex + 1
-        });
+        contentLineItemMMap.set(
+            'view',
+            this.armadillogView.contentLineItemViewGet({
+                'number': contentLineIndex + 1
+            }));
+
+        return true;
+    },
+
+    /**
+     * Updates a content line view structure
+     *
+     * @param {number} contentLineIndex index in result source
+     * @param {object} contentLineItemMMap content line model object
+     */
+    contentLineItemViewUpdate: function ArmadillogCore_contentLineItemViewUpdate(contentLineIndex, contentLineItemMMap) {
+        DEBUG && console.log('ArmadillogCore', 'contentLineItemViewUpdate', arguments);
+
+        var contentLineEl = contentLineItemMMap.get('view').el;
+
+        var textFiltered = contentLineItemMMap.get('textFiltered');
+        contentLineEl.innerHTML = textFiltered || '';
+
+        mUtils.dom.classDepend(contentLineEl, this.HIDDEN_CLASS, contentLineItemMMap.get('hidden'));
+
+        return true;
     },
 
     /**
@@ -1740,15 +1765,15 @@ ArmadillogCore.prototype = {
                 contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
                 contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
 
-                contentLineItemView = this.contentLineItemViewCreate(contentLineIndex, contentLineItemMMap);
-                contentLineItemMMap.set('view', contentLineItemView);
+                this.contentLineItemViewCreate(contentLineIndex, contentLineItemMMap);
+                contentLineItemView = contentLineItemMMap.get('view');
 
                 contentLineItemView.el.setAttribute('data-index', contentLineIndex);
 
+                this.contentLineItemViewUpdate(contentLineIndex, contentLineItemMMap);
+
                 documentFragment.appendChild(contentLineItemView.el);
             }
-
-            this.contentLineViewListUpdate(contentLineViewList, chunkIndex, Math.min(chunkSize, this.CONTENT_OVERFLOW_CHUNK_SIZE));
 
             this.contentView.lineListEl.insertBefore(
                 documentFragment,
@@ -1788,18 +1813,12 @@ ArmadillogCore.prototype = {
             chunkSize = typeof chunkSize === 'undefined' ? contentLineViewList.length - chunkIndex : Math.min(chunkSize, contentLineViewList.length - chunkIndex);
 
             var contentLineIndex, contentLineItemMMap;
-            var textFiltered, contentLineEl;
 
             for (var i = 0; i < chunkSize && i < this.CONTENT_OVERFLOW_CHUNK_SIZE; i++) {
                 contentLineIndex = contentLineViewList[chunkIndex + i].contentLineIndex;
                 contentLineItemMMap = contentLineViewList[chunkIndex + i].contentLineItemMMap;
 
-                contentLineEl = contentLineItemMMap.get('view').el;
-
-                textFiltered = contentLineItemMMap.get('textFiltered');
-                contentLineEl.innerHTML = textFiltered || '';
-
-                mUtils.dom.classDepend(contentLineEl, this.HIDDEN_CLASS, contentLineItemMMap.get('hidden'));
+                this.contentLineItemViewUpdate(contentLineIndex, contentLineItemMMap);
             }
 
             if (chunkSize > this.CONTENT_OVERFLOW_CHUNK_SIZE) {

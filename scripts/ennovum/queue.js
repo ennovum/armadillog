@@ -42,6 +42,8 @@ Queue.prototype = {
 
         this.thingList = new mBuffer.Buffer();
 
+        this.runBound = this.run.bind(this);
+
         return true;
     },
 
@@ -71,7 +73,7 @@ Queue.prototype = {
 
             this.thingList.shift();
 
-            this.run();
+            mUtils.func.async(this.runBound);
         }
         else {
             var thingIndex = this.thingList.indexOf(thing);
@@ -82,7 +84,7 @@ Queue.prototype = {
             this.thingList.splice(thingIndex, 1);
 
             if (thingIndex === 0) {
-                this.run();
+                mUtils.func.async(this.runBound);
             }
         }
 
@@ -103,7 +105,7 @@ Queue.prototype = {
         }
 
         if (typeof thing === 'function') {
-            mUtils.func.async(thing);
+            thing();
         }
 
         return true;
