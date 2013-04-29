@@ -51,9 +51,7 @@ Queue.prototype = {
     queue: function Queue_queue(thing) {
         DEBUG && console.log('Queue', 'queue', arguments);
 
-        this.thingList.push(thing);
-
-        if (this.thingList.length() === 1) {
+        if (this.thingList.push(thing) === 1) {
             this.run();
         }
 
