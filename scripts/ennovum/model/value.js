@@ -44,10 +44,8 @@ ModelValue.prototype = {
 		this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
 		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
 
-		this.eventMap = {
-			'model-update': []
-		};
-
+		this.eventGroupList = [];
+		this.flushQueued = false;
 		this.valueListener = null;
 
 		if (value !== undefined) {
@@ -79,8 +77,8 @@ ModelValue.prototype = {
 		if (value !== valueOld) {
 			this.value = value;
 
-			this.valueOff(key, valueOld);
-			this.valueOn(key, value);
+			this.valueOff(valueOld);
+			this.valueOn(value);
 
 			this.eventAdd(
 				'model-update',
@@ -148,7 +146,7 @@ ModelValue.prototype = {
 	},
 
 	/**
-	 * Adds the event to the event map and queues event map flush
+	 * Adds the event to the event group list and queues event flush
 	 *
 	 * @param {string} event event name
 	 * @param {dataList} event data list
@@ -156,20 +154,47 @@ ModelValue.prototype = {
 	eventAdd: function ModelValue_eventAdd(event, dataList) {
 		DEBUG && console.log('ModelValue', 'eventAdd', arguments);
 
-		this.eventMap[event].push.apply(this.eventMap[event], dataList);
+        var eventGroup = this.eventGroupList[this.eventGroupList.length - 1] || null;
+        if (!eventGroup || eventGroup.event !== event) {
+            eventGroup = {
+                'event': event,
+                'dataList': []
+            };
+            this.eventGroupList.push(eventGroup);
+        }
 
-		this.queue(function ModelValue_eventAdd_eventTrigger() {
-			for (event in this.eventMap) {
-				if (this.eventMap[event].length) {
-					this.trigger(event, this.eventMap[event]);
-					this.eventMap[event] = [];
-				}
-			}
+        eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
 
-			this.dequeue();
-		}.bind(this));
+        if (!this.flushQueued) {
+            this.flushQueued = true;
+
+            this.queue(function ModelMap_eventAdd_eventFlush() {
+                this.flushQueued = false;
+                this.eventFlush();
+
+                this.dequeue();
+            }.bind(this));
+        }
 
 		return true;
+	},
+
+	/**
+	 * Flushes events
+	 */
+	eventFlush: function ModelValue_eventFlush() {
+		DEBUG && console.log('ModelValue', 'eventFlush', arguments);
+
+		var eventGroupList = this.eventGroupList;
+		this.eventGroupList = [];
+
+        for (var i = 0, l = eventGroupList.length; i < l; i++) {
+			if (eventGroupList[i].dataList.length) {
+				this.trigger(eventGroupList[i].event, eventGroupList[i].dataList);
+			}
+		}
+
+		return this.map;
 	},
 
 	/**

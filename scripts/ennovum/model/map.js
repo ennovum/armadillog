@@ -49,13 +49,8 @@ ModelMap.prototype = {
 
 		this.map = {};
 
-		this.eventMap = {
-			'model-insert': [],
-			'model-update': [],
-			'model-delete': [],
-			'model-forward': []
-		};
-
+		this.eventGroupList = [];
+		this.flushQueued = false;
 		this.valueListenerMap = {};
 
 		if (arguments.length) {
@@ -242,7 +237,7 @@ ModelMap.prototype = {
 	},
 
 	/**
-	 * Adds the event to the event map and queues event map flush
+	 * Adds the event to the event group list and queues event flush
 	 *
 	 * @param {string} event event name
 	 * @param {dataList} event data list
@@ -250,20 +245,47 @@ ModelMap.prototype = {
 	eventAdd: function ModelMap_eventAdd(event, dataList) {
 		DEBUG && console.log('ModelMap', 'eventAdd', arguments);
 
-		this.eventMap[event].push.apply(this.eventMap[event], dataList);
+		var eventGroup = this.eventGroupList[this.eventGroupList.length - 1] || null;
+        if (!eventGroup || eventGroup.event !== event) {
+			eventGroup = {
+				'event': event,
+				'dataList': []
+			};
+			this.eventGroupList.push(eventGroup);
+		}
 
-		this.queue(function ModelMap_eventAdd_eventTrigger() {
-			for (event in this.eventMap) {
-				if (this.eventMap[event].length) {
-					this.trigger(event, this.eventMap[event]);
-					this.eventMap[event] = [];
-				}
-			}
+		eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
 
-			this.dequeue();
-		}.bind(this));
+        if (!this.flushQueued) {
+            this.flushQueued = true;
+
+            this.queue(function ModelMap_eventAdd_eventFlush() {
+                this.flushQueued = false;
+                this.eventFlush();
+
+                this.dequeue();
+            }.bind(this));
+        }
 
 		return true;
+	},
+
+	/**
+	 * Flushes events
+	 */
+	eventFlush: function ModelMap_eventFlush() {
+		DEBUG && console.log('ModelMap', 'eventFlush', arguments);
+
+		var eventGroupList = this.eventGroupList;
+		this.eventGroupList = [];
+
+        for (var i = 0, l = eventGroupList.length; i < l; i++) {
+			if (eventGroupList[i].dataList.length) {
+				this.trigger(eventGroupList[i].event, eventGroupList[i].dataList);
+			}
+		}
+
+		return this.map;
 	},
 
 	/**
