@@ -50,6 +50,11 @@ ArmadillogCore.prototype = {
 
     FILTER_LIST_STORAGE_NAME: 'filterList',
 
+    FILTER_TAG_FILTERED_BEGIN_SYMBOL: '\uff00\uff80',
+    FILTER_TAG_FILTERED_END_SYMBOL: '\uff01\uff81',
+    FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: '\uff02\uff82',
+    FILTER_TAG_HIGHLIGHT_END_SYMBOL: '\uff03\uff83',
+
     CONTENT_OVERFLOW_CHUNK_SIZE: 5000,
     CONTENT_OVERFLOW_DELAY: 500,
 
@@ -388,11 +393,6 @@ ArmadillogCore.prototype = {
                 var textFiltered = data.text;
                 var filterList = JSON.parse(data.filterListJSON);
 
-                var FILTER_TAG_FILTERED_BEGIN_SYMBOL = '\uff00\uff80';
-                var FILTER_TAG_FILTERED_END_SYMBOL = '\uff01\uff81';
-                var FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL = '\uff02\uff82';
-                var FILTER_TAG_HIGHLIGHT_END_SYMBOL = '\uff03\uff83';
-
                 var hidden = false;
                 var filterItem;
                 var regexp, match;
@@ -408,68 +408,49 @@ ArmadillogCore.prototype = {
                     match = textFiltered.match(regexp);
 
                     switch (filterItem.affectType) {
-                        case '1': // FILTER_AFFECT_TYPE_SHOW_LINE
+                        case data.FILTER_AFFECT_TYPE_SHOW_LINE:
                             if (match) {
-                                textFiltered = textFiltered.replace(regexp, FILTER_TAG_FILTERED_BEGIN_SYMBOL + '$1' + FILTER_TAG_FILTERED_END_SYMBOL);
+                                textFiltered = textFiltered.replace(regexp, data.FILTER_TAG_FILTERED_BEGIN_SYMBOL + '$1' + data.FILTER_TAG_FILTERED_END_SYMBOL);
                             }
                             else {
                                 hidden = true;
                             }
                             break;
 
-                        case '2': // FILTER_AFFECT_TYPE_SHOW
+                        case data.FILTER_AFFECT_TYPE_SHOW:
                             if (match) {
-                                textFiltered = FILTER_TAG_FILTERED_BEGIN_SYMBOL + match.join(FILTER_TAG_FILTERED_END_SYMBOL + ' ' + FILTER_TAG_FILTERED_BEGIN_SYMBOL) + FILTER_TAG_FILTERED_END_SYMBOL;
+                                textFiltered = data.FILTER_TAG_FILTERED_BEGIN_SYMBOL + match.join(data.FILTER_TAG_FILTERED_END_SYMBOL + ' ' + data.FILTER_TAG_FILTERED_BEGIN_SYMBOL) + data.FILTER_TAG_FILTERED_END_SYMBOL;
                             }
                             else {
                                 hidden = true;
                             }
                             break;
 
-                        case '3': // FILTER_AFFECT_TYPE_HIDE_LINE
+                        case data.FILTER_AFFECT_TYPE_HIDE_LINE:
                             if (match) {
                                 hidden = true;
                             }
                             break;
 
-                        case '4': // FILTER_AFFECT_TYPE_HIDE
+                        case data.FILTER_AFFECT_TYPE_HIDE:
                             if (match) {
                                 textFiltered = textFiltered.replace(match[0], '');
                             }
                             break;
 
-                        case '5': // FILTER_AFFECT_TYPE_HIGHLIGHT_LINE
+                        case data.FILTER_AFFECT_TYPE_HIGHLIGHT_LINE:
                             if (match) {
-                                textFiltered = FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + textFiltered + FILTER_TAG_HIGHLIGHT_END_SYMBOL;
+                                textFiltered = data.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + textFiltered + data.FILTER_TAG_HIGHLIGHT_END_SYMBOL;
                             }
                             break;
 
-                        case '6': // FILTER_AFFECT_TYPE_HIGHLIGHT
+                        case data.FILTER_AFFECT_TYPE_HIGHLIGHT:
                             if (match) {
-                                textFiltered = textFiltered.replace(regexp, FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + '$1' + FILTER_TAG_HIGHLIGHT_END_SYMBOL);
+                                textFiltered = textFiltered.replace(regexp, data.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + '$1' + data.FILTER_TAG_HIGHLIGHT_END_SYMBOL);
                             }
                             break;
                     }
                 }
-
-                textFiltered = textFiltered.replace(
-                    new RegExp(
-                        [
-                            FILTER_TAG_FILTERED_BEGIN_SYMBOL,
-                            FILTER_TAG_FILTERED_END_SYMBOL,
-                            FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL,
-                            FILTER_TAG_HIGHLIGHT_END_SYMBOL
-                        ].join('|'),
-                        'gi'),
-                    function (match) {
-                        switch (match) {
-                            case FILTER_TAG_FILTERED_BEGIN_SYMBOL: return '<span class="filtered">';
-                            case FILTER_TAG_FILTERED_END_SYMBOL: return '</span>';
-                            case FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: return '<span class="highlight">';
-                            case FILTER_TAG_HIGHLIGHT_END_SYMBOL: return '</span>';
-                        }
-                        return '';
-                    });
 
                 success(
                     {
@@ -1101,14 +1082,13 @@ ArmadillogCore.prototype = {
     /**
      * Sets examine content
      *
-     * @param {string} textRaw examine raw text
-     * @param {string} textFiltered examine filtered text
+     * @param {object} contentLineItemMMap content line model object
      */
-    examineContentSet: function ArmadillogCore_examineContentSet(textRaw, textFiltered) {
+    examineContentSet: function ArmadillogCore_examineContentSet(contentLineItemMMap) {
         DEBUG && console.log('ArmadillogCore', 'examineContentSet', arguments);
 
-        this.examineView.rawContentEl.innerHTML = textRaw;
-        this.examineView.filteredContentEl.innerHTML = textFiltered;
+        this.examineView.rawContentEl.innerHTML = mUtils.string.escapeXML(contentLineItemMMap.get('textRaw'));
+        this.examineView.filteredContentEl.innerHTML = contentLineItemMMap.get('view').el.innerHTML;
 
         return true;
     },
@@ -1134,6 +1114,15 @@ ArmadillogCore.prototype = {
         this.contentTailing = false;
 
         this.contentLineMList = new mModel.ModelList();
+
+        this.contentLineEscapeRegexp = new RegExp(
+            [
+                this.FILTER_TAG_FILTERED_BEGIN_SYMBOL,
+                this.FILTER_TAG_FILTERED_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_END_SYMBOL
+            ].join('|'),
+            'gi'),
 
         this.contentFile = null;
         this.contentFileUpdateTimeout = null;
@@ -1282,7 +1271,7 @@ ArmadillogCore.prototype = {
                         mUtils.dom.classAdd(contentLineEl, 'selected');
 
                         var contentLineItemMMap = this.contentLineMList.getAt(~~contentLineEl.getAttribute('data-index'));
-                        this.examineContentSet(contentLineItemMMap.get('textRaw'), contentLineItemMMap.get('textFiltered'));
+                        this.examineContentSet(contentLineItemMMap);
                     }
                 }
 
@@ -1608,9 +1597,9 @@ ArmadillogCore.prototype = {
                 if ('text' in data) {
                     var contentLineItemMMap = new mModel.ModelMap(
                         'textRaw',
-                        mUtils.string.escapeXML(data.text),
+                        data.text,
                         'textFiltered',
-                        mUtils.string.escapeXML(data.text),
+                        data.text,
                         'hidden',
                         false,
                         'view',
@@ -1622,7 +1611,7 @@ ArmadillogCore.prototype = {
                 }
 
                 if ('count' in data) {
-                    this.inputView.clearLabelEl.innerHTML = label || '(unknown)';
+                    this.inputView.clearLabelEl.innerHTML = mUtils.string.escapeXML(label) || '(unknown)';
 
                     this.contentLineMList.dequeue('content-text-set');
                 }
@@ -1734,8 +1723,17 @@ ArmadillogCore.prototype = {
 
         var contentLineEl = contentLineItemMMap.get('view').el;
 
-        var textFiltered = contentLineItemMMap.get('textFiltered');
-        contentLineEl.innerHTML = textFiltered || '';
+        contentLineEl.innerHTML = mUtils.string.escapeXML(contentLineItemMMap.get('textFiltered')).replace(
+            this.contentLineEscapeRegexp,
+            function (match) {
+                switch (match) {
+                    case this.FILTER_TAG_FILTERED_BEGIN_SYMBOL: return '<span class="filtered">';
+                    case this.FILTER_TAG_FILTERED_END_SYMBOL: return '</span>';
+                    case this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: return '<span class="highlight">';
+                    case this.FILTER_TAG_HIGHLIGHT_END_SYMBOL: return '</span>';
+                }
+                return '';
+            }.bind(this));
 
         mUtils.dom.classDepend(contentLineEl, this.HIDDEN_CLASS, contentLineItemMMap.get('hidden'));
 
@@ -1934,8 +1932,19 @@ ArmadillogCore.prototype = {
 
             this.workerFilter.run(
                 {
+                    'FILTER_AFFECT_TYPE_SHOW_LINE': this.FILTER_AFFECT_TYPE_SHOW_LINE,
+                    'FILTER_AFFECT_TYPE_SHOW': this.FILTER_AFFECT_TYPE_SHOW,
+                    'FILTER_AFFECT_TYPE_HIDE_LINE': this.FILTER_AFFECT_TYPE_HIDE_LINE,
+                    'FILTER_AFFECT_TYPE_HIDE': this.FILTER_AFFECT_TYPE_HIDE,
+                    'FILTER_AFFECT_TYPE_HIGHLIGHT_LINE': this.FILTER_AFFECT_TYPE_HIGHLIGHT_LINE,
+                    'FILTER_AFFECT_TYPE_HIGHLIGHT': this.FILTER_AFFECT_TYPE_HIGHLIGHT,
+                    'FILTER_TAG_FILTERED_BEGIN_SYMBOL': this.FILTER_TAG_FILTERED_BEGIN_SYMBOL,
+                    'FILTER_TAG_FILTERED_END_SYMBOL': this.FILTER_TAG_FILTERED_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_END_SYMBOL,
                     'text': contentLineItemMMap.get('textRaw'),
                     'filterListJSON': filterListJSON
+
                 },
                 null,
                 function ArmadillogCore_contentLineListFilter_workerFilterSuccess(contentLineItemMMap, data) {
