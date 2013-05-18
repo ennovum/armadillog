@@ -1599,9 +1599,9 @@ ArmadillogCore.prototype = {
                         'textRaw',
                         data.text,
                         'textFiltered',
-                        data.text,
+                        null,
                         'hidden',
-                        false,
+                        true,
                         'view',
                         null);
 
@@ -1646,8 +1646,6 @@ ArmadillogCore.prototype = {
                         if (contentLineItemMMap.get('textRaw') !== data.text) {
                             contentLineItemMMap.set(
                                 'textRaw',
-                                data.text,
-                                'textFiltered',
                                 data.text);
 
                             this.contentLineListFilter([contentLineItemMMap]);
@@ -1658,9 +1656,9 @@ ArmadillogCore.prototype = {
                             'textRaw',
                             data.text,
                             'textFiltered',
-                            data.text,
+                            null,
                             'hidden',
-                            false,
+                            true,
                             'view',
                             null);
 
@@ -1722,18 +1720,21 @@ ArmadillogCore.prototype = {
         DEBUG && console.log('ArmadillogCore', 'contentLineItemViewUpdate', arguments);
 
         var contentLineEl = contentLineItemMMap.get('view').el;
+        var textFiltered = contentLineItemMMap.get('textFiltered');
 
-        contentLineEl.innerHTML = mUtils.string.escapeXML(contentLineItemMMap.get('textFiltered')).replace(
-            this.contentLineEscapeRegexp,
-            function (match) {
-                switch (match) {
-                    case this.FILTER_TAG_FILTERED_BEGIN_SYMBOL: return '<span class="filtered">';
-                    case this.FILTER_TAG_FILTERED_END_SYMBOL: return '</span>';
-                    case this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: return '<span class="highlight">';
-                    case this.FILTER_TAG_HIGHLIGHT_END_SYMBOL: return '</span>';
-                }
-                return '';
-            }.bind(this));
+        if (textFiltered !== null) {
+            contentLineEl.innerHTML = mUtils.string.escapeXML(textFiltered).replace(
+                this.contentLineEscapeRegexp,
+                function (match) {
+                    switch (match) {
+                        case this.FILTER_TAG_FILTERED_BEGIN_SYMBOL: return '<span class="filtered">';
+                        case this.FILTER_TAG_FILTERED_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: return '<span class="highlight">';
+                        case this.FILTER_TAG_HIGHLIGHT_END_SYMBOL: return '</span>';
+                    }
+                    return '';
+                }.bind(this));
+        }
 
         mUtils.dom.classDepend(contentLineEl, this.HIDDEN_CLASS, contentLineItemMMap.get('hidden'));
 
