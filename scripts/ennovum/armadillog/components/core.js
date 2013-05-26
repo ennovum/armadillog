@@ -48,12 +48,46 @@ ArmadillogCore.prototype = {
     FILTER_VALUE_TYPE_TEXT: '1',
     FILTER_VALUE_TYPE_REGEXP: '2',
 
-    FILTER_LIST_STORAGE_NAME: 'filterList',
+    FILTER_HIGHLIGHT_TYPE_0: '',
+    FILTER_HIGHLIGHT_TYPE_1: '1',
+    FILTER_HIGHLIGHT_TYPE_2: '2',
+    FILTER_HIGHLIGHT_TYPE_3: '3',
+    FILTER_HIGHLIGHT_TYPE_4: '4',
+    FILTER_HIGHLIGHT_TYPE_5: '5',
+    FILTER_HIGHLIGHT_TYPE_6: '6',
+    FILTER_HIGHLIGHT_TYPE_7: '7',
+    FILTER_HIGHLIGHT_TYPE_8: '8',
+    FILTER_HIGHLIGHT_TYPE_9: '9',
+    FILTER_HIGHLIGHT_TYPE_10: '10',
+    FILTER_HIGHLIGHT_TYPE_11: '11',
+    FILTER_HIGHLIGHT_TYPE_12: '12',
 
-    FILTER_TAG_FILTERED_BEGIN_SYMBOL: '\uff00\uff80',
-    FILTER_TAG_FILTERED_END_SYMBOL: '\uff01\uff81',
-    FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: '\uff02\uff82',
-    FILTER_TAG_HIGHLIGHT_END_SYMBOL: '\uff03\uff83',
+    FILTER_TAG_HIGHLIGHT_1_BEGIN_SYMBOL: '\uff00\uff80',
+    FILTER_TAG_HIGHLIGHT_1_END_SYMBOL: '\uff01\uff81',
+    FILTER_TAG_HIGHLIGHT_2_BEGIN_SYMBOL: '\uff02\uff82',
+    FILTER_TAG_HIGHLIGHT_2_END_SYMBOL: '\uff03\uff83',
+    FILTER_TAG_HIGHLIGHT_3_BEGIN_SYMBOL: '\uff04\uff84',
+    FILTER_TAG_HIGHLIGHT_3_END_SYMBOL: '\uff05\uff85',
+    FILTER_TAG_HIGHLIGHT_4_BEGIN_SYMBOL: '\uff06\uff86',
+    FILTER_TAG_HIGHLIGHT_4_END_SYMBOL: '\uff07\uff87',
+    FILTER_TAG_HIGHLIGHT_5_BEGIN_SYMBOL: '\uff08\uff88',
+    FILTER_TAG_HIGHLIGHT_5_END_SYMBOL: '\uff09\uff89',
+    FILTER_TAG_HIGHLIGHT_6_BEGIN_SYMBOL: '\uff0a\uff8a',
+    FILTER_TAG_HIGHLIGHT_6_END_SYMBOL: '\uff0b\uff8b',
+    FILTER_TAG_HIGHLIGHT_7_BEGIN_SYMBOL: '\uff0c\uff8c',
+    FILTER_TAG_HIGHLIGHT_7_END_SYMBOL: '\uff0d\uff8d',
+    FILTER_TAG_HIGHLIGHT_8_BEGIN_SYMBOL: '\uff0e\uff8e',
+    FILTER_TAG_HIGHLIGHT_8_END_SYMBOL: '\uff0f\uff8f',
+    FILTER_TAG_HIGHLIGHT_9_BEGIN_SYMBOL: '\uff10\uff90',
+    FILTER_TAG_HIGHLIGHT_9_END_SYMBOL: '\uff11\uff91',
+    FILTER_TAG_HIGHLIGHT_10_BEGIN_SYMBOL: '\uff12\uff92',
+    FILTER_TAG_HIGHLIGHT_10_END_SYMBOL: '\uff13\uff93',
+    FILTER_TAG_HIGHLIGHT_11_BEGIN_SYMBOL: '\uff14\uff94',
+    FILTER_TAG_HIGHLIGHT_11_END_SYMBOL: '\uff15\uff95',
+    FILTER_TAG_HIGHLIGHT_12_BEGIN_SYMBOL: '\uff16\uff96',
+    FILTER_TAG_HIGHLIGHT_12_END_SYMBOL: '\uff17\uff97',
+
+    FILTER_LIST_STORAGE_NAME: 'filterList',
 
     CONTENT_OVERFLOW_CHUNK_SIZE: 5000,
     CONTENT_OVERFLOW_DELAY: 500,
@@ -377,6 +411,74 @@ ArmadillogCore.prototype = {
             }
         ];
 
+        this.filterHighlightTypes = [
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_0,
+                'class': null,
+                'label': 'No style'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_1,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_1,
+                'label': 'Style 1'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_2,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_2,
+                'label': 'Style 2'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_3,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_3,
+                'label': 'Style 3'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_4,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_4,
+                'label': 'Style 4'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_5,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_5,
+                'label': 'Style 5'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_6,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_6,
+                'label': 'Style 6'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_7,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_7,
+                'label': 'Style 7'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_8,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_8,
+                'label': 'Style 8'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_9,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_9,
+                'label': 'Style 9'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_10,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_10,
+                'label': 'Style 10'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_11,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_11,
+                'label': 'Style 11'
+            },
+            {
+                'value': this.FILTER_HIGHLIGHT_TYPE_12,
+                'class': 'highlight highlight-' + this.FILTER_HIGHLIGHT_TYPE_12,
+                'label': 'Style 12'
+            }
+        ];
+
         this.filterWorkerCreate();
 
         return true;
@@ -404,13 +506,16 @@ ArmadillogCore.prototype = {
                         continue;
                     }
 
+                    var tagBeginSymbol = filterItem.highlightType ? data['FILTER_TAG_HIGHLIGHT_' + filterItem.highlightType + '_BEGIN_SYMBOL'] || '' : '';
+                    var tagEndSymbol = filterItem.highlightType ? data['FILTER_TAG_HIGHLIGHT_' + filterItem.highlightType + '_END_SYMBOL'] || '' : '';
+
                     regexp = new RegExp('(' + filterItem.value + ')', 'gi');
                     match = textFiltered.match(regexp);
 
                     switch (filterItem.affectType) {
                         case data.FILTER_AFFECT_TYPE_SHOW_LINE:
                             if (match) {
-                                textFiltered = textFiltered.replace(regexp, data.FILTER_TAG_FILTERED_BEGIN_SYMBOL + '$1' + data.FILTER_TAG_FILTERED_END_SYMBOL);
+                                textFiltered = textFiltered.replace(regexp, tagBeginSymbol + '$1' + tagEndSymbol);
                             }
                             else {
                                 hidden = true;
@@ -419,7 +524,7 @@ ArmadillogCore.prototype = {
 
                         case data.FILTER_AFFECT_TYPE_SHOW:
                             if (match) {
-                                textFiltered = data.FILTER_TAG_FILTERED_BEGIN_SYMBOL + match.join(data.FILTER_TAG_FILTERED_END_SYMBOL + ' ' + data.FILTER_TAG_FILTERED_BEGIN_SYMBOL) + data.FILTER_TAG_FILTERED_END_SYMBOL;
+                                textFiltered = tagBeginSymbol + match.join(tagEndSymbol + ' ' + tagBeginSymbol) + tagEndSymbol;
                             }
                             else {
                                 hidden = true;
@@ -440,13 +545,13 @@ ArmadillogCore.prototype = {
 
                         case data.FILTER_AFFECT_TYPE_HIGHLIGHT_LINE:
                             if (match) {
-                                textFiltered = data.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + textFiltered + data.FILTER_TAG_HIGHLIGHT_END_SYMBOL;
+                                textFiltered = tagBeginSymbol + textFiltered + tagEndSymbol;
                             }
                             break;
 
                         case data.FILTER_AFFECT_TYPE_HIGHLIGHT:
                             if (match) {
-                                textFiltered = textFiltered.replace(regexp, data.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL + '$1' + data.FILTER_TAG_HIGHLIGHT_END_SYMBOL);
+                                textFiltered = textFiltered.replace(regexp, tagBeginSymbol + '$1' + tagEndSymbol);
                             }
                             break;
                     }
@@ -583,7 +688,7 @@ ArmadillogCore.prototype = {
                     if (
                         dataList[i].event === 'model-update' &&
                         dataList[i].dataList.some(function (dataItem) {
-                            return ~['mute', 'affectType', 'value', 'valueType'].indexOf(dataItem.key);
+                            return ~['mute', 'affectType', 'value', 'valueType', 'highlightType'].indexOf(dataItem.key);
                         })
                     ) {
                         filterDataList.push({
@@ -635,28 +740,72 @@ ArmadillogCore.prototype = {
             'value',
             'value' in data ? data.value : '',
             'valueType',
-            'valueType' in data ? data.valueType : this.FILTER_VALUE_TYPE_TEXT);
+            'valueType' in data ? data.valueType : this.FILTER_VALUE_TYPE_TEXT,
+            'highlightType',
+            'highlightType' in data ? data.highlightType : this.FILTER_HIGHLIGHT_TYPE_0);
 
-        filterItemMMap.set(
-            'view',
-            this.filterItemViewCreate(filterItemMMap));
+        this.filterItemViewCreate(filterItemMMap);
 
         return filterItemMMap;
     },
 
     /**
-     * Creates a filter item view stricture
+     * Creates a filter item view structure
      *
      * @param {object} filterItemMMap filter item data
      */
     filterItemViewCreate: function ArmadillogCore_filterItemViewCreate(filterItemMMap) {
         DEBUG && console.log('ArmadillogCore', 'filterItemViewCreate', arguments);
 
-        return this.armadillogView.filterItemViewGet({
-            'id': filterItemMMap.get('id'),
-            'filterAffectTypes': this.filterAffectTypes,
-            'filterValueTypes': this.filterValueTypes
-        });
+        filterItemMMap.set(
+            'view',
+            this.armadillogView.filterItemViewGet({
+                'id': filterItemMMap.get('id'),
+                'filterAffectTypes': this.filterAffectTypes,
+                'filterValueTypes': this.filterValueTypes,
+                'filterHighlightTypes': this.filterHighlightTypes
+            }));
+
+        return true;
+    },
+
+    /**
+     * Updates a filter item view structure
+     *
+     * @param {object} filterItemMMap filter item data
+     */
+    filterItemViewUpdate: function ArmadillogCore_filterItemViewUpdate(filterItemMMap) {
+        DEBUG && console.log('ArmadillogCore', 'filterViewListInsert', arguments);
+
+        filterItemMMap.get('view').muteCheckboxEl.checked = filterItemMMap.get('mute');
+
+        var filterItemAffectTypeList = filterItemMMap.get('view').affectTypeList;
+        var filterItemAffectTypeItem;
+
+        for (var j = 0, m = filterItemAffectTypeList.length; j < m; j++) {
+            filterItemAffectTypeItem = filterItemAffectTypeList[j];
+            filterItemAffectTypeItem.radioEl.checked = (filterItemMMap.get('affectType') === filterItemAffectTypeItem.radioEl.value);
+        }
+
+        filterItemMMap.get('view').valueInputEl.value = filterItemMMap.get('value') || '';
+
+        var filterItemValueTypeList = filterItemMMap.get('view').valueTypeList;
+        var filterItemValueTypeItem;
+
+        for (var j = 0, m = filterItemValueTypeList.length; j < m; j++) {
+            filterItemValueTypeItem = filterItemValueTypeList[j];
+            filterItemValueTypeItem.radioEl.checked = (filterItemMMap.get('valueType') === filterItemValueTypeItem.radioEl.value);
+        }
+
+        var filterItemHighlightTypeList = filterItemMMap.get('view').highlightTypeList;
+        var filterItemHighlightTypeItem;
+
+        for (var j = 0, m = filterItemHighlightTypeList.length; j < m; j++) {
+            filterItemHighlightTypeItem = filterItemHighlightTypeList[j];
+            filterItemHighlightTypeItem.radioEl.checked = (filterItemMMap.get('highlightType') === filterItemHighlightTypeItem.radioEl.value);
+        }
+
+        return true;
     },
 
     /**
@@ -838,6 +987,17 @@ ArmadillogCore.prototype = {
                 return false;
             }
 
+            var filterItemHighlightTypeList = filterItemMMap.get('view').highlightTypeList;
+            var filterItemHighlightTypeItem;
+
+            for (var j = 0, m = filterItemHighlightTypeList.length; j < m; j++) {
+                filterItemHighlightTypeItem = filterItemHighlightTypeList[j];
+
+                if (filterItemHighlightTypeItem.radioEl.checked) {
+                    filterItemMMap.set('highlightType', filterItemHighlightTypeItem.radioEl.value);
+                }
+            }
+
             filterItemMMap.dequeue('filter-submit');
         }
 
@@ -853,28 +1013,36 @@ ArmadillogCore.prototype = {
     filterViewListInsert: function ArmadillogCore_filterViewListInsert(filterDataList) {
         DEBUG && console.log('ArmadillogCore', 'filterViewListInsert', arguments);
 
-        this.filterViewListUpdate(filterDataList);
-
         var filterIndex,
             filterItemMMap,
-            filterDirty = false;
+            filterItemNextMMap;
 
         for (var i = 0, l = filterDataList.length; i < l; i++) {
             filterIndex = filterDataList[i].filterIndex;
             filterItemMMap = filterDataList[i].filterItemMMap;
 
             this.filterItemUiInit(filterItemMMap);
+            this.filterItemViewUpdate(filterItemMMap);
 
-            if (filterItemMMap.get('value')) {
-                filterDirty = true;
+            // TODO: better handling situation in which next item exists, but it's view.el is non in DOM yet.
+            filterItemNextMMap = this.filterMList.getAt(filterIndex + 1);
+
+            try {
+                this.filterView.listEl.insertBefore(
+                    filterItemMMap.get('view').el,
+                    filterItemNextMMap ? filterItemNextMMap.get('view').el : null);
             }
+            catch (err) {
+                this.filterView.listEl.insertBefore(
+                    filterItemMMap.get('view').el,
+                    null);
+            }
+            // end TODO
         }
 
         this.filterStorageSave();
 
-        if (filterDirty) {
-            this.contentFilterApply();
-        }
+        this.contentFilterApply();
 
         return true;
     },
@@ -887,45 +1055,13 @@ ArmadillogCore.prototype = {
         DEBUG && console.log('ArmadillogCore', 'filterViewListUpdate', arguments);
 
         var filterIndex,
-            filterItemMMap,
-            filterItemNextMMap;
+            filterItemMMap;
 
         for (var i = 0, l = filterDataList.length; i < l; i++) {
             filterIndex = filterDataList[i].filterIndex;
             filterItemMMap = filterDataList[i].filterItemMMap;
-            filterItemNextMMap = this.filterMList.getAt(filterIndex + 1);
 
-            filterItemMMap.get('view').muteCheckboxEl.checked = filterItemMMap.get('mute');
-
-            var filterItemAffectTypeList = filterItemMMap.get('view').affectTypeList;
-            var filterItemAffectTypeItem;
-
-            for (var j = 0, m = filterItemAffectTypeList.length; j < m; j++) {
-                filterItemAffectTypeItem = filterItemAffectTypeList[j];
-                filterItemAffectTypeItem.radioEl.checked = (filterItemMMap.get('affectType') === filterItemAffectTypeItem.radioEl.value);
-            }
-
-            filterItemMMap.get('view').valueInputEl.value = filterItemMMap.get('value') || '';
-
-            var filterItemValueTypeList = filterItemMMap.get('view').valueTypeList;
-            var filterItemValueTypeItem;
-
-            for (var j = 0, m = filterItemValueTypeList.length; j < m; j++) {
-                filterItemValueTypeItem = filterItemValueTypeList[j];
-                filterItemValueTypeItem.radioEl.checked = (filterItemMMap.get('valueType') === filterItemValueTypeItem.radioEl.value);
-            }
-
-            // TODO: better handling situation in which next item exists, but it's view.el is non in DOM yet.
-            try {
-                this.filterView.listEl.insertBefore(
-                    filterItemMMap.get('view').el,
-                    filterItemNextMMap ? filterItemNextMMap.get('view').el : null);
-            }
-            catch (err) {
-                this.filterView.listEl.insertBefore(
-                    filterItemMMap.get('view').el,
-                    null);
-            }
+            this.filterItemViewUpdate(filterItemMMap);
         }
 
         this.filterStorageSave();
@@ -1010,7 +1146,8 @@ ArmadillogCore.prototype = {
                 'mute': filterItemMMap.get('mute'),
                 'affectType': filterItemMMap.get('affectType'),
                 'value': filterItemMMap.get('value'),
-                'valueType': filterItemMMap.get('valueType')
+                'valueType': filterItemMMap.get('valueType'),
+                'highlightType': filterItemMMap.get('highlightType')
             });
         }
 
@@ -1117,10 +1254,30 @@ ArmadillogCore.prototype = {
 
         this.contentLineEscapeRegexp = new RegExp(
             [
-                this.FILTER_TAG_FILTERED_BEGIN_SYMBOL,
-                this.FILTER_TAG_FILTERED_END_SYMBOL,
-                this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL,
-                this.FILTER_TAG_HIGHLIGHT_END_SYMBOL
+                this.FILTER_TAG_HIGHLIGHT_1_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_1_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_2_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_2_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_3_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_3_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_4_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_4_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_5_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_5_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_6_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_6_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_7_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_7_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_8_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_8_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_9_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_9_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_10_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_10_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_11_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_11_END_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_12_BEGIN_SYMBOL,
+                this.FILTER_TAG_HIGHLIGHT_12_END_SYMBOL
             ].join('|'),
             'gi'),
 
@@ -1727,10 +1884,30 @@ ArmadillogCore.prototype = {
                 this.contentLineEscapeRegexp,
                 function (match) {
                     switch (match) {
-                        case this.FILTER_TAG_FILTERED_BEGIN_SYMBOL: return '<span class="filtered">';
-                        case this.FILTER_TAG_FILTERED_END_SYMBOL: return '</span>';
-                        case this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL: return '<span class="highlight">';
-                        case this.FILTER_TAG_HIGHLIGHT_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_1_BEGIN_SYMBOL: return '<span class="highlight highlight-1">';
+                        case this.FILTER_TAG_HIGHLIGHT_1_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_2_BEGIN_SYMBOL: return '<span class="highlight highlight-2">';
+                        case this.FILTER_TAG_HIGHLIGHT_2_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_3_BEGIN_SYMBOL: return '<span class="highlight highlight-3">';
+                        case this.FILTER_TAG_HIGHLIGHT_3_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_4_BEGIN_SYMBOL: return '<span class="highlight highlight-4">';
+                        case this.FILTER_TAG_HIGHLIGHT_4_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_5_BEGIN_SYMBOL: return '<span class="highlight highlight-5">';
+                        case this.FILTER_TAG_HIGHLIGHT_5_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_6_BEGIN_SYMBOL: return '<span class="highlight highlight-6">';
+                        case this.FILTER_TAG_HIGHLIGHT_6_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_7_BEGIN_SYMBOL: return '<span class="highlight highlight-7">';
+                        case this.FILTER_TAG_HIGHLIGHT_7_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_8_BEGIN_SYMBOL: return '<span class="highlight highlight-8">';
+                        case this.FILTER_TAG_HIGHLIGHT_8_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_9_BEGIN_SYMBOL: return '<span class="highlight highlight-9">';
+                        case this.FILTER_TAG_HIGHLIGHT_9_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_10_BEGIN_SYMBOL: return '<span class="highlight highlight-10">';
+                        case this.FILTER_TAG_HIGHLIGHT_10_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_11_BEGIN_SYMBOL: return '<span class="highlight highlight-11">';
+                        case this.FILTER_TAG_HIGHLIGHT_11_END_SYMBOL: return '</span>';
+                        case this.FILTER_TAG_HIGHLIGHT_12_BEGIN_SYMBOL: return '<span class="highlight highlight-12">';
+                        case this.FILTER_TAG_HIGHLIGHT_12_END_SYMBOL: return '</span>';
                     }
                     return '';
                 }.bind(this));
@@ -1898,6 +2075,7 @@ ArmadillogCore.prototype = {
 
             filterItem = {
                 'affectType': filterItemMMap.get('affectType'),
+                'highlightType': filterItemMMap.get('highlightType'),
                 'mute': filterItemMMap.get('mute')
             };
 
@@ -1939,10 +2117,30 @@ ArmadillogCore.prototype = {
                     'FILTER_AFFECT_TYPE_HIDE': this.FILTER_AFFECT_TYPE_HIDE,
                     'FILTER_AFFECT_TYPE_HIGHLIGHT_LINE': this.FILTER_AFFECT_TYPE_HIGHLIGHT_LINE,
                     'FILTER_AFFECT_TYPE_HIGHLIGHT': this.FILTER_AFFECT_TYPE_HIGHLIGHT,
-                    'FILTER_TAG_FILTERED_BEGIN_SYMBOL': this.FILTER_TAG_FILTERED_BEGIN_SYMBOL,
-                    'FILTER_TAG_FILTERED_END_SYMBOL': this.FILTER_TAG_FILTERED_END_SYMBOL,
-                    'FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_BEGIN_SYMBOL,
-                    'FILTER_TAG_HIGHLIGHT_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_1_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_1_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_1_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_1_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_2_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_2_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_2_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_2_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_3_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_3_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_3_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_3_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_4_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_4_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_4_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_4_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_5_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_5_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_5_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_5_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_6_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_6_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_6_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_6_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_7_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_7_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_7_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_7_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_8_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_8_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_8_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_8_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_9_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_9_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_9_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_9_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_10_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_10_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_10_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_10_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_11_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_11_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_11_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_11_END_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_12_BEGIN_SYMBOL': this.FILTER_TAG_HIGHLIGHT_12_BEGIN_SYMBOL,
+                    'FILTER_TAG_HIGHLIGHT_12_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_12_END_SYMBOL,
                     'text': contentLineItemMMap.get('textRaw'),
                     'filterListJSON': filterListJSON
 

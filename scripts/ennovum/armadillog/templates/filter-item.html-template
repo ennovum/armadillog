@@ -9,23 +9,35 @@
         <a href="#filter-move-down" class="filter-move-down">Move down</a>
         <a href="#filter-remove" class="filter-remove">Remove</a>
     </div>
-    <div class="filter-affect-type-list">
-        {{#each filterAffectTypes}}
-        <div class="filter-affect-type-item">
-            <input id="filter-{{../id}}-affect-type-radio-{{this.value}}" name="filter-{{../id}}-affect-type-radio" type="radio" value="{{this.value}}" class="filter-affect-type-radio"{{#if this.default}} checked="checked"{{/if}} />
-            <label for="filter-{{../id}}-affect-type-radio-{{this.value}}" class="filter-affect-type-label">{{this.label}}</label>
+    <div class="filter-action-box">
+        <div class="filter-affect-type-list">
+            {{#each filterAffectTypes}}
+            <div class="filter-affect-type-item">
+                <input id="filter-{{../id}}-affect-type-radio-{{this.value}}" name="filter-{{../id}}-affect-type-radio" type="radio" value="{{this.value}}" class="filter-affect-type-radio"{{#if this.default}} checked="checked"{{/if}} />
+                <label for="filter-{{../id}}-affect-type-radio-{{this.value}}" class="filter-affect-type-label">{{this.label}}</label>
+            </div>
+            {{/each}}
         </div>
-        {{/each}}
     </div>
-    <div class="filter-value-box">
-        <input type="text" class="textinput filter-value-input" />
-    </div>
-    <div class="filter-value-type-list">
-        {{#each filterValueTypes}}
-        <div class="filter-value-type-item">
-            <input id="filter-{{../id}}-value-type-radio-{{this.value}}" name="filter-{{../id}}-value-type-radio" type="radio" value="{{this.value}}" class="filter-value-type-radio"{{#if this.default}} checked="checked"{{/if}} />
-            <label for="filter-{{../id}}-value-type-radio-{{this.value}}" class="filter-value-type-label">{{this.label}}</label>
+    <div class="filter-search-box">
+        <input id="filter-{{id}}-value" type="text" class="textinput filter-value-input" />
+        <div class="filter-value-type-list">
+            {{#each filterValueTypes}}
+            <div class="filter-value-type-item">
+                <input id="filter-{{../id}}-value-type-radio-{{this.value}}" name="filter-{{../id}}-value-type-radio" type="radio" value="{{this.value}}" class="filter-value-type-radio"{{#if this.default}} checked="checked"{{/if}} />
+                <label for="filter-{{../id}}-value-type-radio-{{this.value}}" class="filter-value-type-label">{{this.label}}</label>
+            </div>
+            {{/each}}
         </div>
-        {{/each}}
+    </div>
+    <div class="filter-highlight-box">
+        <div class="filter-highlight-type-list">
+            {{#each filterHighlightTypes}}
+            <div class="filter-highlight-type-item">
+                <input id="filter-{{../id}}-highlight-type-radio-{{this.value}}" name="filter-{{../id}}-highlight-type-radio" type="radio" value="{{this.value}}" class="filter-highlight-type-radio" />
+                <label for="filter-{{../id}}-highlight-type-radio-{{this.value}}" class="filter-highlight-type-label"><span class="{{this.class}}">{{this.label}}</span></label>
+            </div>
+            {{/each}}
+        </div>
     </div>
 </div>

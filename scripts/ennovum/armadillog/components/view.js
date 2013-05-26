@@ -199,6 +199,15 @@ ArmadillogView.prototype = {
             });
         }
 
+        var filterItemHighlightTypeList = [];
+        for (var i = 0, l = context.filterHighlightTypes.length; i < l; i++) {
+            filterItemHighlightTypeList.push({
+                'el': containerEl.querySelectorAll('.filter-highlight-type-item')[i],
+                'radioEl': containerEl.querySelectorAll('.filter-highlight-type-radio')[i],
+                'labelEl': containerEl.querySelectorAll('.filter-highlight-type-label')[i],
+            });
+        }
+
         return {
             'el': containerEl.querySelector('.filter-item'),
             'headerEl': containerEl.querySelector('.filter-header'),
@@ -214,7 +223,9 @@ ArmadillogView.prototype = {
             'valueBoxEl': containerEl.querySelector('.filter-value-box'),
             'valueInputEl': containerEl.querySelector('.filter-value-input'),
             'valueTypeListEl': containerEl.querySelector('.filter-value-type-list'),
-            'valueTypeList': filterItemValueTypeList
+            'valueTypeList': filterItemValueTypeList,
+            'highlightTypeListEl': containerEl.querySelector('.filter-highlight-type-list'),
+            'highlightTypeList': filterItemHighlightTypeList
         };
     },
 
