@@ -74,30 +74,30 @@ require(
         try {
             var config = {
                 'bodyEl': document.querySelector('body'),
-                'topEl': document.querySelector('#top'),
-                'mainEl': document.querySelector('#main'),
-                'mainmenuInputEl': document.querySelector('#armadillog-input-switch'),
-                'mainmenuFilterEl': document.querySelector('#armadillog-filter-switch'),
-                'mainmenuExamineEl': document.querySelector('#armadillog-examine-switch'),
-                'inputWrapperEl': document.querySelector('#armadillog-input-wrapper'),
-                'inputBoxEl': document.querySelector('#armadillog-input-box'),
-                'inputFoldEl': document.querySelector('#armadillog-input-fold'),
-                'filterWrapperEl': document.querySelector('#armadillog-filter-wrapper'),
-                'filterBoxEl': document.querySelector('#armadillog-filter-box'),
-                'filterFoldEl': document.querySelector('#armadillog-filter-fold'),
-                'examineWrapperEl': document.querySelector('#armadillog-examine-wrapper'),
-                'examineBoxEl': document.querySelector('#armadillog-examine-box'),
-                'examineFoldEl': document.querySelector('#armadillog-examine-fold'),
-                'contentBoxEl': document.querySelector('#armadillog-content-box'),
-                'contentScrollEl': document.querySelector('#main'),
-                'contentDropEl': document.querySelector('#main')
+                'topEl': document.querySelector('.top'),
+                'mainEl': document.querySelector('.main'),
+                'mainmenuInputEl': document.querySelector('.input-switch'),
+                'mainmenuFilterEl': document.querySelector('.filter-switch'),
+                'mainmenuExamineEl': document.querySelector('.examine-switch'),
+                'inputWrapperEl': document.querySelector('.input-wrapper'),
+                'inputBoxEl': document.querySelector('.input-box'),
+                'inputFoldEl': document.querySelector('.input-fold'),
+                'filterWrapperEl': document.querySelector('.filter-wrapper'),
+                'filterBoxEl': document.querySelector('.filter-box'),
+                'filterFoldEl': document.querySelector('.filter-fold'),
+                'examineWrapperEl': document.querySelector('.examine-wrapper'),
+                'examineBoxEl': document.querySelector('.examine-box'),
+                'examineFoldEl': document.querySelector('.examine-fold'),
+                'contentBoxEl': document.querySelector('.content-box'),
+                'contentScrollEl': document.querySelector('.main'),
+                'contentDropEl': document.querySelector('.main')
             };
 
             var armadillog = new mArmadillog.Armadillog(config);
             var layout = new mLayout.Layout(config);
 
             armadillog.contentTextSet(
-                document.querySelector('#description').textContent,
+                document.querySelector('.description').textContent,
                 'Welcome message');
         }
         catch (err) {
