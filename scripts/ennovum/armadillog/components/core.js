@@ -643,8 +643,8 @@ ArmadillogCore.prototype = {
                 }
 
                 this.filterViewListInsert(filterDataList);
-
                 mUtils.dom.classDepend(this.filterView.listEl, this.HIDDEN_CLASS, this.filterMList.length() === 0);
+                this.contentFilterApply();
             }.bind(this));
 
         this.filterMList.on(
@@ -660,6 +660,7 @@ ArmadillogCore.prototype = {
                 }
 
                 this.filterViewListUpdate(filterDataList);
+                this.contentFilterApply();
             }.bind(this));
 
         this.filterMList.on(
@@ -675,8 +676,8 @@ ArmadillogCore.prototype = {
                 }
 
                 this.filterViewListDelete(filterDataList);
-
                 mUtils.dom.classDepend(this.filterView.listEl, this.HIDDEN_CLASS, this.filterMList.length() === 0);
+                this.contentFilterApply();
             }.bind(this));
 
         this.filterMList.on(
@@ -700,6 +701,7 @@ ArmadillogCore.prototype = {
 
                 if (filterDataList.length) {
                     this.filterViewListUpdate(filterDataList);
+                    this.contentFilterApply();
                 }
             }.bind(this));
 
@@ -1042,8 +1044,6 @@ ArmadillogCore.prototype = {
 
         this.filterStorageSave();
 
-        this.contentFilterApply();
-
         return true;
     },
 
@@ -1066,8 +1066,6 @@ ArmadillogCore.prototype = {
 
         this.filterStorageSave();
 
-        this.contentFilterApply();
-
         return true;
     },
 
@@ -1079,25 +1077,16 @@ ArmadillogCore.prototype = {
         DEBUG && console.log('ArmadillogCore', 'filterViewListDelete', arguments);
 
         var filterIndex,
-            filterItemMMap,
-            filterDirty = false;
+            filterItemMMap;
 
         for (var i = 0, l = filterDataList.length; i < l; i++) {
             filterIndex = filterDataList[i].filterIndex;
             filterItemMMap = filterDataList[i].filterItemMMap;
 
             this.filterView.listEl.removeChild(filterItemMMap.get('view').el);
-
-            if (filterItemMMap.get('value')) {
-                filterDirty = true;
-            }
         }
 
         this.filterStorageSave();
-
-        if (filterDirty) {
-            this.contentFilterApply();
-        }
 
         return true;
     },
@@ -1457,30 +1446,36 @@ ArmadillogCore.prototype = {
             'model-insert',
             function ArmadillogCore_contentUiInit_contentLineMListInsertHandler(evt, dataList) {
                 var contentLineViewList = [];
+                var contentLineList = [];
 
                 for (var i = 0, l = dataList.length; i < l; i++) {
                     contentLineViewList.push({
                         'contentLineIndex': dataList[i].index,
                         'contentLineItemMMap': dataList[i].valueNew
                     });
+                    contentLineList.push(dataList[i].valueNew);
                 }
 
                 this.contentLineViewListInsert(contentLineViewList);
+                this.contentLineListFilter(contentLineList);
             }.bind(this));
 
         this.contentLineMList.on(
             'model-update',
             function ArmadillogCore_contentUiInit_contentLineMListUpdateHandler(evt, dataList) {
                 var contentLineViewList = [];
+                var contentLineList = [];
 
                 for (var i = 0, l = dataList.length; i < l; i++) {
                     contentLineViewList.push({
                         'contentLineIndex': dataList[i].index,
                         'contentLineItemMMap': dataList[i].valueNew
                     });
+                    contentLineList.push(dataList[i].valueNew);
                 }
 
                 this.contentLineViewListUpdate(contentLineViewList);
+                this.contentLineListFilter(contentLineList);
             }.bind(this));
 
         this.contentLineMList.on(
@@ -1502,6 +1497,7 @@ ArmadillogCore.prototype = {
             'model-forward',
             function ArmadillogCore_contentUiInit_contentLineMListForwardHandler(evt, dataList) {
                 var contentLineViewList = [];
+                var contentLineList = [];
 
                 for (var i = 0, l = dataList.length; i < l; i++) {
                     if (
@@ -1515,10 +1511,21 @@ ArmadillogCore.prototype = {
                             'contentLineItemMMap': dataList[i].valueNew
                         });
                     }
+                    if (
+                        dataList[i].event === 'model-update' &&
+                        dataList[i].dataList.some(function (dataItem) {
+                            return ~['textRaw'].indexOf(dataItem.key);
+                        })
+                    ) {
+                        contentLineList.push(dataList[i].valueNew);
+                    }
                 }
 
                 if (contentLineViewList.length) {
                     this.contentLineViewListUpdate(contentLineViewList);
+                }
+                if (contentLineList.length) {
+                    this.contentLineListFilter(contentLineList);
                 }
             }.bind(this));
 
@@ -1771,8 +1778,6 @@ ArmadillogCore.prototype = {
                         'view',
                         null);
 
-                    this.contentLineListFilter([contentLineItemMMap]);
-
                     this.contentLineMList.setAt(data.index, contentLineItemMMap);
                 }
 
@@ -1815,8 +1820,6 @@ ArmadillogCore.prototype = {
                             contentLineItemMMap.set(
                                 'textRaw',
                                 data.text);
-
-                            this.contentLineListFilter([contentLineItemMMap]);
                         }
                     }
                     else {
@@ -1829,8 +1832,6 @@ ArmadillogCore.prototype = {
                             true,
                             'view',
                             null);
-
-                        this.contentLineListFilter([contentLineItemMMap]);
                     }
 
                     this.contentLineMList.setAt(data.index, contentLineItemMMap);
@@ -2079,8 +2080,7 @@ ArmadillogCore.prototype = {
         this.busySet(true, 'contentLineListFilter');
 
         var filterItemMMap;
-        var filterList = [], filterItem, filterListJSON;
-        var contentLineItemMMap;
+        var filterList = [], filterItem;
 
         for (var i = 0, l = this.filterMList.length(); i < l; i++) {
             filterItemMMap = this.filterMList.getAt(i);
@@ -2114,7 +2114,9 @@ ArmadillogCore.prototype = {
             filterList.push(filterItem);
         }
 
-        filterListJSON = JSON.stringify(filterList);
+        var contentLineItemMMap;
+        var filterListJSON = JSON.stringify(filterList);
+        var workerFilterSuccess;
 
         for (var i = 0, l = contentLineList.length; i < l; i++) {
             contentLineItemMMap = contentLineList[i];
@@ -2160,7 +2162,7 @@ ArmadillogCore.prototype = {
                 {
                     'contentLineItemMMap': contentLineItemMMap
                 },
-                function ArmadillogCore_contentLineListFilter_workerFilterSuccess(data, additional) {
+                workerFilterSuccess || (workerFilterSuccess = function ArmadillogCore_contentLineListFilter_workerFilterSuccess(data, additional) {
                     additional.contentLineItemMMap.set(
                         'textFiltered',
                         data.text,
@@ -2168,7 +2170,7 @@ ArmadillogCore.prototype = {
                         data.hidden);
 
                     this.contentLineMList.dequeue('content-line-list-filter');
-                },
+                }),
                 null,
                 this);
         }
