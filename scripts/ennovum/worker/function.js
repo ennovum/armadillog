@@ -154,7 +154,7 @@ WorkerFunction.prototype = {
      *
      * @param {mixed} data Message data
      */
-    run: function WorkerFunction_run(data, transferables, ready, error) {
+    run: function WorkerFunction_run(data, transferables, additional, ready, error, ctx) {
         DEBUG && console.log('WorkerFunction', 'run', arguments);
 
         switch (false) {
@@ -168,8 +168,10 @@ WorkerFunction.prototype = {
 
         var wid = '' + (this.widSeq++);
         var work = {
-            'ready': ready,
-            'error': error
+            'ctx': ctx || null,
+            'additional': additional || null,
+            'ready': ready || null,
+            'error': error || null
         };
 
         this.workMap[wid] = work;
@@ -212,12 +214,12 @@ WorkerFunction.prototype = {
 
         if (success) {
             if (work.ready) {
-                work.ready.call(work.ready, data);
+                work.ready.call(work.ctx, data, work.additional);
             }
         }
         else {
             if (work.error) {
-                work.error.call(work.error, data);
+                work.error.call(work.ctx, data, work.additional);
             }
         }
 

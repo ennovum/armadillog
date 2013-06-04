@@ -1561,14 +1561,16 @@ ArmadillogCore.prototype = {
                 'url': URL.createObjectURL(file)
             },
             null,
-            function ArmadillogCore_contentFileSet_workerFileReaderSuccess(data) {
+            null,
+            function ArmadillogCore_contentFileSet_workerFileReaderSuccess(data, additional) {
                 URL.revokeObjectURL(data.url);
                 this.contentTextSet(data.result, label);
                 this.contentFileUpdateSchedule();
-            }.bind(this),
+            },
             function ArmadillogCore_contentFileSet_workerFileReaderFailure() {
                 alert('An error occured, please try another input method.');
-            }.bind(this));
+            },
+            this);
 
         return true;
     },
@@ -1593,17 +1595,19 @@ ArmadillogCore.prototype = {
                 'url': URL.createObjectURL(this.contentFile)
             },
             null,
-            function ArmadillogCore_contentFileUpdate_workerFileReaderSuccess(data) {
+            null,
+            function ArmadillogCore_contentFileUpdate_workerFileReaderSuccess(data, additional) {
                 URL.revokeObjectURL(data.url);
 
                 if (this.contentFile) {
                     this.contentTextUpdate(data.result);
                     this.contentFileUpdateSchedule();
                 }
-            }.bind(this),
+            },
             function ArmadillogCore_contentFileUpdate_workerFileReaderFailure() {
                 alert('An error occured, please try another input method.');
-            }.bind(this));
+            },
+            this);
 
         return true;
     },
@@ -1659,13 +1663,15 @@ ArmadillogCore.prototype = {
                 'url': url
             },
             null,
-            function ArmadillogCore_contentUrlSet_workerFileReaderSuccess(data) {
+            null,
+            function ArmadillogCore_contentUrlSet_workerFileReaderSuccess(data, additional) {
                 this.contentTextSet(data.result, label);
                 this.contentUrlUpdateSchedule();
-            }.bind(this),
+            },
             function ArmadillogCore_contentUrlSet_workerFileReaderFailure() {
                 alert('An error occured, please try another input method.');
-            }.bind(this));
+            },
+            this);
 
         return true;
     },
@@ -1690,15 +1696,17 @@ ArmadillogCore.prototype = {
                 'url': this.contentUrl
             },
             null,
-            function ArmadillogCore_contentUrlUpdate_workerFileReaderSuccess(data) {
+            null,
+            function ArmadillogCore_contentUrlUpdate_workerFileReaderSuccess(data, additional) {
                 if (this.contentUrl) {
                     this.contentTextUpdate(data.result);
                     this.contentUrlUpdateSchedule();
                 }
-            }.bind(this),
+            },
             function ArmadillogCore_contentUrlUpdate_workerFileReaderFailure() {
                 alert('An error occured, please try another input method.');
-            }.bind(this));
+            },
+            this);
 
         return true;
     },
@@ -1750,7 +1758,8 @@ ArmadillogCore.prototype = {
                 'text': text
             },
             null,
-            function ArmadillogCore_contentTextSet_workerTextLineSplitterSuccess(data) {
+            null,
+            function ArmadillogCore_contentTextSet_workerTextLineSplitterSuccess(data, additional) {
                 if ('text' in data) {
                     var contentLineItemMMap = new mModel.ModelMap(
                         'textRaw',
@@ -1772,8 +1781,9 @@ ArmadillogCore.prototype = {
 
                     this.contentLineMList.dequeue('content-text-set');
                 }
-            }.bind(this),
-            null);
+            },
+            null,
+            this);
 
         return true;
     },
@@ -1795,7 +1805,8 @@ ArmadillogCore.prototype = {
                 'text': text
             },
             null,
-            function ArmadillogCore_contentTextUpdate_workerTextLineSplitterSuccess(data) {
+            null,
+            function ArmadillogCore_contentTextUpdate_workerTextLineSplitterSuccess(data, additional) {
                 if ('text' in data) {
                     var contentLineItemMMap = this.contentLineMList.getAt(data.index);
 
@@ -1832,8 +1843,9 @@ ArmadillogCore.prototype = {
 
                     this.contentLineMList.dequeue('content-text-update');
                 }
-            }.bind(this),
-            null);
+            },
+            null,
+            this);
 
         return true;
     },
@@ -2143,18 +2155,22 @@ ArmadillogCore.prototype = {
                     'FILTER_TAG_HIGHLIGHT_12_END_SYMBOL': this.FILTER_TAG_HIGHLIGHT_12_END_SYMBOL,
                     'text': contentLineItemMMap.get('textRaw'),
                     'filterListJSON': filterListJSON
-
                 },
                 null,
-                function ArmadillogCore_contentLineListFilter_workerFilterSuccess(contentLineItemMMap, data) {
-                    contentLineItemMMap.set(
+                {
+                    'contentLineItemMMap': contentLineItemMMap
+                },
+                function ArmadillogCore_contentLineListFilter_workerFilterSuccess(data, additional) {
+                    additional.contentLineItemMMap.set(
                         'textFiltered',
                         data.text,
                         'hidden',
                         data.hidden);
 
                     this.contentLineMList.dequeue('content-line-list-filter');
-                }.bind(this, contentLineItemMMap));
+                },
+                null,
+                this);
         }
 
         this.contentLineMList.queue(function () {
