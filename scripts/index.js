@@ -68,9 +68,10 @@ require(
     [
         'ennovum.Environment',
         'ennovum.Armadillog',
-        'armadillog.Layout'
+        'armadillog.Layout',
+        'text!./../README.txt'
     ],
-    function (mEnvironment, mArmadillog, mLayout) {
+    function (mEnvironment, mArmadillog, mLayout, readme) {
         try {
             var config = {
                 'bodyEl': document.querySelector('body'),
@@ -96,9 +97,7 @@ require(
             var armadillog = new mArmadillog.Armadillog(config);
             var layout = new mLayout.Layout(config);
 
-            armadillog.contentTextSet(
-                document.querySelector('.description').textContent,
-                'Welcome message');
+            armadillog.contentTextSet(readme, 'README.txt');
         }
         catch (err) {
             console.error(err.message);
