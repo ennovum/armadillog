@@ -541,14 +541,14 @@ body {
 
 .content-line-list {
     font-family: 'Source Code Pro', monospace;
-    font-size: 13px;
-    line-height: 17px;
+    font-size: 12px;
+    line-height: 15px;
 }
 
 .content-line-item {
     position: relative;
-    min-height: 17px;
-    padding: 0 5px 0 65px;
+    min-height: 15px;
+    padding: 1px 5px 1px 65px;
     counter-reset: numeration;
     cursor: default;
     white-space: pre;
@@ -569,7 +569,7 @@ body {
     display: block;
     float: left;
     width: 50px;
-    padding: 0 5px;
+    padding: 1px 5px;
     background: rgba(221, 221, 221, 0.5);
     text-align: right;
 }
@@ -599,6 +599,10 @@ body {
 .selected.marked:hover,
 .content-line-item.selected.marked:hover {
     background: rgba(204, 136, 204, 0.6);
+}
+
+.highlight {
+    border-radius: 3px;
 }
 
 .highlight-1 {
