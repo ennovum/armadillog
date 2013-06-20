@@ -3,10 +3,9 @@
 window.define && define(
     [
         'ennovum.Environment',
-        'ennovum.Utils',
-        'ennovum.Buffer'
+        'ennovum.Utils'
 ,    ],
-    function (mEnvironment, mUtils, mBuffer) {
+    function (mEnvironment, mUtils) {
 /* ==================================================================================================== */
 
 // debug console logs switch
@@ -40,7 +39,7 @@ Queue.prototype = {
     init: function Queue_init() {
         DEBUG && console.log('Queue', 'init', arguments);
 
-        this.thingList = new mBuffer.Buffer();
+        this.thingList = [];
 
         this.runBound = this.run.bind(this);
 
@@ -67,7 +66,7 @@ Queue.prototype = {
         DEBUG && console.log('Queue', 'dequeue', arguments);
 
         if (typeof thing === 'undefined') {
-            if (this.thingList.length() === 0) {
+            if (this.thingList.length === 0) {
                 return false;
             }
 
@@ -98,7 +97,7 @@ Queue.prototype = {
         DEBUG && console.log('Queue', 'run', arguments);
 
         var thingIndex = 0;
-        var thing = this.thingList.getAt(thingIndex);
+        var thing = this.thingList[thingIndex];
 
         if (thing === undefined) {
             return false;
@@ -118,7 +117,7 @@ Queue.prototype = {
         DEBUG && console.log('Queue', 'queued', arguments);
 
         if (typeof thing === 'undefined') {
-            return this.thingList.length();
+            return this.thingList.length;
         }
         else {
             var index = -1;
