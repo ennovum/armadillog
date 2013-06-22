@@ -1016,8 +1016,7 @@ ArmadillogCore.prototype = {
         DEBUG && console.log('ArmadillogCore', 'filterViewListInsert', arguments);
 
         var filterIndex,
-            filterItemMMap,
-            filterItemNextMMap;
+            filterItemMMap;
 
         for (var i = 0, l = filterDataList.length; i < l; i++) {
             filterIndex = filterDataList[i].filterIndex;
@@ -1026,20 +1025,9 @@ ArmadillogCore.prototype = {
             this.filterItemUiInit(filterItemMMap);
             this.filterItemViewUpdate(filterItemMMap);
 
-            // TODO: better handling situation in which next item exists, but it's view.el is non in DOM yet.
-            filterItemNextMMap = this.filterMList.getAt(filterIndex + 1);
-
-            try {
-                this.filterView.listEl.insertBefore(
-                    filterItemMMap.get('view').el,
-                    filterItemNextMMap ? filterItemNextMMap.get('view').el : null);
-            }
-            catch (err) {
-                this.filterView.listEl.insertBefore(
-                    filterItemMMap.get('view').el,
-                    null);
-            }
-            // end TODO
+            this.filterView.listEl.insertBefore(
+                filterItemMMap.get('view').el,
+                this.filterView.listEl.childNodes[filterIndex] || null);
         }
 
         this.filterStorageSave();
@@ -1062,6 +1050,10 @@ ArmadillogCore.prototype = {
             filterItemMMap = filterDataList[i].filterItemMMap;
 
             this.filterItemViewUpdate(filterItemMMap);
+
+            this.filterView.listEl.insertBefore(
+                filterItemMMap.get('view').el,
+                this.filterView.listEl.childNodes[filterIndex] || null);
         }
 
         this.filterStorageSave();
