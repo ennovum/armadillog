@@ -7,7 +7,12 @@ window.define && define(
 		'ennovum.Observable',
 		'ennovum.Queue'
 	],
-	function (mEnvironment, mUtils, mObservable, mQueue) {
+	function (
+		mEnvironment,
+		mUtils,
+		mObservable,
+		mQueue
+	) {
 /* ==================================================================================================== */
 
 // debug console logs switch

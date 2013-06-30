@@ -6,7 +6,11 @@ window.define && define(
         'ennovum.Utils',
         './function'
     ],
-    function (mEnvironment, mUtils, mWorkerFunction) {
+    function (
+        mEnvironment,
+        mUtils,
+        mWorkerFunction
+    ) {
 /* ==================================================================================================== */
 
 // debug console logs switch

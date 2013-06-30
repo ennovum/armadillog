@@ -71,7 +71,12 @@ require(
         'armadillog.Layout',
         'text!./../README.txt'
     ],
-    function (mEnvironment, mArmadillog, mLayout, readme) {
+    function (
+        mEnvironment,
+        mArmadillog,
+        mLayout,
+        readme
+    ) {
         try {
             var config = {
                 'bodyEl': document.querySelector('body'),

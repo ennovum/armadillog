@@ -6,7 +6,11 @@ window.define && define(
         './function',
         './downloader'
     ],
-    function (mEnvironment, mWorkerFunction, mWorkerDownloader) {
+    function (
+        mEnvironment,
+        mWorkerFunction,
+        mWorkerDownloader
+    ) {
         return {
             'WorkerFunction': mWorkerFunction.WorkerFunction,
             'iWorkerFunction': mWorkerFunction.iWorkerFunction,

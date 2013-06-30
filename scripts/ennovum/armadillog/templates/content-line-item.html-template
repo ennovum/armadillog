@@ -1,2 +1,1 @@
-<div class="content-line-item" style="counter-increment: numeration {{number}};">
-</div>
+<div class="content-line-item" style="counter-increment: numeration {{number}};"></div>

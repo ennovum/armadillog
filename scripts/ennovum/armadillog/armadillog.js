@@ -4,18 +4,38 @@ window.define && define(
     [
         'ennovum.Environment',
         'ennovum.Utils',
-        './components/core'
+        './components/busy',
+        './components/content',
+        './components/examine',
+        './components/input',
+        './components/filter',
+        './components/tailing'
     ],
-    function (mEnvironment, mUtils, mArmadillogCore) {
+    function (
+        mEnvironment,
+        mUtils,
+        mArmadillogBusy,
+        mArmadillogContent,
+        mArmadillogExamine,
+        mArmadillogInput,
+        mArmadillogFilter,
+        mArmadillogTailing
+    ) {
 /* ==================================================================================================== */
 
 // debug console logs switch
 var DEBUG = false;
 
 /**
+ * Armadillog static
+ */
+var armadillogStatic = {
+};
+
+/**
  * Armadillog interface
  */
-var iArmadillog = {
+var armadillogInterface = {
     contentClear: function () {},
     contentTextSet: function (text) {}
 };
@@ -25,8 +45,7 @@ var iArmadillog = {
  */
 var Armadillog = function Armadillog() {
     this.init.apply(this, arguments);
-    var instance = mUtils.obj.implement({}, this, iArmadillog);
-    return instance;
+    return mUtils.obj.implement({}, this, armadillogInterface);
 };
 
 /**
@@ -44,8 +63,7 @@ Armadillog.prototype = {
 
         switch (true) {
             case !this.browserCheck():
-            case !this.configSet(config):
-            case !this.dataInit():
+            case !this.applicationInit(config):
                 return false;
                 break;
         }
@@ -56,17 +74,19 @@ Armadillog.prototype = {
     /**
      *
      */
-    browserCheck: function () {
+    browserCheck: function Armadillog_browserCheck() {
         DEBUG && console.log('Armadillog', 'browserCheck', arguments);
 
         switch (true) {
             case !document.querySelector:
-            case !window.File:
-            case !window.FileReader:
-            case !window.FileList:
-            case !window.Blob:
-            case !window.Array.prototype.some:
-            case !window.Worker:
+            case !File:
+            case !FileReader:
+            case !FileList:
+            case !Blob:
+            case !Array.prototype.some:
+            case !Worker:
+            case !URL || !URL.createObjectURL:
+            case !localStorage:
                 console.error('Armadillog', 'browserCheck', 'unsupported browser');
                 alert('You are using an uncompatible browser!');
                 return false;
@@ -77,54 +97,26 @@ Armadillog.prototype = {
     },
 
     /**
-     * Initializes config
-     *
-     * @param {object} config configuration object
-     */
-    configSet: function (config) {
-        DEBUG && console.log('Armadillog', 'configSet', arguments);
-
-        switch (false) {
-            case !!config:
-            case typeof config === 'object':
-                console.error('Armadillog', 'configSet', 'invalid input');
-                return false;
-        };
-
-        this.config = {
-            bodyEl: config.bodyEl || null,
-
-            mainmenuInputEl: config.mainmenuInputEl || null,
-            mainmenuFilterEl: config.mainmenuFilterEl || null,
-            mainmenuExamineEl: config.mainmenuExamineEl || null,
-
-            inputWrapperEl: config.inputWrapperEl || null,
-            inputBoxEl: config.inputBoxEl || null,
-            inputFoldEl: config.inputFoldEl || null,
-
-            filterWrapperEl: config.filterWrapperEl || null,
-            filterBoxEl: config.filterBoxEl || null,
-            filterFoldEl: config.filterFoldEl || null,
-
-            examineWrapperEl: config.examineWrapperEl || null,
-            examineBoxEl: config.examineBoxEl || null,
-            examineFoldEl: config.examineFoldEl || null,
-
-            contentBoxEl: config.contentBoxEl || null,
-            contentScrollEl: config.contentScrollEl || null,
-            contentDropEl: config.contentDropEl || null
-        };
-
-        return true;
-    },
-
-    /**
      * Initializes data
      */
-    dataInit: function Armadillog_dataInit() {
-        DEBUG && console.log('Armadillog', 'dataInit', arguments);
+    applicationInit: function Armadillog_applicationInit(config) {
+        DEBUG && console.log('Armadillog', 'applicationInit', arguments);
 
-        this.armadillogCore = new mArmadillogCore.ArmadillogCore(this.config);
+        var application = this.application = {};
+
+        application.inputStatic = mArmadillogInput.armadillogInputStatic;
+        application.contentStatic = mArmadillogContent.armadillogContentStatic;
+        application.tailingStatic = mArmadillogTailing.armadillogTailingStatic;
+        application.filterStatic = mArmadillogFilter.armadillogFilterStatic;
+        application.examineStatic = mArmadillogExamine.armadillogExamineStatic;
+        application.busyStatic = mArmadillogBusy.armadillogBusyStatic;
+
+        application.input = new mArmadillogInput.ArmadillogInput(config, application);
+        application.content = new mArmadillogContent.ArmadillogContent(config, application);
+        application.tailing = new mArmadillogTailing.ArmadillogTailing(config, application);
+        application.filter = new mArmadillogFilter.ArmadillogFilter(config, application);
+        application.examine = new mArmadillogExamine.ArmadillogExamine(config, application);
+        application.busy = new mArmadillogBusy.ArmadillogBusy(config, application);
 
         return true;
     },
@@ -135,7 +127,7 @@ Armadillog.prototype = {
     contentClear: function Armadillog_contentClear() {
         DEBUG && console.log('Armadillog', 'contentClear', arguments);
 
-        this.armadillogCore.contentClear();
+        this.application.content.clear();
 
         return true;
     },
@@ -148,7 +140,7 @@ Armadillog.prototype = {
     contentTextSet: function Armadillog_contentTextSet(text, label) {
         DEBUG && console.log('Armadillog', 'contentTextSet', arguments);
 
-        this.armadillogCore.contentTextSet(text, label);
+        this.application.content.textSet(text, label);
 
         return true;
     },
@@ -164,7 +156,8 @@ Armadillog.prototype = {
 
 /* ==================================================================================================== */
         return {
-            'Armadillog': Armadillog,
-            'iArmadillog': iArmadillog
+            'armadillogStatic': armadillogStatic,
+            'armadillogInterface': armadillogInterface,
+            'Armadillog': Armadillog
         };
     });

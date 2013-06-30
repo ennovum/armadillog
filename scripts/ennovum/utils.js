@@ -4,7 +4,9 @@ window.define && define(
     [
         'ennovum.Environment'
     ],
-    function (mEnvironment) {
+    function (
+        mEnvironment
+    ) {
 /* ==================================================================================================== */
 
 // debug console logs switch
@@ -42,8 +44,13 @@ var oUtilsObj = {
         }
 
         for (var i = 0, l = interfaceList.length; i < l; i++) {
-            for (var func in interfaceList[i]) {
-                base[func] = instance[func].bind(instance);
+            for (var key in interfaceList[i]) {
+                if (typeof instance[key] === 'function') {
+                    base[key] = instance[key].bind(instance);
+                }
+                else {
+                    base[key] = instance[key];
+                }
             }
         }
 

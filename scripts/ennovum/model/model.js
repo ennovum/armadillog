@@ -7,7 +7,12 @@ window.define && define(
 		'./list',
 		'./map'
 	],
-	function (mEnvironment, mModelValue, mModelList, mModelMap) {
+	function (
+		mEnvironment,
+		mModelValue,
+		mModelList,
+		mModelMap
+	) {
 		return {
 			'ModelValue': mModelValue.ModelValue,
 			'iModelValue': mModelValue.iModelValue,
