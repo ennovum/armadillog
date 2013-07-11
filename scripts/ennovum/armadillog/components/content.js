@@ -17,7 +17,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -44,6 +44,7 @@ var armadillogContentInterface = {
  */
 var ArmadillogContent = function ArmadillogContent() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, armadillogContentInterface);
 };
 
@@ -66,8 +67,6 @@ ArmadillogContent.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogContent_init(config, application) {
-        DEBUG && console.log('ArmadillogContent', 'init', arguments);
-
         switch (true) {
             case !this.configSet(config):
             case !this.dataInit(application):
@@ -86,8 +85,6 @@ ArmadillogContent.prototype = {
      * @param {object} config configuration object
      */
     configSet: function ArmadillogContent_configSet(config) {
-        DEBUG && console.log('ArmadillogContent', 'configSet', arguments);
-
         switch (false) {
             case !!config:
             case typeof config === 'object':
@@ -108,8 +105,6 @@ ArmadillogContent.prototype = {
      * Initializes data
      */
     dataInit: function ArmadillogContent_dataInit(application) {
-        DEBUG && console.log('ArmadillogContent', 'dataInit', arguments);
-
         this.application = application;
 
         this.lineMList = new mModel.ModelList();
@@ -178,8 +173,6 @@ ArmadillogContent.prototype = {
      * Initializes view
      */
     viewInit: function ArmadillogContent_viewInit() {
-        DEBUG && console.log('ArmadillogContent', 'viewInit', arguments);
-
         this.armadillogView = new mArmadillogContentView.ArmadillogContentView();
 
         this.boxEl = this.config.contentBoxEl;
@@ -200,8 +193,6 @@ ArmadillogContent.prototype = {
      * Initializes UI
      */
     uiInit: function ArmadillogContent_uiInit() {
-        DEBUG && console.log('ArmadillogContent', 'uiInit', arguments);
-
         this.dropEl.addEventListener(
             'dragstart',
             function ArmadillogContent_uiInit_dropElDragstartHandler(evt) {
@@ -393,8 +384,6 @@ ArmadillogContent.prototype = {
      * Clears content
      */
     clear: function ArmadillogContent_clear() {
-        DEBUG && console.log('ArmadillogContent', 'clear', arguments);
-
         this.file = null;
         this.fileUpdateUnschedule();
 
@@ -416,8 +405,6 @@ ArmadillogContent.prototype = {
      * @param {string} label content's label
      */
     fileSet: function ArmadillogContent_fileSet(file, label) {
-        DEBUG && console.log('ArmadillogContent', 'fileSet', arguments);
-
         this.file = file;
 
         this.workerFileReader.run(
@@ -443,8 +430,6 @@ ArmadillogContent.prototype = {
      * Updates the content file
      */
     fileUpdate: function ArmadillogContent_fileUpdate() {
-        DEBUG && console.log('ArmadillogContent', 'fileUpdate', arguments);
-
         if (!this.file) {
             return;
         }
@@ -480,8 +465,6 @@ ArmadillogContent.prototype = {
      * Schedules a content file update
      */
     fileUpdateSchedule: function ArmadillogContent_fileUpdateSchedule() {
-        DEBUG && console.log('ArmadillogContent', 'fileUpdateSchedule', arguments);
-
         if (this.FILE_UPDATE_DELAY > 0) {
             this.fileUpdateTimeout = setTimeout(
                 this.fileUpdate.bind(this),
@@ -495,8 +478,6 @@ ArmadillogContent.prototype = {
      * Unschedules a content file update
      */
     fileUpdateUnschedule: function ArmadillogContent_fileUpdateUnschedule() {
-        DEBUG && console.log('ArmadillogContent', 'fileUpdateUnschedule', arguments);
-
         if (this.fileUpdateTimeout) {
             clearTimeout(this.fileUpdateTimeout);
             this.fileUpdateTimeout = null;
@@ -512,8 +493,6 @@ ArmadillogContent.prototype = {
      * @param {string} label content's label
      */
     urlSet: function ArmadillogContent_urlSet(url, label) {
-        DEBUG && console.log('ArmadillogContent', 'urlSet', arguments);
-
         url = mUtils.url.validate(url);
         if (!url) {
             alert('Invalid URL.');
@@ -544,8 +523,6 @@ ArmadillogContent.prototype = {
      * Updates the content url
      */
     urlUpdate: function ArmadillogContent_urlUpdate() {
-        DEBUG && console.log('ArmadillogContent', 'urlUpdate', arguments);
-
         if (!this.url) {
             return;
         }
@@ -579,8 +556,6 @@ ArmadillogContent.prototype = {
      * Schedules a content url update
      */
     urlUpdateSchedule: function ArmadillogContent_urlUpdateSchedule() {
-        DEBUG && console.log('ArmadillogContent', 'urlUpdateSchedule', arguments);
-
         if (this.URL_UPDATE_DELAY > 0) {
             this.urlUpdateTimeout = setTimeout(
                 this.urlUpdate.bind(this),
@@ -594,8 +569,6 @@ ArmadillogContent.prototype = {
      * Unschedules a content url update
      */
     urlUpdateUnschedule: function ArmadillogContent_urlUpdateUnschedule() {
-        DEBUG && console.log('ArmadillogContent', 'urlUpdateUnschedule', arguments);
-
         if (this.urlUpdateTimeout) {
             clearTimeout(this.urlUpdateTimeout);
             this.urlUpdateTimeout = null;
@@ -611,8 +584,6 @@ ArmadillogContent.prototype = {
      * @param {string} label content's label
      */
     textSet: function ArmadillogContent_textSet(text, label) {
-        DEBUG && console.log('ArmadillogContent', 'textSet', arguments);
-
         this.lineMList.queue('text-set');
 
         this.workerTextLineSplitter.run(
@@ -654,8 +625,6 @@ ArmadillogContent.prototype = {
      * @param {string} text a piece of content
      */
     textUpdate: function ArmadillogContent_textUpdate(text) {
-        DEBUG && console.log('ArmadillogContent', 'textUpdate', arguments);
-
         this.lineMList.queue('text-update');
 
         this.workerTextLineSplitter.run(
@@ -708,8 +677,6 @@ ArmadillogContent.prototype = {
      * Applies filters to content
      */
     filterApply: function ArmadillogContent_filterApply() {
-        DEBUG && console.log('ArmadillogContent', 'filterApply', arguments);
-
         this.lineListFilter(this.lineMList.toArray());
 
         return true;
@@ -722,8 +689,6 @@ ArmadillogContent.prototype = {
      * @param {object} lineItemMMap content line model object
      */
     lineItemViewCreate: function ArmadillogContent_lineItemViewCreate(lineIndex, lineItemMMap) {
-        DEBUG && console.log('ArmadillogContent', 'lineItemViewCreate', arguments);
-
         lineItemMMap.set(
             'view',
             this.armadillogView.contentLineItemViewGet({
@@ -740,8 +705,6 @@ ArmadillogContent.prototype = {
      * @param {object} lineItemMMap content line model object
      */
     lineItemViewUpdate: function ArmadillogContent_lineItemViewUpdate(lineIndex, lineItemMMap) {
-        DEBUG && console.log('ArmadillogContent', 'lineItemViewUpdate', arguments);
-
         var lineEl = lineItemMMap.get('view').el;
         var textFiltered = lineItemMMap.get('textFiltered');
 
@@ -792,8 +755,6 @@ ArmadillogContent.prototype = {
      * @param {number} chunkSize chunk size
      */
     lineViewListInsert: function ArmadillogContent_lineViewListInsert(lineViewList, chunkIndex, chunkSize) {
-        DEBUG && console.log('ArmadillogContent', 'lineViewListInsert', arguments);
-
         requestAnimationFrame(function ArmadillogContent_lineViewListInsert_animationFrame() {
             this.application.busy.set(true, 'lineViewListInsert');
 
@@ -846,8 +807,6 @@ ArmadillogContent.prototype = {
      * @param {number} chunkSize chunk size
      */
     lineViewListUpdate: function ArmadillogContent_lineViewListUpdate(lineViewList, chunkIndex, chunkSize) {
-        DEBUG && console.log('ArmadillogContent', 'lineViewListUpdate', arguments);
-
         requestAnimationFrame(function ArmadillogContent_lineViewListUpdate_animationFrame() {
             this.application.busy.set(true, 'lineViewListUpdate');
 
@@ -888,8 +847,6 @@ ArmadillogContent.prototype = {
      * @param {number} chunkSize chunk size
      */
     lineViewListDelete: function ArmadillogContent_lineViewListDelete(lineViewList, chunkIndex, chunkSize) {
-        DEBUG && console.log('ArmadillogContent', 'lineViewListDelete', arguments);
-
         requestAnimationFrame(function ArmadillogContent_lineViewListDelete_animationFrame() {
             this.application.busy.set(true, 'lineViewListDelete');
 
@@ -928,8 +885,6 @@ ArmadillogContent.prototype = {
      * @param {object} lineList content line list model object
      */
     lineListFilter: function ArmadillogContent_lineListFilter(lineList) {
-        DEBUG && console.log('ArmadillogContent', 'lineListFilter', arguments);
-
         this.application.busy.set(true, 'lineListFilter');
 
         var lineItemMMap;

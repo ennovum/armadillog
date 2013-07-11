@@ -13,7 +13,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -29,6 +29,7 @@ var iWorkerDownloader = {
  */
 var WorkerDownloader = function WorkerDownloader() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, [iWorkerDownloader, mWorkerFunction.iWorkerFunction]);
 };
 
@@ -41,8 +42,6 @@ WorkerDownloader.prototype = {
      * Initializes instance
      */
     init: function WorkerDownloader_init(config) {
-        DEBUG && console.log('WorkerDownloader', 'init', arguments);
-
         this.callback = function (data, success, failure) {
             try {
                 var xhr = new XMLHttpRequest();

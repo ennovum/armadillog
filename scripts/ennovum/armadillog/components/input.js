@@ -13,7 +13,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -34,6 +34,7 @@ var armadillogInputInterface = {
  */
 var ArmadillogInput = function ArmadillogInput() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, armadillogInputInterface);
 };
 
@@ -48,8 +49,6 @@ ArmadillogInput.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogInput_init(config, application) {
-        DEBUG && console.log('ArmadillogInput', 'init', arguments);
-
         switch (true) {
             case !this.configSet(config):
             case !this.dataInit(application):
@@ -68,8 +67,6 @@ ArmadillogInput.prototype = {
      * @param {object} config configuration object
      */
     configSet: function ArmadillogInput_configSet(config) {
-        DEBUG && console.log('ArmadillogInput', 'configSet', arguments);
-
         switch (false) {
             case !!config:
             case typeof config === 'object':
@@ -88,8 +85,6 @@ ArmadillogInput.prototype = {
      * Initializes data
      */
     dataInit: function ArmadillogInput_dataInit(application) {
-        DEBUG && console.log('ArmadillogInput', 'dataInit', arguments);
-
         this.application = application;
 
         return true;
@@ -99,8 +94,6 @@ ArmadillogInput.prototype = {
      * Initializes view
      */
     viewInit: function ArmadillogInput_viewInit() {
-        DEBUG && console.log('ArmadillogInput', 'viewInit', arguments);
-
         this.armadillogView = new mArmadillogInputView.ArmadillogInputView();
 
         this.bodyEl = this.config.bodyEl;
@@ -124,8 +117,6 @@ ArmadillogInput.prototype = {
      * Initializes UI
      */
     uiInit: function ArmadillogInput_uiInit() {
-        DEBUG && console.log('ArmadillogInput', 'uiInit', arguments);
-
         this.view.clearButtonEl.addEventListener(
             'click',
             function ArmadillogInput_uiInit_clearButtonElClickHandler(evt) {
@@ -207,8 +198,6 @@ ArmadillogInput.prototype = {
      *
      */
     clearLabelSet: function ArmadillogInput_clearLabelSet(value) {
-        DEBUG && console.log('ArmadillogInput', 'uiInit', arguments);
-
         this.view.clearLabelEl.innerHTML = value || '';
 
         return true;

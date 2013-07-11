@@ -17,7 +17,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -33,6 +33,7 @@ var iArmadillogFilterView = {
  */
 var ArmadillogFilterView = function ArmadillogFilterView() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iArmadillogFilterView);
 };
 
@@ -47,8 +48,6 @@ ArmadillogFilterView.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogFilterView_init(config) {
-        DEBUG && console.log('ArmadillogFilterView', 'init', arguments);
-
         this.filterViewTemplate = Handlebars.compile(templateFilter);
         this.filterItemViewTemplate = Handlebars.compile(templateFilterItem);
 
@@ -61,8 +60,6 @@ ArmadillogFilterView.prototype = {
      * @param {object} context context object
      */
     filterViewGet: function ArmadillogFilterView_filterViewGet(context) {
-        DEBUG && console.log('ArmadillogFilterView', 'filterViewGet', arguments);
-
         var containerEl = mUtils.dom.createElement('div');
         containerEl.innerHTML = this.filterViewTemplate(context);
 
@@ -81,8 +78,6 @@ ArmadillogFilterView.prototype = {
      * @param {object} context context object
      */
     filterItemViewGet: function ArmadillogFilterView_filterItemViewGet(context) {
-        DEBUG && console.log('ArmadillogFilterView', 'filterItemViewGet', arguments);
-
         var containerEl = mUtils.dom.createElement('div');
         containerEl.innerHTML = this.filterItemViewTemplate(context);
 

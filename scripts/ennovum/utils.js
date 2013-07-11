@@ -9,7 +9,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -29,8 +29,6 @@ var oUtilsObj = {
      *
      */
     implement: function Utils_obj_implement(base, instance, interfaceList) {
-        DEBUG && console.log('oUtilsObj', 'implement', arguments);
-
         switch (false) {
             case base && typeof base === 'object':
             case instance && typeof instance === 'object':
@@ -61,8 +59,6 @@ var oUtilsObj = {
      *
      */
     mixin: function Utils_obj_mixin(base, mixin) {
-        DEBUG && console.log('oUtilsObj', 'mixin', arguments);
-
         switch (false) {
             case base && typeof base === 'object':
             case mixin && typeof mixin === 'object':
@@ -112,8 +108,6 @@ var oUtilsDom = {
      *
      */
     createElement: function Utils_dom_createElement(tagName, attributes, textContent) {
-        DEBUG && console.log('oUtilsDom', 'createElement', arguments);
-
         switch (false) {
             case typeof tagName === 'string':
             case !attributes || typeof attributes === 'object':
@@ -141,8 +135,6 @@ var oUtilsDom = {
      *
      */
     classContains: function Utils_dom_classContains(el) {
-        DEBUG && console.log('oUtilsDom', 'classContains', arguments);
-
         if (!el) {
             return;
         }
@@ -168,8 +160,6 @@ var oUtilsDom = {
      *
      */
     classAdd: function Utils_dom_classAdd(el) {
-        DEBUG && console.log('oUtilsDom', 'classAdd', arguments);
-
         if (!el) {
             return;
         }
@@ -200,8 +190,6 @@ var oUtilsDom = {
      *
      */
     classRemove: function Utils_dom_classRemove(el) {
-        DEBUG && console.log('oUtilsDom', 'classRemove', arguments);
-
         if (!el) {
             return;
         }
@@ -232,8 +220,6 @@ var oUtilsDom = {
      *
      */
     classToggle: function Utils_dom_classToggle(el, className) {
-        DEBUG && console.log('oUtilsDom', 'classToggle', arguments);
-
         if (!el) {
             return;
         }
@@ -262,8 +248,6 @@ var oUtilsDom = {
      *
      */
     classDepend: function Utils_dom_classToggle(el, className, condition) {
-        DEBUG && console.log('oUtilsDom', 'classToggle', arguments);
-
         if (!el) {
             return;
         }
@@ -282,8 +266,6 @@ var oUtilsDom = {
      *
      */
     classNth: function Utils_dom_classNth(num) {
-        DEBUG && console.log('oUtilsDom', 'classNth', arguments);
-
         switch (false) {
             case typeof num === 'number':
                 console.error('oUtilsDom', 'classNth', 'invalid input');
@@ -311,8 +293,6 @@ var oUtilsDom = {
      *
      */
     classEvenOdd: function Utils_dom_classEvenOdd(num) {
-        DEBUG && console.log('oUtilsDom', 'classEvenOdd', arguments);
-
         switch (false) {
             case typeof num === 'number':
                 console.error('oUtilsDom', 'classEvenOdd', 'invalid input');
@@ -326,8 +306,6 @@ var oUtilsDom = {
      *
      */
     triggerEvent: function Utils_dom_triggerEvent(el, eventType) {
-        DEBUG && console.log('oUtilsDom', 'triggerEvent', arguments);
-
         if (!el) {
             return;
         }
@@ -364,8 +342,6 @@ var oUtilsString = {
      *
      */
     trim: function Utils_string_trim(subject) {
-        DEBUG && console.log('oUtilsString', 'trim', arguments);
-
         return subject.replace(/(^\s|\s$)/g, '');
     },
 
@@ -382,8 +358,6 @@ var oUtilsString = {
      *
      */
     escapeXML: function Utils_string_escapeXML(subject) {
-        DEBUG && console.log('oUtilsString', 'escapeXML', arguments);
-
         return subject.replace(/[<>"'&]{1}/g, function Utils_string_escapeXML_match(match) {
             return this.ESCAPE_XML_ENTITIES[match];
         }.bind(this));
@@ -407,8 +381,6 @@ var oUtilsRegexp = {
      *
      */
     escape: function Utils_regexp_escape(subject) {
-        DEBUG && console.log('oUtilsRegexp', 'escape', arguments);
-
         return subject.replace(/[\[\]\{\}\?\+\*\.\\\|\(\)\^\$]/g, '\\$&');
     }
 
@@ -433,8 +405,6 @@ var oUtilsFunc = {
      *
      */
     async: function Utils_func_async(callback) {
-        DEBUG && console.log('oUtilsFunc', 'async', arguments);
-
         this.asyncList.push(callback);
 
         if (!this.asyncTimeout) {
@@ -475,8 +445,6 @@ var oUtilsUrl = {
      *
      */
     validate: function Utils_url_validate(url) {
-        DEBUG && console.log('oUtilsUrl', 'validate', arguments);
-
         var match = url.match(this.URL_PARTS_REGEXP);
 
         if (!match || !match[2]) {
@@ -496,6 +464,82 @@ var oUtilsUrl = {
 
 };
 
+/**
+ * UtilsUrl interface
+ */
+var iUtilsDebug = {
+    spy: function (subject) {}
+};
+
+/**
+ * UtilsUrl logic
+ */
+var oUtilsDebug = {
+
+    FUNCTION_NAME_REGEXP: /[a-z]+ ([^\(]*)/i,
+
+    spySeq: 0,
+
+    /**
+     *
+     */
+    spy: function Utils_debug_spy(subject) {
+        switch (true) {
+            case typeof subject === 'function':
+                subject = this.spyItem(subject, subject);
+                break;
+
+            case Array.isArray(subject):
+                for (var i = 0, l = subject.length; i < l; i++) {
+                    subject[i] = this.spyItem(subject, subject[i]);
+                }
+                break;
+
+            case typeof subject === 'object':
+                for (var k in subject) {
+                    subject[k] = this.spyItem(subject, subject[k]);
+                }
+                break;
+
+            default:
+                console.error('Debug', 'spy', 'unsupported subject type');
+        }
+
+        return subject;
+    },
+
+    /**
+     *
+     */
+    spyItem: function Utils_debug_spyItem(subject, item) {
+        switch (true) {
+            case typeof item === 'function':
+                return function Debug_spyItem_spied() {
+                    var seqNumber = oUtilsDebug.spySeq++;
+                    var name = item.toString().split('\n')[0].match(oUtilsDebug.FUNCTION_NAME_REGEXP)[1] || 'anonymous';
+
+                    console.log('[' + seqNumber + '][C]', name, arguments);
+                    var result = item.apply(subject, arguments);
+                    console.log('[' + seqNumber + '][R]', name, result);
+
+                    return result;
+                };
+                break;
+
+            default:
+                return item;
+        }
+    }
+
+};
+
+DEBUG && oUtilsDebug.spy(oUtilsObj);
+DEBUG && oUtilsDebug.spy(oUtilsDom);
+DEBUG && oUtilsDebug.spy(oUtilsString);
+DEBUG && oUtilsDebug.spy(oUtilsRegexp);
+DEBUG && oUtilsDebug.spy(oUtilsUrl);
+DEBUG && oUtilsDebug.spy(oUtilsDebug);
+
 /* ==================================================================================================== */
         return {
             'obj': oUtilsObj.implement({}, oUtilsObj, iUtilsObj),
@@ -503,6 +547,7 @@ var oUtilsUrl = {
             'string': oUtilsObj.implement({}, oUtilsString, iUtilsString),
             'regexp': oUtilsObj.implement({}, oUtilsRegexp, iUtilsRegexp),
             'func': oUtilsObj.implement({}, oUtilsFunc, iUtilsFunc),
-            'url': oUtilsObj.implement({}, oUtilsUrl, iUtilsUrl)
+            'url': oUtilsObj.implement({}, oUtilsUrl, iUtilsUrl),
+            'debug': oUtilsObj.implement({}, oUtilsDebug, iUtilsDebug)
         };
     });

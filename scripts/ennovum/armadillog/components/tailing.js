@@ -11,7 +11,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -33,6 +33,7 @@ var armadillogTailingInterface = {
  */
 var ArmadillogTailing = function ArmadillogTailing() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, armadillogTailingInterface);
 };
 
@@ -47,8 +48,6 @@ ArmadillogTailing.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogTailing_init(config, application) {
-        DEBUG && console.log('ArmadillogTailing', 'init', arguments);
-
         switch (true) {
             case !this.configSet(config):
             case !this.dataInit(application):
@@ -67,8 +66,6 @@ ArmadillogTailing.prototype = {
      * @param {object} config configuration object
      */
     configSet: function ArmadillogTailing_configSet(config) {
-        DEBUG && console.log('ArmadillogTailing', 'configSet', arguments);
-
         switch (false) {
             case !!config:
             case typeof config === 'object':
@@ -87,8 +84,6 @@ ArmadillogTailing.prototype = {
      * Initializes data
      */
     dataInit: function ArmadillogTailing_dataInit(application) {
-        DEBUG && console.log('ArmadillogTailing', 'dataInit', arguments);
-
         this.tailing = false;
 
         return true;
@@ -98,8 +93,6 @@ ArmadillogTailing.prototype = {
      * Initializes view
      */
     viewInit: function ArmadillogTailing_viewInit() {
-        DEBUG && console.log('ArmadillogTailing', 'viewInit', arguments);
-
         this.scrollEl = this.config.scrollEl;
 
         return true;
@@ -109,8 +102,6 @@ ArmadillogTailing.prototype = {
      * Initializes UI
      */
     uiInit: function ArmadillogTailing_uiInit() {
-        DEBUG && console.log('ArmadillogTailing', 'uiInit', arguments);
-
         window.addEventListener(
             'load',
             function ArmadillogTailing_uiInit_windowLoadHandler(evt) {
@@ -135,8 +126,6 @@ ArmadillogTailing.prototype = {
      * Checks whether to do tailing
      */
     check: function ArmadillogTailing_check() {
-        DEBUG && console.log('ArmadillogTailing', 'check', arguments);
-
         if (this.scrollEl === window) {
             this.tailing = window.scrollY >= window.scrollMaxY
         }
@@ -151,8 +140,6 @@ ArmadillogTailing.prototype = {
      * Executes tailing
      */
     execute: function ArmadillogTailing_execute() {
-        DEBUG && console.log('ArmadillogTailing', 'execute', arguments);
-
         if (this.tailing) {
             if (this.scrollEl === window) {
                 window.scrollTo(window.scrollX, window.scrollMaxY);

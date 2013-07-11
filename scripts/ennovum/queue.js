@@ -11,7 +11,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -28,6 +28,7 @@ var iQueue = {
  */
 var Queue = function Queue() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iQueue);
 };
 
@@ -40,8 +41,6 @@ Queue.prototype = {
      * Initializes instance
      */
     init: function Queue_init() {
-        DEBUG && console.log('Queue', 'init', arguments);
-
         this.thingList = [];
 
         this.runBound = this.run.bind(this);
@@ -53,8 +52,6 @@ Queue.prototype = {
      * Puts a thing to the queue
      */
     queue: function Queue_queue(thing) {
-        DEBUG && console.log('Queue', 'queue', arguments);
-
         if (this.thingList.push(thing) === 1) {
             this.run();
         }
@@ -66,8 +63,6 @@ Queue.prototype = {
      * Removes certain thing from the queue
      */
     dequeue: function Queue_dequeue(thing) {
-        DEBUG && console.log('Queue', 'dequeue', arguments);
-
         if (typeof thing === 'undefined') {
             if (this.thingList.length === 0) {
                 return false;
@@ -97,8 +92,6 @@ Queue.prototype = {
      * Runs the queue
      */
     run: function Queue_run() {
-        DEBUG && console.log('Queue', 'run', arguments);
-
         var thingIndex = 0;
         var thing = this.thingList[thingIndex];
 
@@ -117,8 +110,6 @@ Queue.prototype = {
      * Returns number of queued elements matching argument or any
      */
     queued: function Queue_queued(thing) {
-        DEBUG && console.log('Queue', 'queued', arguments);
-
         if (typeof thing === 'undefined') {
             return this.thingList.length;
         }

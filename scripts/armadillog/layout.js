@@ -11,7 +11,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -25,6 +25,7 @@ var iLayout = {
  */
 var Layout = function Layout() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iLayout);
 };
 
@@ -39,8 +40,6 @@ Layout.prototype = {
      * @param {object} config configuration object
      */
     init: function Layout_init(config) {
-        DEBUG && console.log('Layout', 'init', arguments);
-
         switch (true) {
             case !this.configSet(config):
             case !this.viewInit():
@@ -59,8 +58,6 @@ Layout.prototype = {
      * @param {object} config configuration object
      */
     configSet: function Layout_configSet(config) {
-        DEBUG && console.log('Layout', 'configSet', arguments);
-
         switch (false) {
             case !!config:
             case typeof config === 'object':
@@ -88,8 +85,6 @@ Layout.prototype = {
      * Initializes view
      */
     viewInit: function Layout_viewInit() {
-        DEBUG && console.log('Layout', 'viewInit', arguments);
-
         // nothing
 
         return true;
@@ -99,8 +94,6 @@ Layout.prototype = {
      * Initializes UI
      */
     uiInit: function Layout_uiInit() {
-        DEBUG && console.log('Layout', 'uiInit', arguments);
-
         this.config.mainmenuInputEl.addEventListener(
             'click',
             function (evt) {
@@ -150,8 +143,6 @@ Layout.prototype = {
      *
      */
     keyboardInit: function Layout_keyboardInit() {
-        DEBUG && console.log('Layout', 'keyboardInit', arguments);
-
         document.addEventListener(
             'keyup',
             function (evt) {
@@ -193,8 +184,6 @@ Layout.prototype = {
      *
      */
     inputHide: function Layout_inputToggle() {
-        DEBUG && console.log('Layout', 'inputHide', arguments);
-
         mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
 
         mUtils.dom.classAdd(this.config.inputWrapperEl, 'hidden');
@@ -206,8 +195,6 @@ Layout.prototype = {
      *
      */
     inputToggle: function Layout_inputToggle() {
-        DEBUG && console.log('Layout', 'inputToggle', arguments);
-
         mUtils.dom.classToggle(this.config.mainmenuInputEl, 'pressed');
         mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
         mUtils.dom.classRemove(this.config.mainmenuExamineEl, 'pressed')
@@ -223,8 +210,6 @@ Layout.prototype = {
      *
      */
     filterHide: function Layout_filterToggle() {
-        DEBUG && console.log('Layout', 'filterHide', arguments);
-
         mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
 
         mUtils.dom.classAdd(this.config.filterWrapperEl, 'hidden');
@@ -236,8 +221,6 @@ Layout.prototype = {
      *
      */
     filterToggle: function Layout_filterToggle() {
-        DEBUG && console.log('Layout', 'filterToggle', arguments);
-
         mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
         mUtils.dom.classToggle(this.config.mainmenuFilterEl, 'pressed')
         mUtils.dom.classRemove(this.config.mainmenuExamineEl, 'pressed')
@@ -253,8 +236,6 @@ Layout.prototype = {
      *
      */
     examineHide: function Layout_examineToggle() {
-        DEBUG && console.log('Layout', 'examineHide', arguments);
-
         mUtils.dom.classRemove(this.config.mainmenuExamineEl, 'pressed')
 
         mUtils.dom.classAdd(this.config.examineWrapperEl, 'hidden');
@@ -266,8 +247,6 @@ Layout.prototype = {
      *
      */
     examineToggle: function Layout_examineToggle() {
-        DEBUG && console.log('Layout', 'examineToggle', arguments);
-
         mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
         mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
         mUtils.dom.classToggle(this.config.mainmenuExamineEl, 'pressed')

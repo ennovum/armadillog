@@ -17,7 +17,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -62,6 +62,7 @@ var armadillogFilterInterface = {
  */
 var ArmadillogFilter = function ArmadillogFilter() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, armadillogFilterInterface);
 };
 
@@ -104,8 +105,6 @@ ArmadillogFilter.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogFilter_init(config, application) {
-        DEBUG && console.log('ArmadillogFilter', 'init', arguments);
-
         switch (true) {
             case !this.configSet(config):
             case !this.dataInit(application):
@@ -125,8 +124,6 @@ ArmadillogFilter.prototype = {
      * @param {object} config configuration object
      */
     configSet: function ArmadillogFilter_configSet(config) {
-        DEBUG && console.log('ArmadillogFilter', 'configSet', arguments);
-
         switch (false) {
             case !!config:
             case typeof config === 'object':
@@ -145,8 +142,6 @@ ArmadillogFilter.prototype = {
      * Initializes data
      */
     dataInit: function ArmadillogFilter_dataInit(application) {
-        DEBUG && console.log('ArmadillogFilter', 'dataInit', arguments);
-
         this.application = application;
 
         this.filterIdSeq = 1;
@@ -270,8 +265,6 @@ ArmadillogFilter.prototype = {
      * Initializes view
      */
     viewInit: function ArmadillogFilter_viewInit() {
-        DEBUG && console.log('ArmadillogFilter', 'viewInit', arguments);
-
         this.armadillogView = new mArmadillogFilterView.ArmadillogFilterView();
 
         this.boxEl = this.config.boxEl;
@@ -291,8 +284,6 @@ ArmadillogFilter.prototype = {
      * Initializes UI
      */
     uiInit: function ArmadillogFilter_uiInit() {
-        DEBUG && console.log('ArmadillogFilter', 'uiInit', arguments);
-
         this.view.clearButtonEl.addEventListener(
             'click',
             function ArmadillogFilter_inputUiInit_clearButtonElClickHandler(evt) {
@@ -413,8 +404,6 @@ ArmadillogFilter.prototype = {
      * Initializes storage
      */
     storageInit: function ArmadillogFilter_storageInit() {
-        DEBUG && console.log('ArmadillogFilter', 'storageInit', arguments);
-
         this.storageLoad();
 
         return true;
@@ -424,8 +413,6 @@ ArmadillogFilter.prototype = {
      * Creates a filter worker
      */
     filterWorkerCreate: function ArmadillogFilter_filterWorkerCreate() {
-        DEBUG && console.log('ArmadillogFilter', 'filterWorkerCreate', arguments);
-
         this.workerFilter = new mWorker.WorkerFunction(
             function ArmadillogFilter_filterWorkerCreate_workerFilter(data, success, error) {
                 var textFiltered = data.text;
@@ -510,8 +497,6 @@ ArmadillogFilter.prototype = {
      * @param {object} data filter item data
      */
     filterItemCreate: function ArmadillogFilter_filterItemCreate(data) {
-        DEBUG && console.log('ArmadillogFilter', 'filterItemCreate', arguments);
-
         if (!data || typeof data !== 'object') {
             data = {};
         }
@@ -542,8 +527,6 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     filterItemViewCreate: function ArmadillogFilter_filterItemViewCreate(filterItemMMap) {
-        DEBUG && console.log('ArmadillogFilter', 'filterItemViewCreate', arguments);
-
         filterItemMMap.set(
             'view',
             this.armadillogView.filterItemViewGet({
@@ -562,8 +545,6 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     filterItemViewUpdate: function ArmadillogFilter_filterItemViewUpdate(filterItemMMap) {
-        DEBUG && console.log('ArmadillogFilter', 'filterItemViewUpdate', arguments);
-
         filterItemMMap.get('view').muteCheckboxEl.checked = filterItemMMap.get('mute');
 
         var filterItemAffectTypeList = filterItemMMap.get('view').affectTypeList;
@@ -601,8 +582,6 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     filterItemUiInit: function ArmadillogFilter_filterItemUiInit(filterItemMMap) {
-        DEBUG && console.log('ArmadillogFilter', 'filterItemUiInit', arguments);
-
         filterItemMMap.get('view').moveUpEl.addEventListener(
             'click',
             function ArmadillogFilter_filterItemUiInit_filterItemViewMoveUpElClickHandler(evt) {
@@ -653,8 +632,6 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     filterItemMoveUp: function ArmadillogFilter_filterItemMoveUp(filterItemMMap) {
-        DEBUG && console.log('ArmadillogFilter', 'filterItemMoveUp', arguments);
-
         var filterItemIdx = this.filterMList.indexOf(filterItemMMap);
 
         if (filterItemIdx === 0) {
@@ -675,8 +652,6 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     filterItemMoveDown: function ArmadillogFilter_filterItemMoveDown(filterItemMMap) {
-        DEBUG && console.log('ArmadillogFilter', 'filterItemMoveDown', arguments);
-
         var filterItemIdx = this.filterMList.indexOf(filterItemMMap);
 
         if (filterItemIdx === this.filterMList.length() - 1) {
@@ -697,8 +672,6 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     filterItemRemove: function ArmadillogFilter_filterItemRemove(filterItemMMap) {
-        DEBUG && console.log('ArmadillogFilter', 'filterItemRemove', arguments);
-
         this.filterMList.splice(this.filterMList.indexOf(filterItemMMap), 1);
 
         return true;
@@ -710,8 +683,6 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     clear: function ArmadillogFilter_clear() {
-        DEBUG && console.log('ArmadillogFilter', 'clear', arguments);
-
         this.filterMList.queue('filter-clear');
 
         while (this.filterMList.length()) {
@@ -727,8 +698,6 @@ ArmadillogFilter.prototype = {
      * Submits the filter list
      */
     submit: function ArmadillogFilter_submit() {
-        DEBUG && console.log('ArmadillogFilter', 'submit', arguments);
-
         var filterItemMMap;
 
         this.filterMList.queue('filter-submit');
@@ -798,8 +767,6 @@ ArmadillogFilter.prototype = {
      * @param {array} filterDataList model data list
      */
     viewListInsert: function ArmadillogFilter_viewListInsert(filterDataList) {
-        DEBUG && console.log('ArmadillogFilter', 'viewListInsert', arguments);
-
         var filterIndex,
             filterItemMMap;
 
@@ -825,8 +792,6 @@ ArmadillogFilter.prototype = {
      * @param {array} filterDataList model data list
      */
     viewListUpdate: function ArmadillogFilter_viewListUpdate(filterDataList) {
-        DEBUG && console.log('ArmadillogFilter', 'viewListUpdate', arguments);
-
         var filterIndex,
             filterItemMMap;
 
@@ -851,8 +816,6 @@ ArmadillogFilter.prototype = {
      * @param {array} filterDataList model data list
      */
     viewListDelete: function ArmadillogFilter_viewListDelete(filterDataList) {
-        DEBUG && console.log('ArmadillogFilter', 'viewListDelete', arguments);
-
         var filterIndex,
             filterItemMMap;
 
@@ -872,8 +835,6 @@ ArmadillogFilter.prototype = {
      *
      */
     storageLoad: function ArmadillogFilter_storageLoad() {
-        DEBUG && console.log('ArmadillogFilter', 'storageLoad', arguments);
-
         var storageFilterList = [];
         var filterItemMMap;
 
@@ -900,8 +861,6 @@ ArmadillogFilter.prototype = {
      *
      */
     storageSave: function ArmadillogFilter_storageSave() {
-        DEBUG && console.log('ArmadillogFilter', 'storageSave', arguments);
-
         var storageFilterList = [];
         var filterItemMMap;
 
@@ -931,8 +890,6 @@ ArmadillogFilter.prototype = {
      *
      */
     filterText: function ArmadillogFilter_storageSave(text, onSuccess) {
-        DEBUG && console.log('ArmadillogFilter', 'filterText', arguments);
-
         var filterItemMMap;
         var filterList = [], filterItem;
 

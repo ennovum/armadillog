@@ -15,7 +15,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -30,6 +30,7 @@ var iArmadillogExamineView = {
  */
 var ArmadillogExamineView = function ArmadillogExamineView() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iArmadillogExamineView);
 };
 
@@ -44,8 +45,6 @@ ArmadillogExamineView.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogView_init(config) {
-        DEBUG && console.log('ArmadillogView', 'init', arguments);
-
         this.examineViewTemplate = Handlebars.compile(templateExamine);
 
         return true;
@@ -57,8 +56,6 @@ ArmadillogExamineView.prototype = {
      * @param {object} context context object
      */
     examineViewGet: function ArmadillogView_examineViewGet(context) {
-        DEBUG && console.log('ArmadillogView', 'examineViewGet', arguments);
-
         var containerEl = mUtils.dom.createElement('div');
         containerEl.innerHTML = this.examineViewTemplate(context);
 

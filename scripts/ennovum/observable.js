@@ -11,7 +11,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -28,6 +28,7 @@ var iObservable = {
  */
 var Observable = function Observable() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iObservable);
 };
 
@@ -40,8 +41,6 @@ Observable.prototype = {
      * Initializes instance
      */
     init: function Observable_init() {
-        DEBUG && console.log('Observable', 'init', arguments);
-
         this.eventsMap = {};
 
         return true;
@@ -54,8 +53,6 @@ Observable.prototype = {
      * @param {function} callback callback to bind with events
      */
     on: function Observable_on(eventList, callback) {
-        DEBUG && console.log('Observable', 'on', arguments);
-
         if (!Array.isArray(eventList)) {
             eventList = [eventList];
         }
@@ -82,8 +79,6 @@ Observable.prototype = {
      * @param {function} callback callback to unbind from events
      */
     off: function Observable_off(eventList, callback) {
-        DEBUG && console.log('Observable', 'off', arguments);
-
         if (!Array.isArray(eventList)) {
             eventList = [eventList];
         }
@@ -116,8 +111,6 @@ Observable.prototype = {
      * @param {mixed} eventList list of or a single event name
      */
     trigger: function Observable_trigger(eventList, data) {
-        DEBUG && console.log('Observable', 'trigger', arguments);
-
         if (!Array.isArray(eventList)) {
             eventList = [eventList];
         }

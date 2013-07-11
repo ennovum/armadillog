@@ -13,7 +13,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -35,6 +35,7 @@ var armadillogExamineInterface = {
  */
 var ArmadillogExamine = function ArmadillogExamine() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, armadillogExamineInterface);
 };
 
@@ -49,8 +50,6 @@ ArmadillogExamine.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogExamine_init(config, application) {
-        DEBUG && console.log('ArmadillogExamine', 'init', arguments);
-
         switch (true) {
             case !this.configSet(config):
             case !this.dataInit(application):
@@ -69,8 +68,6 @@ ArmadillogExamine.prototype = {
      * @param {object} config configuration object
      */
     configSet: function ArmadillogExamine_configSet(config) {
-        DEBUG && console.log('ArmadillogExamine', 'configSet', arguments);
-
         switch (false) {
             case !!config:
             case typeof config === 'object':
@@ -89,8 +86,6 @@ ArmadillogExamine.prototype = {
      * Initializes data
      */
     dataInit: function ArmadillogExamine_dataInit(application) {
-        DEBUG && console.log('ArmadillogExamine', 'dataInit', arguments);
-
         this.application = application;
 
         return true;
@@ -100,8 +95,6 @@ ArmadillogExamine.prototype = {
      * Initializes view
      */
     viewInit: function ArmadillogExamine_viewInit() {
-        DEBUG && console.log('ArmadillogExamine', 'viewInit', arguments);
-
         this.armadillogView = new mArmadillogExamineView.ArmadillogExamineView();
 
         this.bodyEl = this.config.bodyEl;
@@ -123,8 +116,6 @@ ArmadillogExamine.prototype = {
      * Initializes UI
      */
     uiInit: function ArmadillogExamine_uiInit() {
-        DEBUG && console.log('ArmadillogExamine', 'uiInit', arguments);
-
         this.view.rawContentEl.addEventListener(
             'keyup',
             function (evt) {
@@ -150,8 +141,6 @@ ArmadillogExamine.prototype = {
      * @param {object} contentLineItemMMap content line model object
      */
     set: function ArmadillogExamine_set(contentLineItemMMap) {
-        DEBUG && console.log('ArmadillogExamine', 'set', arguments);
-
         this.view.rawContentEl.innerHTML = mUtils.string.escapeXML(contentLineItemMMap.get('textRaw'));
         this.view.filteredContentEl.innerHTML = contentLineItemMMap.get('view').el.innerHTML;
 
@@ -162,8 +151,6 @@ ArmadillogExamine.prototype = {
      * Clears examine content
      */
     clear: function ArmadillogExamine_clear() {
-        DEBUG && console.log('ArmadillogExamine', 'clear', arguments);
-
         this.view.rawContentEl.innerHTML = '';
         this.view.filteredContentEl.innerHTML = '';
 

@@ -17,7 +17,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -33,6 +33,7 @@ var iArmadillogContentView = {
  */
 var ArmadillogContentView = function ArmadillogContentView() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iArmadillogContentView);
 };
 
@@ -47,8 +48,6 @@ ArmadillogContentView.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogContentView_init(config) {
-        DEBUG && console.log('ArmadillogContentView', 'init', arguments);
-
         this.contentViewTemplate = Handlebars.compile(templateContent);
         this.contentLineItemViewTemplate = Handlebars.compile(templateContentLineItem);
 
@@ -61,8 +60,6 @@ ArmadillogContentView.prototype = {
      * @param {object} context context object
      */
     contentViewGet: function ArmadillogContentView_contentViewGet(context) {
-        DEBUG && console.log('ArmadillogContentView', 'contentViewGet', arguments);
-
         var containerEl = mUtils.dom.createElement('div');
         containerEl.innerHTML = this.contentViewTemplate(context);
 
@@ -78,8 +75,6 @@ ArmadillogContentView.prototype = {
      * @param {object} context context object
      */
     contentLineItemViewGet: function ArmadillogContentView_contentLineItemViewGet(context) {
-        DEBUG && console.log('ArmadillogContentView', 'contentLineItemViewGet', arguments);
-
         var containerEl = mUtils.dom.createElement('div');
         containerEl.innerHTML = this.contentLineItemViewTemplate(context);
 

@@ -11,7 +11,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -33,6 +33,7 @@ var armadillogBusyInterface = {
  */
 var ArmadillogBusy = function ArmadillogBusy() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, armadillogBusyInterface);
 };
 
@@ -47,8 +48,6 @@ ArmadillogBusy.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogBusy_init(config, application) {
-        DEBUG && console.log('ArmadillogBusy', 'init', arguments);
-
         switch (true) {
             case !this.configSet(config):
             case !this.dataInit(application):
@@ -67,8 +66,6 @@ ArmadillogBusy.prototype = {
      * @param {object} config configuration object
      */
     configSet: function ArmadillogBusy_configSet(config) {
-        DEBUG && console.log('ArmadillogBusy', 'configSet', arguments);
-
         switch (false) {
             case !!config:
             case typeof config === 'object':
@@ -87,8 +84,6 @@ ArmadillogBusy.prototype = {
      * Initializes data
      */
     dataInit: function ArmadillogBusy_dataInit(application) {
-        DEBUG && console.log('ArmadillogBusy', 'dataInit', arguments);
-
         this.application = application;
 
         this.busy = false;
@@ -101,8 +96,6 @@ ArmadillogBusy.prototype = {
      * Initializes view
      */
     viewInit: function ArmadillogBusy_viewInit() {
-        DEBUG && console.log('ArmadillogBusy', 'viewInit', arguments);
-
         this.bodyEl = this.config.bodyEl;
 
         return true;
@@ -112,8 +105,6 @@ ArmadillogBusy.prototype = {
      * Initializes UI
      */
     uiInit: function ArmadillogBusy_uiInit() {
-        DEBUG && console.log('ArmadillogBusy', 'uiInit', arguments);
-
         // nothing
 
         return true;
@@ -125,8 +116,6 @@ ArmadillogBusy.prototype = {
      * @param {boolean} busy busy flag value
      */
     set: function ArmadillogBusy_set(busy, task) {
-        DEBUG && console.log('ArmadillogBusy', 'set', arguments);
-
         var taskIndex = this.busyTaskList.indexOf(task);
 
         if (busy) {
@@ -161,8 +150,6 @@ ArmadillogBusy.prototype = {
      * Checks busy state
      */
     check: function ArmadillogBusy_check() {
-        DEBUG && console.log('ArmadillogBusy', 'check', arguments);
-
         return this.busy;
     },
 

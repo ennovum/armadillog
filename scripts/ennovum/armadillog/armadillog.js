@@ -23,7 +23,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -45,6 +45,7 @@ var armadillogInterface = {
  */
 var Armadillog = function Armadillog() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, armadillogInterface);
 };
 
@@ -59,8 +60,6 @@ Armadillog.prototype = {
      * @param {object} config configuration object
      */
     init: function Armadillog_init(config) {
-        DEBUG && console.log('Armadillog', 'init', arguments);
-
         switch (true) {
             case !this.browserCheck():
             case !this.applicationInit(config):
@@ -75,8 +74,6 @@ Armadillog.prototype = {
      *
      */
     browserCheck: function Armadillog_browserCheck() {
-        DEBUG && console.log('Armadillog', 'browserCheck', arguments);
-
         switch (true) {
             case !document.querySelector:
             case !File:
@@ -100,8 +97,6 @@ Armadillog.prototype = {
      * Initializes data
      */
     applicationInit: function Armadillog_applicationInit(config) {
-        DEBUG && console.log('Armadillog', 'applicationInit', arguments);
-
         var application = this.application = {};
 
         application.inputStatic = mArmadillogInput.armadillogInputStatic;
@@ -125,8 +120,6 @@ Armadillog.prototype = {
      * Clears content
      */
     contentClear: function Armadillog_contentClear() {
-        DEBUG && console.log('Armadillog', 'contentClear', arguments);
-
         this.application.content.clear();
 
         return true;
@@ -138,8 +131,6 @@ Armadillog.prototype = {
      * @param {string} text a piece of source text
      */
     contentTextSet: function Armadillog_contentTextSet(text, label) {
-        DEBUG && console.log('Armadillog', 'contentTextSet', arguments);
-
         this.application.content.textSet(text, label);
 
         return true;

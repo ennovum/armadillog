@@ -15,7 +15,7 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -41,6 +41,7 @@ var iModelList = {
  */
 var ModelList = function ModelList() {
     this.init.apply(this, arguments);
+    DEBUG && mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, [iModelList, mObservable.iObservable, mQueue.iQueue]);
 };
 
@@ -53,8 +54,6 @@ ModelList.prototype = {
      * Initializes instance
      */
     init: function ModelList_init() {
-        DEBUG && console.log('ModelList', 'init', arguments);
-
         this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
         this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
 
@@ -77,8 +76,6 @@ ModelList.prototype = {
      * @param {number} index index of the value to return
      */
     getAt: function ModelList_getAt(index) {
-        DEBUG && console.log('ModelList', 'getAt', arguments);
-
         return this.list[index];
     },
 
@@ -89,8 +86,6 @@ ModelList.prototype = {
      * @param {mixed} value value to be set
      */
     setAt: function ModelList_setAt(index, value) {
-        DEBUG && console.log('ModelList', 'setAt', arguments);
-
         var insertList = [];
         var updateList = [];
 
@@ -143,8 +138,6 @@ ModelList.prototype = {
      * @param {number} index index of the value to be deleted
      */
     delAt: function ModelList_delAt(index) {
-        DEBUG && console.log('ModelList', 'delAt', arguments);
-
         var deleteList = [];
 
         for (var i = 0, l = arguments.length; i < l; i++) {
@@ -175,8 +168,6 @@ ModelList.prototype = {
      * Pushes values to the list
      */
     push: function ModelList_push(/*, value1, ..., valueN*/) {
-        DEBUG && console.log('ModelList', 'push', arguments);
-
         var index = this.list.length;
 
         var insertValueList = Array.prototype.slice.call(arguments);
@@ -204,8 +195,6 @@ ModelList.prototype = {
      * Pops a value from the list
      */
     pop: function ModelList_pop() {
-        DEBUG && console.log('ModelList', 'pop', arguments);
-
         if (this.list.length === 0) {
             return false;
         }
@@ -229,8 +218,6 @@ ModelList.prototype = {
      * Shifts a value from the list
      */
     shift: function ModelList_shift() {
-        DEBUG && console.log('ModelList', 'shift', arguments);
-
         if (this.list.length === 0) {
             return false;
         }
@@ -254,8 +241,6 @@ ModelList.prototype = {
      * Unshifts values to the list
      */
     unshift: function ModelList_unshift(/*, value1, ..., valueN*/) {
-        DEBUG && console.log('ModelList', 'unshift', arguments);
-
         var index = 0;
 
         var insertValueList = Array.prototype.slice.call(arguments);
@@ -286,8 +271,6 @@ ModelList.prototype = {
      * @param {number} count values to splice count
      */
     splice: function ModelList_splice(index, count/*, value1, ..., valueN*/) {
-        DEBUG && console.log('ModelList', 'splice', arguments);
-
         if (typeof index !== 'number' || index < 0) {
             return false;
         }
@@ -337,8 +320,6 @@ ModelList.prototype = {
      * Returns the list length
      */
     length: function ModelList_length() {
-        DEBUG && console.log('ModelList', 'length', arguments);
-
         return this.list.length;
     },
 
@@ -348,8 +329,6 @@ ModelList.prototype = {
      * @param {mixed} value value to return index of
      */
     indexOf: function ModelList_indexOf(value) {
-        DEBUG && console.log('ModelList', 'indexOf', arguments);
-
         return this.list.indexOf(value);
 
         return true;
@@ -362,8 +341,6 @@ ModelList.prototype = {
      * @param {mixed} value value to attach
      */
     valueOn: function ModelList_valueOn(index, value) {
-        DEBUG && console.log('ModelList', 'valueOn', arguments);
-
         if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
             value.on(
                 [
@@ -394,8 +371,6 @@ ModelList.prototype = {
      * @param {mixed} value value to detach
      */
     valueOff: function ModelList_valueOff(index, value) {
-        DEBUG && console.log('ModelList', 'valueOff', arguments);
-
         if (this.valueListenerList[index]) {
             value.off(
                 [
@@ -419,8 +394,6 @@ ModelList.prototype = {
      * @param {dataList} event data list
      */
     eventAdd: function ModelList_eventAdd(event, dataList) {
-        DEBUG && console.log('ModelList', 'eventAdd', arguments);
-
         var eventGroup = this.eventGroupList[this.eventGroupList.length - 1] || null;
         if (!eventGroup || eventGroup.event !== event) {
             eventGroup = {
@@ -450,8 +423,6 @@ ModelList.prototype = {
      * Flushes events
      */
     eventFlush: function ModelList_eventFlush() {
-        DEBUG && console.log('ModelList', 'eventFlush', arguments);
-
         var eventGroupList = this.eventGroupList;
         this.eventGroupList = [];
 
@@ -468,8 +439,6 @@ ModelList.prototype = {
      * Returns raw list
      */
     toArray: function ModelList_toArray() {
-        DEBUG && console.log('ModelList', 'toArray', arguments);
-
         return this.list;
     },
 

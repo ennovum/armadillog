@@ -15,7 +15,7 @@ window.define && define(
 	) {
 /* ==================================================================================================== */
 
-// debug console logs switch
+// debug spy switch
 var DEBUG = false;
 
 /**
@@ -32,6 +32,7 @@ var iModelValue = {
  */
 var ModelValue = function ModelValue() {
 	this.init.apply(this, arguments);
+	DEBUG && mUtils.debug.spy(this);
 	return mUtils.obj.implement({}, this, [iModelValue, mObservable.iObservable, mQueue.iQueue]);
 };
 
@@ -44,8 +45,6 @@ ModelValue.prototype = {
 	 * Initializes instance
 	 */
 	init: function ModelValue_init(value) {
-		DEBUG && console.log('ModelValue', 'init', arguments);
-
 		this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
 		this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
 
@@ -64,8 +63,6 @@ ModelValue.prototype = {
 	 * Returns the value
 	 */
 	get: function ModelValue_get() {
-		DEBUG && console.log('ModelValue', 'get', arguments);
-
 		return this.value;
 	},
 
@@ -75,8 +72,6 @@ ModelValue.prototype = {
 	 * @param {mixed} value item's value
 	 */
 	set: function ModelValue_set(value) {
-		DEBUG && console.log('ModelValue', 'set', arguments);
-
 		var valueOld = this.value;
 
 		if (value !== valueOld) {
@@ -102,8 +97,6 @@ ModelValue.prototype = {
 	 * @param {mixed} value value to attach
 	 */
 	valueOn: function ModelValue_valueOn(value) {
-		DEBUG && console.log('ModelValue', 'valueOn', arguments);
-
 		if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
 			value.on(
 				[
@@ -132,8 +125,6 @@ ModelValue.prototype = {
 	 * @param {mixed} value value to detach
 	 */
 	valueOff: function ModelValue_valueOff(value) {
-		DEBUG && console.log('ModelValue', 'valueOff', arguments);
-
 		if (this.valueListener) {
 			value.off(
 				[
@@ -157,8 +148,6 @@ ModelValue.prototype = {
 	 * @param {dataList} event data list
 	 */
 	eventAdd: function ModelValue_eventAdd(event, dataList) {
-		DEBUG && console.log('ModelValue', 'eventAdd', arguments);
-
         var eventGroup = this.eventGroupList[this.eventGroupList.length - 1] || null;
         if (!eventGroup || eventGroup.event !== event) {
             eventGroup = {
@@ -188,8 +177,6 @@ ModelValue.prototype = {
 	 * Flushes events
 	 */
 	eventFlush: function ModelValue_eventFlush() {
-		DEBUG && console.log('ModelValue', 'eventFlush', arguments);
-
 		var eventGroupList = this.eventGroupList;
 		this.eventGroupList = [];
 
