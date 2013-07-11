@@ -615,8 +615,6 @@ ArmadillogContent.prototype = {
 
         this.lineMList.queue('text-set');
 
-        this.application.tailing.stop();
-
         this.workerTextLineSplitter.run(
             {
                 'text': text
@@ -659,8 +657,6 @@ ArmadillogContent.prototype = {
         DEBUG && console.log('ArmadillogContent', 'textUpdate', arguments);
 
         this.lineMList.queue('text-update');
-
-        this.application.tailing.check();
 
         this.workerTextLineSplitter.run(
             {

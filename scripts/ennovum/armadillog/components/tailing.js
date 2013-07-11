@@ -25,8 +25,7 @@ var armadillogTailingStatic = {
  */
 var armadillogTailingInterface = {
     check: function () {},
-    execute: function () {},
-    stop: function () {}
+    execute: function () {}
 };
 
 /**
@@ -142,7 +141,7 @@ ArmadillogTailing.prototype = {
             this.tailing = window.scrollY >= window.scrollMaxY
         }
         else {
-            this.tailing = this.scrollEl.scrollTop + this.scrollEl.offsetHeight >= this.scrollEl.scrollHeight;
+            this.tailing = this.scrollEl.scrollTop > 0 && this.scrollEl.scrollTop + this.scrollEl.offsetHeight >= this.scrollEl.scrollHeight;
         }
 
         return true;
@@ -162,17 +161,6 @@ ArmadillogTailing.prototype = {
                 this.scrollEl.scrollTop = this.scrollEl.scrollHeight - this.scrollEl.offsetHeight;
             }
         }
-
-        return true;
-    },
-
-    /**
-     * Stops tailing
-     */
-    stop: function ArmadillogTailing_stop() {
-        DEBUG && console.log('ArmadillogTailing', 'stop', arguments);
-
-        this.tailing = false;
 
         return true;
     },
