@@ -26,7 +26,41 @@
     display: none;
 }
 
+h1,
+h2 {
+    margin: 5px 0 10px 0;
+    font-size: 130%;
+}
+
+h3,
+h4 {
+    margin: 4px 0 8px 0;
+    font-size: 115%;
+}
+
+h5,
+h6 {
+    margin: 3px 0 6px 0;
+    font-size: 100%;
+}
+
+p,
+ul,
+ol {
+    margin: 0 0 6px 0;
+}
+
+ul,
+ol {
+    padding: 0 0 0 20px;
+}
+
+li {
+    margin: 0 0 1px 0;
+}
+
 a,
+a:hover,
 label {
     text-decoration: none;
     color: inherit;
@@ -102,7 +136,7 @@ label:hover {
     box-shadow: inset 0 0 3px 0 rgba(0, 0, 0, 1);
     color: rgb(68, 68, 68);
     font-size: 13px;
-    line-height: 17px;
+    line-height: 16px;
 }
 
 /* =============================================================================
@@ -122,7 +156,7 @@ body {
     background: rgb(255, 255, 255);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 12px;
-    line-height: 17px;
+    line-height: 16px;
     color: rgb(0, 0, 0);
 }
 
@@ -175,11 +209,11 @@ body {
 
 .mainmenu {
     float: left;
-    margin: 10px 10px 0 0;
 }
 
 .mainmenu-list {
-    margin: 0;
+    float: left;
+    margin: 10px 10px 0 0;
     padding: 0;
     background: rgba(42, 42, 42, 1);
     border-radius: 5px;
@@ -231,6 +265,19 @@ body {
     background: rgba(187, 102, 102, 1);
 }
 
+.manual-switch {
+    background: rgba(102, 153, 153, 1);
+}
+
+.manual-switch:hover,
+.manual-switch:focus {
+    background: rgba(102, 187, 187, 1);
+}
+
+.drawer-wrapper {
+    background: #888;
+}
+
 .input-wrapper {
     background: rgba(102, 102, 153, 1);
 }
@@ -243,9 +290,26 @@ body {
     background: rgba(153, 102, 102, 1);
 }
 
+.manual-wrapper {
+    background: rgba(102, 153, 153, 1);
+}
+
+.drawer {
+    padding: 0 20px 10px 20px;
+    overflow: auto;
+}
+
+.drawer-section {
+    margin: 10px 0 0 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: auto;
+}
+
 .drawer-fold {
     display: block;
-    background: rgba(0, 0, 0, 0.1) url('fold.png') 50% 50% no-repeat;
+    background: rgba(0, 0, 0, 0.2) url('fold.png') 50% 50% no-repeat;
     font-size: 10px;
     line-height: 16px;
     text-align: center;
@@ -258,11 +322,6 @@ body {
 .drawer-fold:focus {
     background-color: rgba(0, 0, 0, 0.3);
     outline: none;
-}
-
-.drawer {
-    padding: 0 20px 10px 20px;
-    overflow: auto;
 }
 
 .input-clear-box,
@@ -282,7 +341,7 @@ body {
 .input-clear-label {
     display: block;
     float: left;
-    min-height: 17px;
+    min-height: 16px;
     padding: 5px 10px;
     border-radius: 5px 0 0 5px;
     background: rgb(221, 221, 221);
@@ -294,7 +353,7 @@ body {
     display: block;
     float: left;
     width: 100px;
-    height: 17px;
+    height: 16px;
     padding: 5px 10px;
     border-width: 0;
     border-radius: 5px 0 0 5px;
@@ -311,8 +370,8 @@ body {
 }
 
 .input-paste-input {
-    min-height: 17px;
-    max-height: 17px;
+    min-height: 16px;
+    max-height: 16px;
     resize: none;
 }
 
@@ -364,7 +423,7 @@ body {
 .filter-list {
     margin: 10px 0 0 0;
     padding: 10px;
-    background: rgba(119, 170, 119, 1);
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     overflow: auto;
 }

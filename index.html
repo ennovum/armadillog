@@ -37,6 +37,11 @@
                     <a class="button mainmenu-link examine-switch" href="#filter-examine"><span class="hotkey">E</span>xamine</a>
                 </li>
             </ul>
+            <ul class="mainmenu-list">
+                <li class="mainmenu-item">
+                    <a class="button mainmenu-link manual-switch" href="#manual-toggle"><span class="hotkey">M</span>anual</a>
+                </li>
+            </ul>
         </div>
     </div>
     <div class="hidden drawer-wrapper input-wrapper">
@@ -53,6 +58,74 @@
         <div class="drawer examine-box">
         </div>
         <a href="#examine-fold" class="drawer-fold examine-fold">Fold</a>
+    </div>
+    <div class="hidden drawer-wrapper manual-wrapper">
+        <div class="drawer manual-box">
+            <div class="drawer-section manual-section">
+                <h4>About</h4>
+                <p>Armadillog is a web console log. It makes it easier and faster to sift through application logs etc.</p>
+                <p>Input a file or a piece of text, apply a set of filters and examine the result.</p>
+                <p>You can narrow the output down to the point where you see exactly what is relevant to your current need.</p>
+            </div>
+            <div class="drawer-section manual-section">
+                <h4>General</h4>
+                <p>Armadillogs user inferface consist of:</p>
+                <ul>
+                    <li>topbar - the dark bar at the top, holding several buttons,</li>
+                    <li>panels - areas toggled by respective buttons fron the topbar, containing specific functionalities,</li>
+                    <li>content area - where you see the loaded content.</li>
+                </ul>
+            </div>
+            <div class="drawer-section manual-section">
+                <h4>Input</h4>
+                <p>First of all you should put some content into the console log. You can do it by:</p>
+                <ul>
+                    <li>loading a file through Input panel,</li>
+                    <li>pasting from clipboard to a textarea through Input panel,</li>
+                    <li>drag&amp;drop-ing a file onto the content area.</li>
+                </ul>
+                <p>Choosing an input method that involves a file will cause the console to automatically track it.
+                    E. g. you can choose a file that is being used as a log of a running application to get a live console log.</p>
+                <p>Ofcourse, the clear button in Input panel clears the content and stops the tracking.
+                    Also choosing a new input clears the old one.</p>
+                <p>Due to some browser environment constraints concerning performance, there are limitations on the input content size.
+                    If one of those limits is met, appropriate overflow from the beginning is skipped.</p>
+            </div>
+            <div class="drawer-section manual-section">
+                <h4>Filter</h4>
+                <p>As you seek an answer for a specific question in your content, filters are the way to express it.</p>
+                <p>You can create multiple filters and they are applied to each line of the content in order of appearance, which you can adjust.
+                    A filter can be removed or muted.</p>
+                <p>There are several types of affecting the output by a filter. You can choose to:</p>
+                <ul>
+                    <li>show only lines containing matches,</li>
+                    <li>show only matching fragments,</li>
+                    <li>hide lines containing matches,</li>
+                    <li>hide matching fragments,</li>
+                    <li>highlight line containing matches,</li>
+                    <li>highlight matching fragment.</li>
+                </ul>
+                <p>A filter value can be expressed as:</p>
+                <ul>
+                    <li>a text,</li>
+                    <li>a regular expression.</li>
+                </ul>
+                <p>The matching is done case-insensitively.</p>
+                <p>You can highlight matches in the output by choosing a highlight type for your filter.</p>
+                <p>After creating or removing filters you have to hit the submit button to apply the changes.
+                    You can clear the filters. It is applied automatically.</p>
+                <p>The filters are persistent- stored in the browser storage, so you will have them next time you visit the tool.</p>
+            </div>
+            <div class="drawer-section manual-section">
+                <h4>Examine</h4>
+                <p>So the filters are applied and you see only the relevant pieces of content.
+                    Is it still hard to read? Examine to the rescue!</p>
+                <p>Open the examine panel and choose a content line.
+                    What you see is two editable textareas- first for the raw content line and second for the filtered one.
+                    Bigger font size and ability to edit the content makes it easy to find what you are looking for.</p>
+            </div>
+        </div>
+        <a href="#manual-fold" class="drawer-fold manual-fold">Fold</a>
     </div>
 </div>
 <div class="main">

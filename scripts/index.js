@@ -85,6 +85,7 @@ require(
                 'mainmenuInputEl': document.querySelector('.input-switch'),
                 'mainmenuFilterEl': document.querySelector('.filter-switch'),
                 'mainmenuExamineEl': document.querySelector('.examine-switch'),
+                'mainmenuManualEl': document.querySelector('.manual-switch'),
                 'inputWrapperEl': document.querySelector('.input-wrapper'),
                 'inputBoxEl': document.querySelector('.input-box'),
                 'inputFoldEl': document.querySelector('.input-fold'),
@@ -94,6 +95,9 @@ require(
                 'examineWrapperEl': document.querySelector('.examine-wrapper'),
                 'examineBoxEl': document.querySelector('.examine-box'),
                 'examineFoldEl': document.querySelector('.examine-fold'),
+                'manualWrapperEl': document.querySelector('.manual-wrapper'),
+                'manualBoxEl': document.querySelector('.manual-box'),
+                'manualFoldEl': document.querySelector('.manual-fold'),
                 'contentBoxEl': document.querySelector('.content-box'),
                 'contentScrollEl': document.querySelector('.main'),
                 'contentDropEl': document.querySelector('.main')
