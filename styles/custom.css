@@ -172,13 +172,13 @@ body {
 
 .logo {
     float: left;
-    height: 30px;
-    margin: 10px 30px 0 0;
+    height: 32px;
+    margin: 9px 30px -1px 0;
     padding: 0 0 0 40px;
     background: url('armadillog.png') 0 0 no-repeat;
     font-family: 'Miso', Arial, Helvetica, sans-serif;
     font-size: 26px;
-    line-height: 30px;
+    line-height: 32px;
     cursor: default;
     color: rgb(255, 255, 255);
 }
@@ -193,18 +193,26 @@ body {
     font-size: 14px;
 }
 
-.ennovum {
+.sidemenu {
     float: right;
 }
 
-.ennovum-link {
+.sidemenu-link {
     display: block;
-    width: 30px;
-    height: 30px;
-    margin: 10px 0 0 10px;
-    background: url('ennovum.png') 0 0 no-repeat;
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin: 9px 0 -1px 10px;
     text-indent: -1000px;
     overflow: hidden;
+}
+
+.ennovum-link {
+    background: url('ennovum.png') 0 0 no-repeat;
+}
+
+.github-link {
+    background: url('github.png') 0 0 no-repeat;
 }
 
 .mainmenu {
