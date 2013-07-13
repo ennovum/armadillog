@@ -54,10 +54,27 @@ WorkerDownloader.prototype = {
                 xhr.onreadystatechange = function (event) {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 0 || xhr.status === 200) {
+                            var result = xhr.response;
+                            var length = xhr.response.length;
+                            var lengthOriginal = length;
+
+                            if (data.limit && length > Math.abs(data.limit)) {
+                                if (data.limit < 0) {
+                                    result = xhr.response.slice(data.limit);
+                                    length = 0 - data.limit;
+                                }
+                                else {
+                                    result = xhr.response.slice(0, data.limit);
+                                    length = data.limit;
+                                }
+                            }
+
                             success(
                                 {
                                     'url': data.url,
-                                    'result': xhr.response
+                                    'result': result,
+                                    'length': length,
+                                    'lengthOriginal': lengthOriginal
                                 },
                                 null);
                         }

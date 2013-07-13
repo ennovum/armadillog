@@ -55,6 +55,9 @@ ArmadillogContent.prototype = {
 
     HIDDEN_CLASS: 'hidden',
 
+    CONTENT_SIZE_LIMIT: 10000000,
+    CONTENT_LINE_LIMIT: 10000,
+
     OVERFLOW_CHUNK_SIZE: 5000,
     OVERFLOW_DELAY: 500,
 
@@ -147,13 +150,27 @@ ArmadillogContent.prototype = {
         this.dragging = false;
 
         this.workerFileReader = new mWorker.WorkerDownloader();
+
         this.workerTextLineSplitter = new mWorker.WorkerFunction(
             function ArmadillogContent_dataInit_workerTextLineSplitter(data, success, error) {
                 var lineList = data.text.split(/\r?\n/g);
-                for (var i = 0, l = lineList.length; i < l; i++) {
+                var index = 0;
+                var length = lineList.length;
+                var lengthOriginal = length;
+
+                if (data.limit && length > Math.abs(data.limit)) {
+                    if (data.limit < 0) {
+                        index = Math.max(0, lineList.length + data.limit);
+                    }
+                    else {
+                        length = Math.min(lineList.length, data.limit);
+                    }
+                }
+
+                for (var i = index, l = length; i < l; i++) {
                     success(
                         {
-                            'index': i,
+                            'index': i - index,
                             'text': lineList[i]
                         },
                         null);
@@ -161,7 +178,8 @@ ArmadillogContent.prototype = {
 
                 success(
                     {
-                        'count': lineList.length
+                        'count': length - index,
+                        'countOriginal': lengthOriginal
                     },
                     null);
         });
@@ -409,7 +427,8 @@ ArmadillogContent.prototype = {
 
         this.workerFileReader.run(
             {
-                'url': URL.createObjectURL(file)
+                'url': URL.createObjectURL(file),
+                'limit': 0 - this.CONTENT_SIZE_LIMIT
             },
             null,
             null,
@@ -441,7 +460,8 @@ ArmadillogContent.prototype = {
 
         this.workerFileReader.run(
             {
-                'url': URL.createObjectURL(this.file)
+                'url': URL.createObjectURL(this.file),
+                'limit': 0 - this.CONTENT_SIZE_LIMIT
             },
             null,
             null,
@@ -503,7 +523,8 @@ ArmadillogContent.prototype = {
 
         this.workerFileReader.run(
             {
-                'url': url
+                'url': url,
+                'limit': 0 - this.CONTENT_SIZE_LIMIT
             },
             null,
             null,
@@ -534,7 +555,8 @@ ArmadillogContent.prototype = {
 
         this.workerFileReader.run(
             {
-                'url': this.url
+                'url': this.url,
+                'limit': 0 - this.CONTENT_SIZE_LIMIT
             },
             null,
             null,
@@ -588,7 +610,8 @@ ArmadillogContent.prototype = {
 
         this.workerTextLineSplitter.run(
             {
-                'text': text
+                'text': text,
+                'limit': 0 - this.CONTENT_LINE_LIMIT
             },
             null,
             null,
@@ -629,7 +652,8 @@ ArmadillogContent.prototype = {
 
         this.workerTextLineSplitter.run(
             {
-                'text': text
+                'text': text,
+                'limit': 0 - this.CONTENT_LINE_LIMIT
             },
             null,
             null,
