@@ -462,7 +462,7 @@ ArmadillogFilter.prototype = {
 
                         case data.AFFECT_TYPE_HIDE:
                             if (match) {
-                                textFiltered = textFiltered.replace(match[0], '');
+                                textFiltered = textFiltered.replace(regexp, '');
                             }
                             break;
 
