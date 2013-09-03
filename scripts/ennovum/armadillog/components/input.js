@@ -26,7 +26,7 @@ var armadillogInputStatic = {
  * ArmadillogInput interface
  */
 var armadillogInputInterface = {
-    clearLabelSet: function (value) {}
+    launch: function () {}
 };
 
 /**
@@ -53,7 +53,6 @@ ArmadillogInput.prototype = {
             case !this.configSet(config):
             case !this.dataInit(application):
             case !this.viewInit():
-            case !this.uiInit():
                 return false;
                 break;
         }
@@ -109,6 +108,19 @@ ArmadillogInput.prototype = {
         this.boxEl.appendChild(this.view.fileBoxEl);
         this.boxEl.appendChild(this.view.pasteBoxEl);
         this.boxEl.appendChild(this.view.urlBoxEl);
+
+        return true;
+    },
+
+    /**
+     * Launches component
+     */
+    launch: function ArmadillogInput_launch() {
+        switch (true) {
+            case !this.uiInit():
+                return false;
+                break;
+        }
 
         return true;
     },
@@ -191,6 +203,12 @@ ArmadillogInput.prototype = {
                 evt.stopPropagation();
             }.bind(this));
 
+        this.application.content.on(
+            'source-change',
+            function ArmadillogInput_uiInit_applicationSourceChangeHandler(evt, data) {
+                this.clearLabelSet(data.label);
+            }.bind(this));
+
         return true;
     },
 
@@ -198,7 +216,7 @@ ArmadillogInput.prototype = {
      *
      */
     clearLabelSet: function ArmadillogInput_clearLabelSet(value) {
-        this.view.clearLabelEl.innerHTML = value || '';
+        this.view.clearLabelEl.innerHTML = mUtils.string.escapeXML(value || '(empty)');
 
         return true;
     },

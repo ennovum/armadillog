@@ -106,6 +106,7 @@ require(
             var armadillog = new mArmadillog.Armadillog(config);
             var layout = new mLayout.Layout(config);
 
+            armadillog.launch();
             armadillog.contentTextSet(readme, 'README.txt');
         }
         catch (err) {

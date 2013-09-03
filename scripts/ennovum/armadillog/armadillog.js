@@ -36,8 +36,10 @@ var armadillogStatic = {
  * Armadillog interface
  */
 var armadillogInterface = {
+    launch: function () {},
+
     contentClear: function () {},
-    contentTextSet: function (text) {}
+    contentTextSet: function (text, label) {}
 };
 
 /**
@@ -112,6 +114,20 @@ Armadillog.prototype = {
         application.filter = new mArmadillogFilter.ArmadillogFilter(config, application);
         application.examine = new mArmadillogExamine.ArmadillogExamine(config, application);
         application.busy = new mArmadillogBusy.ArmadillogBusy(config, application);
+
+        return true;
+    },
+
+    /**
+     * Launches application
+     */
+    launch: function Armadillog_launch() {
+        this.application.input.launch();
+        this.application.content.launch();
+        this.application.tailing.launch();
+        this.application.filter.launch();
+        this.application.examine.launch();
+        this.application.busy.launch();
 
         return true;
     },

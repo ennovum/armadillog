@@ -4,6 +4,7 @@ window.define && define(
     [
         'ennovum.Environment',
         'ennovum.Utils',
+        'ennovum.Observable',
         'ennovum.Model',
         'ennovum.Worker',
         './../views/filter'
@@ -11,6 +12,7 @@ window.define && define(
     function (
         mEnvironment,
         mUtils,
+        mObservable,
         mModel,
         mWorker,
         mArmadillogFilterView
@@ -54,6 +56,8 @@ var armadillogFilterStatic = {
  * ArmadillogFilter interface
  */
 var armadillogFilterInterface = {
+    launch: function () {},
+
     filterText: function (text, onSuccess) {}
 };
 
@@ -63,7 +67,7 @@ var armadillogFilterInterface = {
 var ArmadillogFilter = function ArmadillogFilter() {
     this.init.apply(this, arguments);
     DEBUG && mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, armadillogFilterInterface);
+    return mUtils.obj.implement({}, this, [armadillogFilterInterface, mObservable.iObservable]);
 };
 
 /**
@@ -105,12 +109,12 @@ ArmadillogFilter.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogFilter_init(config, application) {
+        this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
+
         switch (true) {
             case !this.configSet(config):
             case !this.dataInit(application):
             case !this.viewInit():
-            case !this.uiInit():
-            case !this.storageInit():
                 return false;
                 break;
         }
@@ -134,6 +138,20 @@ ArmadillogFilter.prototype = {
         this.config = {
             boxEl: config.filterBoxEl || null
         };
+
+        return true;
+    },
+
+    /**
+     * Launches component
+     */
+    launch: function ArmadillogFilter_launch() {
+        switch (true) {
+            case !this.uiInit():
+            case !this.storageInit():
+                return false;
+                break;
+        }
 
         return true;
     },
@@ -334,9 +352,7 @@ ArmadillogFilter.prototype = {
                 }
 
                 this.viewListInsert(filterDataList);
-
-                mUtils.dom.classDepend(this.view.listEl, this.HIDDEN_CLASS, this.filterMList.length() === 0);
-                this.application.content.filterApply();
+                this.trigger('list-insert', {'count': dataList.length});
             }.bind(this));
 
         this.filterMList.on(
@@ -352,7 +368,7 @@ ArmadillogFilter.prototype = {
                 }
 
                 this.viewListUpdate(filterDataList);
-                this.application.content.filterApply();
+                this.trigger('list-update', {'count': dataList.length});
             }.bind(this));
 
         this.filterMList.on(
@@ -368,8 +384,7 @@ ArmadillogFilter.prototype = {
                 }
 
                 this.viewListDelete(filterDataList);
-                mUtils.dom.classDepend(this.view.listEl, this.HIDDEN_CLASS, this.filterMList.length() === 0);
-                this.application.content.filterApply();
+                this.trigger('list-delete', {'count': dataList.length});
             }.bind(this));
 
         this.filterMList.on(
@@ -393,8 +408,14 @@ ArmadillogFilter.prototype = {
 
                 if (filterDataList.length) {
                     this.viewListUpdate(filterDataList);
-                    this.application.content.filterApply();
+                    this.trigger('list-update', {'count': dataList.length});
                 }
+            }.bind(this));
+
+        this.on(
+            ['list-insert', 'list-delete'],
+            function ArmadillogFilter_inputUiInit_handlerListToggler() {
+                mUtils.dom.classDepend(this.view.listEl, this.HIDDEN_CLASS, this.filterMList.length() === 0);
             }.bind(this));
 
         return true;

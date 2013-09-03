@@ -24,8 +24,7 @@ var armadillogTailingStatic = {
  * ArmadillogTailing interface
  */
 var armadillogTailingInterface = {
-    check: function () {},
-    execute: function () {}
+    launch: function () {}
 };
 
 /**
@@ -52,7 +51,6 @@ ArmadillogTailing.prototype = {
             case !this.configSet(config):
             case !this.dataInit(application):
             case !this.viewInit():
-            case !this.uiInit():
                 return false;
                 break;
         }
@@ -84,6 +82,8 @@ ArmadillogTailing.prototype = {
      * Initializes data
      */
     dataInit: function ArmadillogTailing_dataInit(application) {
+        this.application = application;
+
         this.tailing = false;
 
         return true;
@@ -94,6 +94,19 @@ ArmadillogTailing.prototype = {
      */
     viewInit: function ArmadillogTailing_viewInit() {
         this.scrollEl = this.config.scrollEl;
+
+        return true;
+    },
+
+    /**
+     * Launches component
+     */
+    launch: function ArmadillogTailing_launch() {
+        switch (true) {
+            case !this.uiInit():
+                return false;
+                break;
+        }
 
         return true;
     },
@@ -116,6 +129,13 @@ ArmadillogTailing.prototype = {
 
                 evt.preventDefault();
                 evt.stopPropagation();
+            }.bind(this),
+            false);
+
+        this.application.content.on(
+            'view-change',
+            function ArmadillogTailing_uiInit_applicationContentViewChangeHandler(evt) {
+                this.execute();
             }.bind(this),
             false);
 

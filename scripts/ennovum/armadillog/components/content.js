@@ -4,6 +4,7 @@ window.define && define(
     [
         'ennovum.Environment',
         'ennovum.Utils',
+        'ennovum.Observable',
         'ennovum.Model',
         'ennovum.Worker',
         './../views/content'
@@ -11,6 +12,7 @@ window.define && define(
     function (
         mEnvironment,
         mUtils,
+        mObservable,
         mModel,
         mWorker,
         mArmadillogContentView
@@ -30,13 +32,13 @@ var armadillogContentStatic = {
  * ArmadillogContent interface
  */
 var armadillogContentInterface = {
+    launch: function () {},
+
     clear: function () {},
 
     textSet: function (text, label) {},
     fileSet: function (file, label) {},
-    urlSet: function (url, label) {},
-
-    filterApply: function () {}
+    urlSet: function (url, label) {}
 };
 
 /**
@@ -45,7 +47,7 @@ var armadillogContentInterface = {
 var ArmadillogContent = function ArmadillogContent() {
     this.init.apply(this, arguments);
     DEBUG && mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, armadillogContentInterface);
+    return mUtils.obj.implement({}, this, [armadillogContentInterface, mObservable.iObservable]);
 };
 
 /**
@@ -70,11 +72,12 @@ ArmadillogContent.prototype = {
      * @param {object} config configuration object
      */
     init: function ArmadillogContent_init(config, application) {
+        this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
+
         switch (true) {
             case !this.configSet(config):
             case !this.dataInit(application):
             case !this.viewInit():
-            case !this.uiInit():
                 return false;
                 break;
         }
@@ -203,6 +206,19 @@ ArmadillogContent.prototype = {
 
         this.view = this.armadillogView.contentViewGet();
         this.boxEl.appendChild(this.view.frameEl);
+
+        return true;
+    },
+
+    /**
+     * Launches component
+     */
+    launch: function ArmadillogContent_launch() {
+        switch (true) {
+            case !this.uiInit():
+                return false;
+                break;
+        }
 
         return true;
     },
@@ -395,6 +411,12 @@ ArmadillogContent.prototype = {
                 }
             }.bind(this));
 
+        this.application.filter.on(
+            ['list-insert', 'list-update', 'list-delete'],
+            function ArmadillogContent_uiInit_handlerFilterApplier(evt) {
+                this.filterApply();
+            }.bind(this));
+
         return true;
     },
 
@@ -411,7 +433,7 @@ ArmadillogContent.prototype = {
         this.lineMList.splice(0, this.lineMList.length());
         this.application.examine.clear();
 
-        this.application.input.clearLabelSet('(empty)');
+        this.trigger('source-change', {'label': null});
 
         return true;
     },
@@ -631,13 +653,13 @@ ArmadillogContent.prototype = {
                 }
 
                 if ('count' in data) {
-                    this.application.input.clearLabelSet(mUtils.string.escapeXML(label) || '(unknown)');
-
                     this.lineMList.dequeue('text-set');
                 }
             },
             null,
             this);
+
+        this.trigger('source-change', {'label': label});
 
         return true;
     },
@@ -816,7 +838,7 @@ ArmadillogContent.prototype = {
             else {
                 this.application.busy.set(false, 'lineViewListInsert');
 
-                this.application.tailing.execute();
+                this.trigger('view-change');
             }
         }.bind(this));
 
@@ -856,7 +878,7 @@ ArmadillogContent.prototype = {
             else {
                 this.application.busy.set(false, 'lineViewListUpdate');
 
-                this.application.tailing.execute();
+                this.trigger('view-change');
             }
         }.bind(this));
 
@@ -896,7 +918,7 @@ ArmadillogContent.prototype = {
             else {
                 this.application.busy.set(false, 'lineViewListDelete');
 
-                this.application.tailing.execute();
+                this.trigger('view-change');
             }
         }.bind(this));
 

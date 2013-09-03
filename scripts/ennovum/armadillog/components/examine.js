@@ -26,6 +26,8 @@ var armadillogExamineStatic = {
  * ArmadillogExamine interface
  */
 var armadillogExamineInterface = {
+    launch: function () {},
+
     set: function (contentLineItemMMap) {},
     clear: function () {}
 };
@@ -54,7 +56,6 @@ ArmadillogExamine.prototype = {
             case !this.configSet(config):
             case !this.dataInit(application):
             case !this.viewInit():
-            case !this.uiInit():
                 return false;
                 break;
         }
@@ -108,6 +109,19 @@ ArmadillogExamine.prototype = {
         this.view = this.armadillogView.examineViewGet();
         this.boxEl.appendChild(this.view.rawBoxEl);
         this.boxEl.appendChild(this.view.filteredBoxEl);
+
+        return true;
+    },
+
+    /**
+     * Launches component
+     */
+    launch: function ArmadillogExamine_launch() {
+        switch (true) {
+            case !this.uiInit():
+                return false;
+                break;
+        }
 
         return true;
     },

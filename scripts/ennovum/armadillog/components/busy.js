@@ -24,6 +24,8 @@ var armadillogBusyStatic = {
  * ArmadillogBusy interface
  */
 var armadillogBusyInterface = {
+    launch: function () {},
+
     set: function (busy, task) {},
     check: function () {}
 };
@@ -52,7 +54,6 @@ ArmadillogBusy.prototype = {
             case !this.configSet(config):
             case !this.dataInit(application):
             case !this.viewInit():
-            case !this.uiInit():
                 return false;
                 break;
         }
@@ -97,6 +98,19 @@ ArmadillogBusy.prototype = {
      */
     viewInit: function ArmadillogBusy_viewInit() {
         this.bodyEl = this.config.bodyEl;
+
+        return true;
+    },
+
+    /**
+     * Launches component
+     */
+    launch: function ArmadillogBusy_launch() {
+        switch (true) {
+            case !this.uiInit():
+                return false;
+                break;
+        }
 
         return true;
     },
