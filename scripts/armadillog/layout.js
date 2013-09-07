@@ -11,9 +11,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * Layout interface
  */
@@ -25,7 +22,7 @@ var iLayout = {
  */
 var Layout = function Layout() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iLayout);
 };
 

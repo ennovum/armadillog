@@ -11,9 +11,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * Buffer interface
  */
@@ -35,7 +32,7 @@ var iBuffer = {
  */
 var Buffer = function Buffer() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iBuffer);
 };
 

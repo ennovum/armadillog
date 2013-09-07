@@ -15,9 +15,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * ModelValue interface
  */
@@ -32,7 +29,7 @@ var iModelValue = {
  */
 var ModelValue = function ModelValue() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, [iModelValue, mObservable.iObservable, mQueue.iQueue]);
 };
 

@@ -19,9 +19,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * ArmadillogFilter static
  */
@@ -66,7 +63,7 @@ var armadillogFilterInterface = {
  */
 var ArmadillogFilter = function ArmadillogFilter() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, [armadillogFilterInterface, mObservable.iObservable]);
 };
 

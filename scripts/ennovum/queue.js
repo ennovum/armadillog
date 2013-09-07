@@ -11,9 +11,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * Queue interface
  */
@@ -28,7 +25,7 @@ var iQueue = {
  */
 var Queue = function Queue() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iQueue);
 };
 

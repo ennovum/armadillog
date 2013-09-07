@@ -23,9 +23,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * Armadillog static
  */
@@ -47,7 +44,7 @@ var armadillogInterface = {
  */
 var Armadillog = function Armadillog() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, armadillogInterface);
 };
 

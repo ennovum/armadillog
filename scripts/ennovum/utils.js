@@ -9,9 +9,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * UtilsObj interface
  */
@@ -533,12 +530,12 @@ var oUtilsDebug = {
 
 };
 
-DEBUG && oUtilsDebug.spy(oUtilsObj);
-DEBUG && oUtilsDebug.spy(oUtilsDom);
-DEBUG && oUtilsDebug.spy(oUtilsString);
-DEBUG && oUtilsDebug.spy(oUtilsRegexp);
-DEBUG && oUtilsDebug.spy(oUtilsUrl);
-DEBUG && oUtilsDebug.spy(oUtilsDebug);
+// oUtilsDebug.spy(oUtilsObj);
+// oUtilsDebug.spy(oUtilsDom);
+// oUtilsDebug.spy(oUtilsString);
+// oUtilsDebug.spy(oUtilsRegexp);
+// oUtilsDebug.spy(oUtilsUrl);
+// oUtilsDebug.spy(oUtilsDebug);
 
 /* ==================================================================================================== */
         return {

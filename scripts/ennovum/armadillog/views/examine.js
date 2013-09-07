@@ -15,9 +15,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * ArmadillogView interface
  */
@@ -30,7 +27,7 @@ var iArmadillogExamineView = {
  */
 var ArmadillogExamineView = function ArmadillogExamineView() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, iArmadillogExamineView);
 };
 

@@ -13,9 +13,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * Worker interface
  */
@@ -30,7 +27,7 @@ var iWorkerFunction = {
  */
 var WorkerFunction = function WorkerFunction() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, [iWorkerFunction, mQueue.iQueue]);
 };
 

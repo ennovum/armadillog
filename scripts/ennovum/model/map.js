@@ -15,9 +15,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * ModelMap interface
  */
@@ -35,7 +32,7 @@ var iModelMap = {
  */
 var ModelMap = function ModelMap() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, [iModelMap, mObservable.iObservable, mQueue.iQueue]);
 };
 

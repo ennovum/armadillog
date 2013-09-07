@@ -13,9 +13,6 @@ window.define && define(
     ) {
 /* ==================================================================================================== */
 
-// debug spy switch
-var DEBUG = false;
-
 /**
  * Worker interface
  */
@@ -29,7 +26,7 @@ var iWorkerDownloader = {
  */
 var WorkerDownloader = function WorkerDownloader() {
     this.init.apply(this, arguments);
-    DEBUG && mUtils.debug.spy(this);
+    // mUtils.debug.spy(this);
     return mUtils.obj.implement({}, this, [iWorkerDownloader, mWorkerFunction.iWorkerFunction]);
 };
 
