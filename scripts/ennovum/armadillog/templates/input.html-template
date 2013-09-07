@@ -1,4 +1,4 @@
-<div class="input-clear-box">
+<div class="input-clear-box hidden">
     <span class="textinput input-clear-label"></span>
     <a href="#input-clear" class="button input-clear-button">Clear</a>
 </div>

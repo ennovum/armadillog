@@ -40,6 +40,8 @@ var ArmadillogInput = function ArmadillogInput() {
  */
 ArmadillogInput.prototype = {
 
+    HIDDEN_CLASS: 'hidden',
+
     /**
      * Initializes instance
      *
@@ -213,7 +215,8 @@ ArmadillogInput.prototype = {
      *
      */
     clearLabelSet: function ArmadillogInput_clearLabelSet(value) {
-        this.view.clearLabelEl.innerHTML = mUtils.string.escapeXML(value || '(empty)');
+        this.view.clearLabelEl.innerHTML = mUtils.string.escapeXML(value || '');
+        mUtils.dom.classDepend(this.view.clearBoxEl, this.HIDDEN_CLASS, value === null);
 
         return true;
     },

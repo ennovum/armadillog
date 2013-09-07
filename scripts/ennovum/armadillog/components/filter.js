@@ -206,7 +206,7 @@ ArmadillogFilter.prototype = {
         this.highlightTypes = [
             {
                 'value': this.HIGHLIGHT_TYPE_0,
-                'class': null,
+                'class': 'highlight-none',
                 'label': 'No style'
             },
             {
@@ -411,8 +411,10 @@ ArmadillogFilter.prototype = {
 
         this.on(
             ['list-insert', 'list-delete'],
-            function ArmadillogFilter_inputUiInit_handlerListToggler() {
+            function ArmadillogFilter_inputUiInit_handlerListToggle() {
                 mUtils.dom.classDepend(this.view.listEl, this.HIDDEN_CLASS, this.filterMList.length() === 0);
+                mUtils.dom.classDepend(this.view.submitButtonEl, this.HIDDEN_CLASS, this.filterMList.length() === 0);
+                mUtils.dom.classDepend(this.view.clearButtonEl, this.HIDDEN_CLASS, this.filterMList.length() === 0);
             }.bind(this));
 
         return true;
@@ -565,31 +567,13 @@ ArmadillogFilter.prototype = {
     filterItemViewUpdate: function ArmadillogFilter_filterItemViewUpdate(filterItemMMap) {
         filterItemMMap.get('view').muteCheckboxEl.checked = filterItemMMap.get('mute');
 
-        var filterItemAffectTypeList = filterItemMMap.get('view').affectTypeList;
-        var filterItemAffectTypeItem;
-
-        for (var j = 0, m = filterItemAffectTypeList.length; j < m; j++) {
-            filterItemAffectTypeItem = filterItemAffectTypeList[j];
-            filterItemAffectTypeItem.radioEl.checked = (filterItemMMap.get('affectType') === filterItemAffectTypeItem.radioEl.value);
-        }
+        mUtils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl, filterItemMMap.get('affectType'));
 
         filterItemMMap.get('view').valueInputEl.value = filterItemMMap.get('value') || '';
 
-        var filterItemValueTypeList = filterItemMMap.get('view').valueTypeList;
-        var filterItemValueTypeItem;
+        mUtils.dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl, filterItemMMap.get('valueType'));
 
-        for (var j = 0, m = filterItemValueTypeList.length; j < m; j++) {
-            filterItemValueTypeItem = filterItemValueTypeList[j];
-            filterItemValueTypeItem.radioEl.checked = (filterItemMMap.get('valueType') === filterItemValueTypeItem.radioEl.value);
-        }
-
-        var filterItemHighlightTypeList = filterItemMMap.get('view').highlightTypeList;
-        var filterItemHighlightTypeItem;
-
-        for (var j = 0, m = filterItemHighlightTypeList.length; j < m; j++) {
-            filterItemHighlightTypeItem = filterItemHighlightTypeList[j];
-            filterItemHighlightTypeItem.radioEl.checked = (filterItemMMap.get('highlightType') === filterItemHighlightTypeItem.radioEl.value);
-        }
+        mUtils.dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl, filterItemMMap.get('highlightType'));
 
         return true;
     },
@@ -727,16 +711,7 @@ ArmadillogFilter.prototype = {
 
             filterItemMMap.set('mute', filterItemMMap.get('view').muteCheckboxEl.checked ? true : false);
 
-            var filterItemAffectTypeList = filterItemMMap.get('view').affectTypeList;
-            var filterItemAffectTypeItem;
-
-            for (var j = 0, m = filterItemAffectTypeList.length; j < m; j++) {
-                filterItemAffectTypeItem = filterItemAffectTypeList[j];
-
-                if (filterItemAffectTypeItem.radioEl.checked) {
-                    filterItemMMap.set('affectType', filterItemAffectTypeItem.radioEl.value);
-                }
-            }
+            filterItemMMap.set('affectType', mUtils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl));
 
             if (filterItemMMap.get('affectType') === null) {
                 alert('You have to choose a filter affect type!');
@@ -745,32 +720,14 @@ ArmadillogFilter.prototype = {
 
             filterItemMMap.set('value', filterItemMMap.get('view').valueInputEl.value || '');
 
-            var filterItemValueTypeList = filterItemMMap.get('view').valueTypeList;
-            var filterItemValueTypeItem;
-
-            for (var j = 0, m = filterItemValueTypeList.length; j < m; j++) {
-                filterItemValueTypeItem = filterItemValueTypeList[j];
-
-                if (filterItemValueTypeItem.radioEl.checked) {
-                    filterItemMMap.set('valueType', filterItemValueTypeItem.radioEl.value);
-                }
-            }
+            filterItemMMap.set('valueType', mUtils.dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl));
 
             if (filterItemMMap.get('valueType') === null) {
                 alert('You have to choose a filter value type!');
                 return false;
             }
 
-            var filterItemHighlightTypeList = filterItemMMap.get('view').highlightTypeList;
-            var filterItemHighlightTypeItem;
-
-            for (var j = 0, m = filterItemHighlightTypeList.length; j < m; j++) {
-                filterItemHighlightTypeItem = filterItemHighlightTypeList[j];
-
-                if (filterItemHighlightTypeItem.radioEl.checked) {
-                    filterItemMMap.set('highlightType', filterItemHighlightTypeItem.radioEl.value);
-                }
-            }
+            filterItemMMap.set('highlightType', mUtils.dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl));
 
             filterItemMMap.dequeue('filter-submit');
         }

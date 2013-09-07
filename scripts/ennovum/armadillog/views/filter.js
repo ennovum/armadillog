@@ -78,32 +78,12 @@ ArmadillogFilterView.prototype = {
         var containerEl = mUtils.dom.createElement('div');
         containerEl.innerHTML = this.filterItemViewTemplate(context);
 
-        var filterItemAffectTypeList = [];
-        for (var i = 0, l = context.filterAffectTypes.length; i < l; i++) {
-            filterItemAffectTypeList.push({
-                'el': containerEl.querySelectorAll('.filter-affect-type-item')[i],
-                'radioEl': containerEl.querySelectorAll('.filter-affect-type-radio')[i],
-                'labelEl': containerEl.querySelectorAll('.filter-affect-type-label')[i],
-            });
-        }
+        var highlightTypeListSelectEl = containerEl.querySelector('.filter-highlight-type-select');
+        highlightTypeListSelectEl.addEventListener('change', this.highlightTypeChangeHandle);
 
-        var filterItemValueTypeList = [];
-        for (var i = 0, l = context.filterValueTypes.length; i < l; i++) {
-            filterItemValueTypeList.push({
-                'el': containerEl.querySelectorAll('.filter-value-type-item')[i],
-                'radioEl': containerEl.querySelectorAll('.filter-value-type-radio')[i],
-                'labelEl': containerEl.querySelectorAll('.filter-value-type-label')[i],
-            });
-        }
-
-        var filterItemHighlightTypeList = [];
-        for (var i = 0, l = context.filterHighlightTypes.length; i < l; i++) {
-            filterItemHighlightTypeList.push({
-                'el': containerEl.querySelectorAll('.filter-highlight-type-item')[i],
-                'radioEl': containerEl.querySelectorAll('.filter-highlight-type-radio')[i],
-                'labelEl': containerEl.querySelectorAll('.filter-highlight-type-label')[i],
-            });
-        }
+        /* hack for select not triggering change event when it's synchronically created and updated
+           TODO get rid of it in some civilised manner */
+        setTimeout(function () {mUtils.dom.triggerEvent(highlightTypeListSelectEl, 'change');}.bind(this), 0);
 
         return {
             'el': containerEl.querySelector('.filter-item'),
@@ -116,14 +96,29 @@ ArmadillogFilterView.prototype = {
             'moveDownEl': containerEl.querySelector('.filter-move-down'),
             'removeEl': containerEl.querySelector('.filter-remove'),
             'affectTypeListEl': containerEl.querySelector('.filter-affect-type-list'),
-            'affectTypeList': filterItemAffectTypeList,
+            'affectTypeListSelectEl': containerEl.querySelector('.filter-affect-type-select'),
             'valueBoxEl': containerEl.querySelector('.filter-value-box'),
             'valueInputEl': containerEl.querySelector('.filter-value-input'),
             'valueTypeListEl': containerEl.querySelector('.filter-value-type-list'),
-            'valueTypeList': filterItemValueTypeList,
+            'valueTypeListSelectEl': containerEl.querySelector('.filter-value-type-select'),
             'highlightTypeListEl': containerEl.querySelector('.filter-highlight-type-list'),
-            'highlightTypeList': filterItemHighlightTypeList
+            'highlightTypeListSelectEl': containerEl.querySelector('.filter-highlight-type-select')
         };
+    },
+
+    /**
+     *
+     * @param {DOMElement} highlightTypeListSelectEl highlight type select element
+     */
+    highlightTypeChangeHandle: function ArmadillogFilterView_highlightTypeChangeHandle(evt) {
+        var highlightTypeListSelectEl = evt.target;
+
+        var selectedClass = highlightTypeListSelectEl.getAttribute('selected-class') || '';
+        mUtils.dom.classRemove(highlightTypeListSelectEl, selectedClass);
+
+        selectedClass = highlightTypeListSelectEl.options[highlightTypeListSelectEl.selectedIndex].getAttribute('selected-class') || ''
+        highlightTypeListSelectEl.setAttribute('selected-class', selectedClass);
+        mUtils.dom.classAdd(highlightTypeListSelectEl, selectedClass);
     },
 
     /**

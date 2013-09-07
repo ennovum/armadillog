@@ -93,7 +93,8 @@ var iUtilsDom = {
     classDepend: function (el, className, condition) {},
     classNth: function (num) {},
     classEvenOdd: function (num) {},
-    triggerEvent: function (el, eventType) {}
+    triggerEvent: function (el, eventType) {},
+    selectValue: function (el, value) {}
 };
 
 /**
@@ -136,7 +137,11 @@ var oUtilsDom = {
             return;
         }
 
-        var classList = Array.prototype.slice.call(arguments, 1);
+        var classList = [];
+        for (var i = 1, l = arguments.length; i < l; i++) {
+            classList.push.apply(classList, arguments[i].split(/[ ]+/));
+        }
+
         var elClassList = el.className.split(/[ ]+/);
         var className;
         var elClassIdx;
@@ -161,7 +166,11 @@ var oUtilsDom = {
             return;
         }
 
-        var classList = Array.prototype.slice.call(arguments, 1);
+        var classList = [];
+        for (var i = 1, l = arguments.length; i < l; i++) {
+            classList.push.apply(classList, arguments[i].split(/[ ]+/));
+        }
+
         var elClassList = el.className.split(/[ ]+/);
         var className;
         var elClassIdx;
@@ -191,7 +200,11 @@ var oUtilsDom = {
             return;
         }
 
-        var classList = Array.prototype.slice.call(arguments, 1);
+        var classList = [];
+        for (var i = 1, l = arguments.length; i < l; i++) {
+            classList.push.apply(classList, arguments[i].split(/[ ]+/));
+        }
+
         var elClassList = el.className.split(/[ ]+/);
         var className;
         var elClassIdx;
@@ -221,7 +234,11 @@ var oUtilsDom = {
             return;
         }
 
-        var classList = Array.prototype.slice.call(arguments, 1);
+        var classList = [];
+        for (var i = 1, l = arguments.length; i < l; i++) {
+            classList.push.apply(classList, arguments[i].split(/[ ]+/));
+        }
+
         var elClassList = el.className.split(/[ ]+/);
         var className = true;
         var elClassIdx;
@@ -315,6 +332,29 @@ var oUtilsDom = {
         else {
             var event = document.createEventObject();
             return el.fireEvent('on' + eventType, event)
+        }
+
+        return true;
+    },
+
+    /**
+     *
+     */
+    selectValue: function Utils_dom_selectValue(el, value) {
+        if (!el) {
+            return;
+        }
+
+        if (value === undefined) {
+            return el.options[el.selectedIndex].value;
+        }
+        else {
+            for (var i = 0, l = el.options.length; i < l; i++) {
+                if (el.options[i].value === value) {
+                    el.selectedIndex = i;
+                    break;
+                }
+            }
         }
 
         return true;
