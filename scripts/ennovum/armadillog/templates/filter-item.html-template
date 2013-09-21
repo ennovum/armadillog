@@ -1,15 +1,5 @@
 <div class="filter-item">
-    <div class="filter-header">
-        <div class="filter-title">Filter #{{id}}</div>
-        <div class="filter-mute">
-            <input type="checkbox" id="filter-{{id}}-mute-checkbox" class="filter-mute-checkbox" />
-            <label for="filter-{{id}}-mute-checkbox" class="filter-mute-label">Mute</label>
-        </div>
-        <a href="#filter-move-up" class="filter-move-up">Move up</a>
-        <a href="#filter-move-down" class="filter-move-down">Move down</a>
-        <a href="#filter-remove" class="filter-remove">Remove</a>
-    </div>
-    <div class="filter-action-box">
+    <div class="filter-affect-box">
         <div class="filter-affect-type-list">
             <select id="filter-{{id}}-affect-type-radio" name="filter-{{id}}-affect-type-radio" class="selectinput filter-affect-type-select">
                 {{#each filterAffectTypes}}
@@ -36,5 +26,27 @@
                 {{/each}}
             </select>
         </div>
+    </div>
+    <div class="filter-action-list">
+        <a href="#filter-mute" class="button button-inline filter-action filter-mute">
+            <span class="button-icon"></span>
+            <span class="button-label">Mute</span>
+        </a>
+        <a href="#filter-unmute" class="button button-inline filter-action filter-unmute">
+            <span class="button-icon"></span>
+            <span class="button-label">Unmute</span>
+        </a>
+        <a href="#filter-remove" class="button button-inline filter-action filter-remove">
+            <span class="button-icon"></span>
+            <span class="button-label">Remove</span>
+        </a>
+        <a href="#filter-move-up" class="button button-inline filter-action filter-move-up">
+            <span class="button-icon"></span>
+            <span class="button-label">Move up</span>
+        </a>
+        <a href="#filter-move-down" class="button button-inline filter-action filter-move-down">
+            <span class="button-icon"></span>
+            <span class="button-label">Move down</span>
+        </a>
     </div>
 </div>

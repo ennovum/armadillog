@@ -92,21 +92,26 @@ label:hover {
 }
 
 .button {
-    padding: 5px 20px;
-    background-color: rgb(51, 51, 51);
+    padding: 5px 15px;
+    background-color: rgba(0, 0, 0, 0.5);
     text-decoration: none;
     border-radius: 5px;
     color: rgb(255, 255, 255);
     box-shadow: inset 0 0 1px 0 rgba(0, 0, 0, 0.25);
+    overflow: auto;
     transition-property: box-shadow;
     transition-duration: 0.25s;
     transition-timing-function: ease;
 }
 
+.button-inline {
+    padding: 1px 5px;
+}
+
 .button:hover,
 .button:active,
 .button:focus {
-    background-color: rgb(85, 85, 85);
+    background-color: rgba(0, 0, 0, 0.75);
     text-decoration: none;
 }
 
@@ -126,6 +131,29 @@ label:hover {
 .button.pressed {
     box-shadow: inset 0 0 3px 1px rgba(0, 0, 0, 0.75);
     transition-duration: 0.1s;
+}
+
+.button-icon {
+    display: block;
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin: 0 3px;
+    background: url('icons16.png') 0 50px no-repeat;
+}
+
+.button-inline .button-icon {
+    width: 12px;
+    height: 12px;
+    margin: 2px 3px;
+    background: url('icons12.png') 0 50px no-repeat;
+}
+
+.button-label {
+    display: block;
+    float: left;
+    margin: 0 3px;
+    font-weight: bold;
 }
 
 .textinput,
@@ -180,7 +208,7 @@ body {
 .logo {
     float: left;
     height: 32px;
-    margin: 9px 30px -1px 0;
+    margin: 9px 20px -1px 0;
     padding: 0 0 0 40px;
     background: url('armadillog.png') 0 0 no-repeat;
     font-family: 'Miso', Arial, Helvetica, sans-serif;
@@ -247,10 +275,13 @@ body {
 
 .mainmenu-link {
     display: block;
-    padding: 5px 20px;
     border-radius: 0;
     text-decoration: none;
     font-weight: bold;
+}
+
+.mainmenu-link .button-icon {
+    margin: 2px 3px;
 }
 
 .input-switch {
@@ -262,6 +293,10 @@ body {
     background: rgba(102, 102, 187, 1);
 }
 
+.input-switch .button-icon {
+    background-position: 0 0;
+}
+
 .filter-switch {
     background: rgba(102, 153, 102, 1);
 }
@@ -269,6 +304,10 @@ body {
 .filter-switch:hover,
 .filter-switch:focus {
     background: rgba(102, 187, 102, 1);
+}
+
+.filter-switch .button-icon {
+    background-position: 0 -50px;
 }
 
 .examine-switch {
@@ -280,6 +319,10 @@ body {
     background: rgba(187, 102, 102, 1);
 }
 
+.examine-switch .button-icon {
+    background-position: 0 -100px;
+}
+
 .manual-switch {
     background: rgba(102, 153, 153, 1);
 }
@@ -287,6 +330,10 @@ body {
 .manual-switch:hover,
 .manual-switch:focus {
     background: rgba(102, 187, 187, 1);
+}
+
+.manual-switch .button-icon {
+    background-position: 0 -150px;
 }
 
 .drawer-wrapper {
@@ -324,7 +371,7 @@ body {
 
 .drawer-fold {
     display: block;
-    background: rgba(0, 0, 0, 0.2) url('fold.png') 50% 50% no-repeat;
+    background: rgba(0, 0, 0, 0.25) url('icons12.png') 50% 2px no-repeat;
     font-size: 10px;
     line-height: 16px;
     text-align: center;
@@ -335,7 +382,7 @@ body {
 
 .drawer-fold:hover,
 .drawer-fold:focus {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
     outline: none;
 }
 
@@ -368,31 +415,30 @@ body {
     display: block;
     float: left;
     width: 100px;
+    min-width: 100px;
+    max-width: 100px;
     height: 16px;
+    min-height: 16px;
+    max-height: 16px;
     padding: 5px 10px;
     border-width: 0;
     border-radius: 5px 0 0 5px;
-    transition-property: width, max-height;
+    transition-property: max-width, max-height;
     transition-delay: 0.5s;
     transition-duration: 0.2s;
     transition-timing-function: ease;
+    resize: none;
 }
 
 .input-url-input:focus,
 .input-paste-input:focus {
-    width: 400px;
+    max-width: 400px;
+    resize: both;
     transition-delay: 0s;
-}
-
-.input-paste-input {
-    min-height: 16px;
-    max-height: 16px;
-    resize: none;
 }
 
 .input-paste-input:focus {
     max-height: 200px;
-    resize: vertical;
 }
 
 .input-clear-button,
@@ -401,38 +447,38 @@ body {
 .input-paste-button {
     display: block;
     float: left;
-    padding-left: 30px;
 }
 
 .input-clear-button {
-    padding-left: 30px;
-    background-image: url('icons.png');
-    background-position: 10px -45px;
-    background-repeat: no-repeat;
     border-radius: 0 5px 5px 0;
+}
+
+.input-clear-button .button-icon {
+    background-position: 0 -500px;
 }
 
 .input-file-button {
-    padding-left: 30px;
-    background-image: url('icons.png');
-    background-position: 10px -145px;
     background-repeat: no-repeat;
+}
+
+.input-file-button .button-icon {
+    background-position: 0 -400px;
 }
 
 .input-url-button {
-    padding-left: 30px;
-    background-image: url('icons.png');
-    background-position: 10px -345px;
-    background-repeat: no-repeat;
     border-radius: 0 5px 5px 0;
 }
 
+.input-url-button .button-icon {
+    /* TODO background-position: ; */
+}
+
 .input-paste-button {
-    padding-left: 30px;
-    background-image: url('icons.png');
-    background-position: 10px -195px;
-    background-repeat: no-repeat;
     border-radius: 0 5px 5px 0;
+}
+
+.input-paste-button .button-icon {
+    background-position: 0 -450px;
 }
 
 .filter-list {
@@ -454,57 +500,49 @@ body {
     border-top-width: 0;
 }
 
-.filter-header {
-    padding: 0 0 5px 0;
-    overflow: auto;
-}
-
-.filter-title,
-.filter-mute,
-.filter-move-up,
-.filter-move-down,
-.filter-remove {
+.filter-action-list {
     display: block;
-    float: left;
-    margin: 0 18px 2px 0;
-}
-
-.filter-title {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.filter-mute-checkbox,
-.filter-mute-label {
-    display: block;
+    clear: both;
     float: left;
 }
 
-.filter-mute-checkbox {
-    margin: 2px 5px 0 0;
+.filter-action {
+    display: block;
+    float: left;
+    margin: 0 5px 5px 0;
 }
 
-.filter-move-up,
-.filter-move-down,
-.filter-remove {
-    padding-left: 20px;
-    background-image: url('icons.png');
-    background-repeat: no-repeat;
+.filter-item .button-inline {
+    background-color: rgba(0, 0, 0, 0.25);
 }
 
-.filter-move-up {
-    background-position: 0 -249px;
+.filter-item .button-inline:hover,
+.filter-item .button-inline:active,
+.filter-item .button-inline:focus {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-.filter-move-down {
-    background-position: 0 -299px;
+.filter-mute .button-icon {
+    background-position: 0 -250px;
 }
 
-.filter-remove {
-    background-position: 0 -49px;
+.filter-unmute .button-icon {
+    background-position: 0 -200px;
 }
 
-.filter-action-box,
+.filter-move-up .button-icon {
+    background-position: 0 0;
+}
+
+.filter-move-down .button-icon {
+    background-position: 0 -50px;
+}
+
+.filter-remove .button-icon {
+    background-position: 0 -150px;
+}
+
+.filter-affect-box,
 .filter-search-box,
 .filter-highlight-box {
     float: left;
@@ -515,7 +553,7 @@ body {
 .filter-value-type-list,
 .filter-highlight-type-list {
     float: left;
-    margin: 0 10px 5px 0;
+    margin: 0 5px 5px 0;
 }
 
 .filter-value-input {
@@ -542,26 +580,23 @@ body {
 }
 
 .filter-button-clear,
-.filter-button-add,
+.filter-button-create,
 .filter-button-submit {
     display: block;
     float: left;
     margin: 10px 10px 0 0;
-    padding-left: 30px;
-    background-image: url('icons.png');
-    background-repeat: no-repeat;
 }
 
-.filter-button-clear {
-    background-position: 10px -45px;
+.filter-button-clear .button-icon {
+    background-position: 0 -500px;
 }
 
-.filter-button-add {
-    background-position: 10px 5px;
+.filter-button-create .button-icon {
+    background-position: 0 -300px;
 }
 
-.filter-button-submit {
-    background-position: 10px -95px;
+.filter-button-submit .button-icon {
+    background-position: 0 -200px;
 }
 
 .examine-raw-box,
@@ -615,8 +650,8 @@ body {
     content: counter(numeration);
     position: absolute;
     left: 0;
+    top: 0;
     display: block;
-    float: left;
     width: 50px;
     padding: 1px 5px;
     background: rgba(221, 221, 221, 0.5);
@@ -765,4 +800,28 @@ body {
 
 .highlight-demo .highlight-12 {
     background: rgba(0, 170, 170, 1);
+}
+
+/* =============================================================================
+   Media queries
+   ========================================================================== */
+
+@media all and (max-width: 800px) {
+
+    .button-icon {
+        display: none;
+    }
+
+}
+
+@media all and (max-width: 400px) {
+
+    .button-icon {
+        display: block;
+    }
+
+    .button-label {
+        display: none;
+    }
+
 }

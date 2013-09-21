@@ -64,7 +64,7 @@ ArmadillogFilterView.prototype = {
             'listEl': containerEl.querySelector('.filter-list'),
             'buttonBoxEl': containerEl.querySelector('.filter-button-box'),
             'clearButtonEl': containerEl.querySelector('.filter-button-clear'),
-            'addButtonEl': containerEl.querySelector('.filter-button-add'),
+            'createButtonEl': containerEl.querySelector('.filter-button-create'),
             'submitButtonEl': containerEl.querySelector('.filter-button-submit'),
         };
     },
@@ -88,10 +88,8 @@ ArmadillogFilterView.prototype = {
         return {
             'el': containerEl.querySelector('.filter-item'),
             'headerEl': containerEl.querySelector('.filter-header'),
-            'titleEl': containerEl.querySelector('.filter-title'),
             'muteEl': containerEl.querySelector('.filter-mute'),
-            'muteCheckboxEl': containerEl.querySelector('.filter-mute-checkbox'),
-            'muteLabelEl': containerEl.querySelector('.filter-mute-label'),
+            'unmuteEl': containerEl.querySelector('.filter-unmute'),
             'moveUpEl': containerEl.querySelector('.filter-move-up'),
             'moveDownEl': containerEl.querySelector('.filter-move-down'),
             'removeEl': containerEl.querySelector('.filter-remove'),

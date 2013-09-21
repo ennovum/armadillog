@@ -207,67 +207,67 @@ ArmadillogFilter.prototype = {
             {
                 'value': this.HIGHLIGHT_TYPE_0,
                 'class': 'highlight-none',
-                'label': 'No style'
+                'label': 'No highlight'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_1,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_1,
-                'label': 'Style 1'
+                'label': 'Light blue'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_2,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_2,
-                'label': 'Style 2'
+                'label': 'Dark blue'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_3,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_3,
-                'label': 'Style 3'
+                'label': 'Light green'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_4,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_4,
-                'label': 'Style 4'
+                'label': 'Dark green'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_5,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_5,
-                'label': 'Style 5'
+                'label': 'Light red'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_6,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_6,
-                'label': 'Style 6'
+                'label': 'Dark red'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_7,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_7,
-                'label': 'Style 7'
+                'label': 'Light yellow'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_8,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_8,
-                'label': 'Style 8'
+                'label': 'Dark yellow'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_9,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_9,
-                'label': 'Style 9'
+                'label': 'Light magenta'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_10,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_10,
-                'label': 'Style 10'
+                'label': 'Dark magenta'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_11,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_11,
-                'label': 'Style 11'
+                'label': 'Light cyan'
             },
             {
                 'value': this.HIGHLIGHT_TYPE_12,
                 'class': 'highlight highlight-' + this.HIGHLIGHT_TYPE_12,
-                'label': 'Style 12'
+                'label': 'Dark cyan'
             }
         ];
 
@@ -310,9 +310,9 @@ ArmadillogFilter.prototype = {
                 evt.stopPropagation();
             }.bind(this));
 
-        this.view.addButtonEl.addEventListener(
+        this.view.createButtonEl.addEventListener(
             'click',
-            function ArmadillogFilter_inputUiInit_filterAddButtonElClickHandler(evt) {
+            function ArmadillogFilter_inputUiInit_filterCreateButtonElClickHandler(evt) {
                 if (!this.application.busy.check()) {
                     var filterItemMMap = this.filterItemCreate();
                     this.filterMList.push(filterItemMMap);
@@ -565,7 +565,8 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     filterItemViewUpdate: function ArmadillogFilter_filterItemViewUpdate(filterItemMMap) {
-        filterItemMMap.get('view').muteCheckboxEl.checked = filterItemMMap.get('mute');
+        mUtils.dom.classDepend(filterItemMMap.get('view').muteEl, this.HIDDEN_CLASS, filterItemMMap.get('mute'));
+        mUtils.dom.classDepend(filterItemMMap.get('view').unmuteEl, this.HIDDEN_CLASS, !filterItemMMap.get('mute'));
 
         mUtils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl, filterItemMMap.get('affectType'));
 
@@ -584,6 +585,24 @@ ArmadillogFilter.prototype = {
      * @param {object} filterItemMMap filter item data
      */
     filterItemUiInit: function ArmadillogFilter_filterItemUiInit(filterItemMMap) {
+        filterItemMMap.get('view').muteEl.addEventListener(
+            'click',
+            function ArmadillogFilter_filterItemUiInit_filterItemViewMuteElClickHandler(evt) {
+                this.filterMute(filterItemMMap);
+
+                evt.preventDefault();
+                evt.stopPropagation();
+            }.bind(this));
+
+        filterItemMMap.get('view').unmuteEl.addEventListener(
+            'click',
+            function ArmadillogFilter_filterItemUiInit_filterItemViewUnmuteElClickHandler(evt) {
+                this.filterUnmute(filterItemMMap);
+
+                evt.preventDefault();
+                evt.stopPropagation();
+            }.bind(this));
+
         filterItemMMap.get('view').moveUpEl.addEventListener(
             'click',
             function ArmadillogFilter_filterItemUiInit_filterItemViewMoveUpElClickHandler(evt) {
@@ -624,6 +643,34 @@ ArmadillogFilter.prototype = {
                     evt.stopPropagation();
                 }
             }.bind(this));
+
+        return true;
+    },
+
+    /**
+     * Mutes filter
+     *
+     * @param {object} filterItemMMap filter item data
+     */
+    filterMute: function ArmadillogFilter_filterMute(filterItemMMap) {
+        filterItemMMap.set('mute', true);
+
+        mUtils.dom.classAdd(filterItemMMap.get('view').muteEl, this.HIDDEN_CLASS);
+        mUtils.dom.classRemove(filterItemMMap.get('view').unmuteEl, this.HIDDEN_CLASS);
+
+        return true;
+    },
+
+    /**
+     * Unmutes filter
+     *
+     * @param {object} filterItemMMap filter item data
+     */
+    filterUnmute: function ArmadillogFilter_filterUnmute(filterItemMMap) {
+        filterItemMMap.set('mute', false);
+
+        mUtils.dom.classRemove(filterItemMMap.get('view').muteEl, this.HIDDEN_CLASS);
+        mUtils.dom.classAdd(filterItemMMap.get('view').unmuteEl, this.HIDDEN_CLASS);
 
         return true;
     },
@@ -709,8 +756,6 @@ ArmadillogFilter.prototype = {
 
             filterItemMMap.queue('filter-submit');
 
-            filterItemMMap.set('mute', filterItemMMap.get('view').muteCheckboxEl.checked ? true : false);
-
             filterItemMMap.set('affectType', mUtils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl));
 
             if (filterItemMMap.get('affectType') === null) {
@@ -757,6 +802,7 @@ ArmadillogFilter.prototype = {
                 this.view.listEl.childNodes[filterIndex] || null);
         }
 
+        this.viewOrderApply();
         this.storageSave();
 
         return true;
@@ -781,6 +827,7 @@ ArmadillogFilter.prototype = {
                 this.view.listEl.childNodes[filterIndex] || null);
         }
 
+        this.viewOrderApply();
         this.storageSave();
 
         return true;
@@ -801,7 +848,24 @@ ArmadillogFilter.prototype = {
             this.view.listEl.removeChild(filterItemMMap.get('view').el);
         }
 
+        this.viewOrderApply();
         this.storageSave();
+
+        return true;
+    },
+
+    /**
+     * Applies necessary operations after filter order changed
+     */
+    viewOrderApply: function ArmadillogFilter_viewOrderApply() {
+        var filterItemMMap;
+
+        for (var i = 0, l = this.filterMList.length(); i < l; i++) {
+            filterItemMMap = this.filterMList.getAt(i);
+
+            mUtils.dom.classDepend(filterItemMMap.get('view').moveUpEl, this.HIDDEN_CLASS, i === 0);
+            mUtils.dom.classDepend(filterItemMMap.get('view').moveDownEl, this.HIDDEN_CLASS, i === l - 1);
+        }
 
         return true;
     },
