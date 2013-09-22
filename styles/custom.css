@@ -140,6 +140,25 @@ label:hover {
     height: 16px;
     margin: 0 3px;
     background: url('icons16.png') 0 50px no-repeat;
+    background-size: 20px 550px;
+}
+
+@media only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 120dpi) {
+    .button-icon {
+        background-image: url('icons16.2x.png');
+    }
+}
+
+@media all and (max-width: 800px) {
+    .button-icon {
+        display: none;
+    }
+}
+
+@media all and (max-width: 400px) {
+    .button-icon {
+        display: block;
+    }
 }
 
 .button-inline .button-icon {
@@ -147,6 +166,13 @@ label:hover {
     height: 12px;
     margin: 2px 3px;
     background: url('icons12.png') 0 50px no-repeat;
+    background-size: 20px 300px;
+}
+
+@media only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 120dpi) {
+    .button-inline .button-icon {
+        background-image: url('icons12.2x.png');
+    }
 }
 
 .button-label {
@@ -154,6 +180,12 @@ label:hover {
     float: left;
     margin: 0 3px;
     font-weight: bold;
+}
+
+@media all and (max-width: 400px) {
+    .button-label {
+        display: none;
+    }
 }
 
 .textinput,
@@ -211,11 +243,18 @@ body {
     margin: 9px 20px -1px 0;
     padding: 0 0 0 40px;
     background: url('armadillog.png') 0 0 no-repeat;
+    background-size: 32px 32px;
     font-family: 'Miso', Arial, Helvetica, sans-serif;
     font-size: 26px;
     line-height: 32px;
     cursor: default;
     color: rgb(255, 255, 255);
+}
+
+@media only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 120dpi) {
+    .logo {
+        background-image: url('armadillog.2x.png');
+    }
 }
 
 .logo h3 {
@@ -244,10 +283,24 @@ body {
 
 .ennovum-link {
     background: url('ennovum.png') 0 0 no-repeat;
+    background-size: 32px 32px;
+}
+
+@media only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 120dpi) {
+    .ennovum-link {
+        background-image: url('ennovum.2x.png');
+    }
 }
 
 .github-link {
     background: url('github.png') 0 0 no-repeat;
+    background-size: 32px 32px;
+}
+
+@media only screen and (min-device-pixel-ratio: 1.25), only screen and (min-resolution: 120dpi) {
+    .github-link {
+        background-image: url('github.2x.png');
+    }
 }
 
 .mainmenu {
@@ -800,28 +853,4 @@ body {
 
 .highlight-demo .highlight-12 {
     background: rgba(0, 170, 170, 1);
-}
-
-/* =============================================================================
-   Media queries
-   ========================================================================== */
-
-@media all and (max-width: 800px) {
-
-    .button-icon {
-        display: none;
-    }
-
-}
-
-@media all and (max-width: 400px) {
-
-    .button-icon {
-        display: block;
-    }
-
-    .button-label {
-        display: none;
-    }
-
 }
