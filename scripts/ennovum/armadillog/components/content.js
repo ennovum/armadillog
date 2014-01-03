@@ -450,7 +450,6 @@ ArmadillogContent.prototype = {
                 'limit': 0 - this.CONTENT_SIZE_LIMIT
             },
             null,
-            null,
             function ArmadillogContent_fileSet_workerFileReaderSuccess(data, additional) {
                 URL.revokeObjectURL(data.url);
                 this.textSet(data.result, label);
@@ -482,7 +481,6 @@ ArmadillogContent.prototype = {
                 'url': URL.createObjectURL(this.file),
                 'limit': 0 - this.CONTENT_SIZE_LIMIT
             },
-            null,
             null,
             function ArmadillogContent_fileUpdate_workerFileReaderSuccess(data, additional) {
                 URL.revokeObjectURL(data.url);
@@ -546,7 +544,6 @@ ArmadillogContent.prototype = {
                 'limit': 0 - this.CONTENT_SIZE_LIMIT
             },
             null,
-            null,
             function ArmadillogContent_urlSet_workerFileReaderSuccess(data, additional) {
                 this.textSet(data.result, label);
                 this.urlUpdateSchedule();
@@ -577,7 +574,6 @@ ArmadillogContent.prototype = {
                 'url': this.url,
                 'limit': 0 - this.CONTENT_SIZE_LIMIT
             },
-            null,
             null,
             function ArmadillogContent_urlUpdate_workerFileReaderSuccess(data, additional) {
                 if (this.url) {
@@ -633,7 +629,6 @@ ArmadillogContent.prototype = {
                 'limit': 0 - this.CONTENT_LINE_LIMIT
             },
             null,
-            null,
             function ArmadillogContent_textSet_workerTextLineSplitterSuccess(data, additional) {
                 if ('text' in data) {
                     var lineItemMMap = new mModel.ModelMap(
@@ -674,7 +669,6 @@ ArmadillogContent.prototype = {
                 'text': text,
                 'limit': 0 - this.CONTENT_LINE_LIMIT
             },
-            null,
             null,
             function ArmadillogContent_textUpdate_workerTextLineSplitterSuccess(data, additional) {
                 if ('text' in data) {

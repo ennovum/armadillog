@@ -1002,7 +1002,6 @@ ArmadillogFilter.prototype = {
                 'filterListJSON': filterListJSON
             },
             null,
-            null,
             function ArmadillogFilter_filterText_workerFilterSuccess(data) {
                 onSuccess({
                     'text': data.text,

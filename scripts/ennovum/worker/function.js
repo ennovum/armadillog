@@ -39,27 +39,25 @@ WorkerFunction.prototype = {
     SOURCE: [
         '"use strict"',
         'var ready = function (wid) {',
-        '    return function (data, transferables) {',
+        '    return function (data) {',
         '        postMessage(',
         '            {',
         '                "wid": wid,',
         '                "success": true,',
         '                "data": data',
         '            },',
-        '            null,',
-        '            transferables);',
+        '            undefined);',
         '    };',
         '};',
         'var error = function (wid) {',
-        '    return function (data, transferables) {',
+        '    return function (data) {',
         '        postMessage(',
         '            {',
         '                "wid": wid,',
         '                "success": false,',
         '                "data": data',
         '            },',
-        '            null,',
-        '            transferables);',
+        '            undefined);',
         '    };',
         '};',
         'this.onmessage = function(event){',
@@ -150,9 +148,8 @@ WorkerFunction.prototype = {
      *
      * @param {mixed} data Message data
      */
-    run: function WorkerFunction_run(data, transferables, additional, ready, error, ctx) {
+    run: function WorkerFunction_run(data, additional, ready, error, ctx) {
         switch (false) {
-            case !transferables || transferables === null || Array.isArray(transferables):
             case !ready || typeof ready === 'function':
             case !error || typeof error === 'function':
                 console.error('WorkerFunction', 'run', 'invalid input');
@@ -186,8 +183,7 @@ WorkerFunction.prototype = {
                     {
                         'wid': wid,
                         'data': data
-                    },
-                    transferables);
+                    });
             }
         }.bind(this));
 
