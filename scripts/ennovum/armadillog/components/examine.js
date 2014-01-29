@@ -33,6 +33,7 @@ window.define && define(
                     case !configSet(argConfig):
                     case !dataInit(argApplication):
                     case !viewInit():
+                    case !uiInit():
                         return false;
                         break;
                 }
@@ -86,19 +87,6 @@ window.define && define(
                 examineView = view.examineViewGet();
                 boxEl.appendChild(examineView.rawBoxEl);
                 boxEl.appendChild(examineView.filteredBoxEl);
-
-                return true;
-            };
-
-            /**
-             * Launches component
-             */
-            var launch = this.launch =function ArmadillogExamine_launch() {
-                switch (true) {
-                    case !uiInit():
-                        return false;
-                        break;
-                }
 
                 return true;
             };

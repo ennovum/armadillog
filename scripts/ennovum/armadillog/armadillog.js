@@ -72,26 +72,12 @@ window.define && define(
             var applicationInit = function Armadillog_applicationInit(config) {
                 application = {};
 
-                application.input = new ArmadillogInput(config, application);
                 application.filter = new ArmadillogFilter(config, application);
                 application.content = new ArmadillogContent(config, application);
+                application.input = new ArmadillogInput(config, application);
                 application.tailing = new ArmadillogTailing(config, application);
                 application.examine = new ArmadillogExamine(config, application);
                 application.busy = new ArmadillogBusy(config, application);
-
-                return true;
-            };
-
-            /**
-             * Launches application
-             */
-            var launch = this.launch = function Armadillog_launch() {
-                application.input.launch();
-                application.filter.launch();
-                application.content.launch();
-                application.tailing.launch();
-                application.examine.launch();
-                application.busy.launch();
 
                 return true;
             };

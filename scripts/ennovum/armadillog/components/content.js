@@ -72,6 +72,7 @@ window.define && define(
                     case !configSet(argConfig):
                     case !dataInit(argApplication):
                     case !viewInit():
+                    case !uiInit():
                         return false;
                         break;
                 }
@@ -200,19 +201,6 @@ window.define && define(
 
                 contentView = view.contentViewGet();
                 boxEl.appendChild(contentView.frameEl);
-
-                return true;
-            };
-
-            /**
-             * Launches component
-             */
-            var launch = this.launch = function ArmadillogContent_launch() {
-                switch (true) {
-                    case !uiInit():
-                        return false;
-                        break;
-                }
 
                 return true;
             };

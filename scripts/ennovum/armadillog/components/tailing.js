@@ -30,6 +30,7 @@ window.define && define(
                     case !configSet(argConfig):
                     case !dataInit(argApplication):
                     case !viewInit():
+                    case !uiInit():
                         return false;
                         break;
                 }
@@ -73,19 +74,6 @@ window.define && define(
              */
             var viewInit = function ArmadillogTailing_viewInit() {
                 scrollEl = config.scrollEl;
-
-                return true;
-            };
-
-            /**
-             * Launches component
-             */
-            var launch = this.launch = function ArmadillogTailing_launch() {
-                switch (true) {
-                    case !uiInit():
-                        return false;
-                        break;
-                }
 
                 return true;
             };

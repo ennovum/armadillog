@@ -107,6 +107,8 @@ window.define && define(
                     case !configSet(argConfig):
                     case !dataInit(argApplication):
                     case !viewInit():
+                    case !uiInit():
+                    case !storageInit():
                         return false;
                         break;
                 }
@@ -130,20 +132,6 @@ window.define && define(
                 config = {
                     boxEl: argConfig.filterBoxEl || null
                 };
-
-                return true;
-            };
-
-            /**
-             * Launches component
-             */
-            var launch = this.launch = function ArmadillogFilter_launch() {
-                switch (true) {
-                    case !uiInit():
-                    case !storageInit():
-                        return false;
-                        break;
-                }
 
                 return true;
             };
