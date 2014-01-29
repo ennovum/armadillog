@@ -8,22 +8,13 @@ window.define && define(
         environment
     ) {
         /**
-         * UtilsObj interface
+         * UtilsObj constructor
          */
-        var iUtilsObj = {
-            implement: function (base, instance, interfaceList) {},
-            mixin: function (base, mixin) {}
-        };
-
-        /**
-         * UtilsObj logic
-         */
-        var oUtilsObj = {
-
+        var UtilsObj = function UtilsObj() {
             /**
              *
              */
-            implement: function Utils_obj_implement(base, instance, interfaceList) {
+            var implement = this.implement = function Utils_obj_implement(base, instance, interfaceList) {
                 switch (false) {
                     case base && typeof base === 'object':
                     case instance && typeof instance === 'object':
@@ -48,12 +39,12 @@ window.define && define(
                 }
 
                 return base;
-            },
+            };
 
             /**
              *
              */
-            mixin: function Utils_obj_mixin(base, mixin) {
+            var mixin = this.mixin = function Utils_obj_mixin(base, mixin) {
                 switch (false) {
                     case base && typeof base === 'object':
                     case mixin && typeof mixin === 'object':
@@ -75,35 +66,17 @@ window.define && define(
                 }
 
                 return mixin;
-            }
-
+            };
         };
 
         /**
-         * UtilsDom interface
+         * UtilsDom constructor
          */
-        var iUtilsDom = {
-            createElement: function (tagName, attributes, textContent) {},
-            classContains: function (el) {},
-            classAdd: function (el) {},
-            classRemove: function (el) {},
-            classToggle: function (el, className) {},
-            classDepend: function (el, className, condition) {},
-            classNth: function (num) {},
-            classEvenOdd: function (num) {},
-            triggerEvent: function (el, eventType) {},
-            selectValue: function (el, value) {}
-        };
-
-        /**
-         * UtilsDom logic
-         */
-        var oUtilsDom = {
-
+        var UtilsDom = function UtilsDom() {
             /**
              *
              */
-            createElement: function Utils_dom_createElement(tagName, attributes, textContent) {
+            var createElement = this.createElement = function Utils_dom_createElement(tagName, attributes, textContent) {
                 switch (false) {
                     case typeof tagName === 'string':
                     case !attributes || typeof attributes === 'object':
@@ -125,12 +98,12 @@ window.define && define(
                 }
 
                 return el;
-            },
+            };
 
             /**
              *
              */
-            classContains: function Utils_dom_classContains(el) {
+            var classContains = this.classContains = function Utils_dom_classContains(el) {
                 if (!el) {
                     return;
                 }
@@ -154,12 +127,12 @@ window.define && define(
                 }
 
                 return true;
-            },
+            };
 
             /**
              *
              */
-            classAdd: function Utils_dom_classAdd(el) {
+            var classAdd = this.classAdd = function Utils_dom_classAdd(el) {
                 if (!el) {
                     return;
                 }
@@ -188,12 +161,12 @@ window.define && define(
                 }
 
                 return true;
-            },
+            };
 
             /**
              *
              */
-            classRemove: function Utils_dom_classRemove(el) {
+            var classRemove = this.classRemove = function Utils_dom_classRemove(el) {
                 if (!el) {
                     return;
                 }
@@ -222,12 +195,12 @@ window.define && define(
                 }
 
                 return true;
-            },
+            };
 
             /**
              *
              */
-            classToggle: function Utils_dom_classToggle(el, className) {
+            var classToggle = this.classToggle = function Utils_dom_classToggle(el, className) {
                 if (!el) {
                     return;
                 }
@@ -254,12 +227,12 @@ window.define && define(
                 }
 
                 return true;
-            },
+            };
 
             /**
              *
              */
-            classDepend: function Utils_dom_classToggle(el, className, condition) {
+            var classDepend = this.classDepend = function Utils_dom_classToggle(el, className, condition) {
                 if (!el) {
                     return;
                 }
@@ -272,12 +245,12 @@ window.define && define(
                 }
 
                 return true;
-            },
+            };
 
             /**
              *
              */
-            classNth: function Utils_dom_classNth(num) {
+            var classNth = this.classNth = function Utils_dom_classNth(num) {
                 switch (false) {
                     case typeof num === 'number':
                         console.error('oUtilsDom', 'classNth', 'invalid input');
@@ -299,12 +272,12 @@ window.define && define(
                 }
 
                 return 'el-' + num + 'th';
-            },
+            };
 
             /**
              *
              */
-            classEvenOdd: function Utils_dom_classEvenOdd(num) {
+            var classEvenOdd = this.classEvenOdd = function Utils_dom_classEvenOdd(num) {
                 switch (false) {
                     case typeof num === 'number':
                         console.error('oUtilsDom', 'classEvenOdd', 'invalid input');
@@ -312,12 +285,12 @@ window.define && define(
                 };
 
                 return num % 2 ? 'el-odd' : 'el-even';
-            },
+            };
 
             /**
              *
              */
-            triggerEvent: function Utils_dom_triggerEvent(el, eventType) {
+            var triggerEvent = this.triggerEvent = function Utils_dom_triggerEvent(el, eventType) {
                 if (!el) {
                     return;
                 }
@@ -333,12 +306,12 @@ window.define && define(
                 }
 
                 return true;
-            },
+            };
 
             /**
              *
              */
-            selectValue: function Utils_dom_selectValue(el, value) {
+            var selectValue = this.selectValue = function Utils_dom_selectValue(el, value) {
                 if (!el) {
                     return;
                 }
@@ -356,131 +329,91 @@ window.define && define(
                 }
 
                 return true;
-            }
-
+            };
         };
 
         /**
-         * UtilsString interface
+         * UtilsString constructor
          */
-        var iUtilsString = {
-            trim: function (subject) {},
-            escapeXML: function (subject) {}
-        };
-
-        /**
-         * UtilsString logic
-         */
-        var oUtilsString = {
-
+        var UtilsString = function UtilsString() {
             /**
              *
              */
-            trim: function Utils_string_trim(subject) {
+            var trim = this.trim = function Utils_string_trim(subject) {
                 return subject.replace(/(^\s|\s$)/g, '');
-            },
+            };
 
-            //
-            ESCAPE_XML_ENTITIES: {
+            var ESCAPE_XML_ENTITIES = {
                 '&': '&amp;',
                 '<': '&lt;',
                 '>': '&gt;',
                 '"': '&quot;',
                 "'": '&apos;',
-            },
+            };
 
             /**
              *
              */
-            escapeXML: function Utils_string_escapeXML(subject) {
+            var escapeXML = this.escapeXML =function Utils_string_escapeXML(subject) {
                 return subject.replace(/[<>"'&]{1}/g, function Utils_string_escapeXML_match(match) {
-                    return this.ESCAPE_XML_ENTITIES[match];
-                }.bind(this));
-            }
-
+                    return ESCAPE_XML_ENTITIES[match];
+                });
+            };
         };
 
         /**
-         * UtilsRegexp interface
+         * UtilsRegexp constructor
          */
-        var iUtilsRegexp = {
-            escape: function (subject) {}
-        };
-
-        /**
-         * UtilsRegexp logic
-         */
-        var oUtilsRegexp = {
-
+        var UtilsRegexp = function UtilsRegexp() {
             /**
              *
              */
-            escape: function Utils_regexp_escape(subject) {
+            var escape = this.escape = function Utils_regexp_escape(subject) {
                 return subject.replace(/[\[\]\{\}\?\+\*\.\\\|\(\)\^\$]/g, '\\$&');
-            }
-
+            };
         };
 
         /**
-         * UtilsFunc interface
+         * UtilsFunc constructor
          */
-        var iUtilsFunc = {
-            async: function (callback) {}
-        };
-
-        /**
-         * UtilsFunc logic
-         */
-        var oUtilsFunc = {
-
-            asyncList: [],
-            asyncTimeout: null,
+        var UtilsFunc = function UtilsFunc() {
+            var asyncList = [];
+            var asyncTimeout = null;
 
             /**
              *
              */
-            async: function Utils_func_async(callback) {
-                this.asyncList.push(callback);
+            var async = this.async =function Utils_func_async(callback) {
+                asyncList.push(callback);
 
-                if (!this.asyncTimeout) {
-                    this.asyncTimeout = setTimeout(
+                if (!asyncTimeout) {
+                    asyncTimeout = setTimeout(
                         function Utils_func_async_callback() {
-                            var asyncList = this.asyncList;
-                            this.asyncList = [];
-                            this.asyncTimeout = null;
-
                             for (var i = 0, l = asyncList.length; i < l; i++) {
                                 asyncList[i].call();
                             }
-                        }.bind(this),
+
+                            asyncList = [];
+                            asyncTimeout = null;
+                        },
                         0);
                 }
 
                 return true;
-            }
-
+            };
         };
 
         /**
-         * UtilsUrl interface
+         * UtilsUrl constructor
          */
-        var iUtilsUrl = {
-            validate: function (url) {}
-        };
-
-        /**
-         * UtilsUrl logic
-         */
-        var oUtilsUrl = {
-
-            //
-            URL_PARTS_REGEXP: /^([a-zA-Z]+:\/\/)?((?:www\.)?(?:[a-zA-Z0-9\-\_\.%]*[a-zA-Z]+\.[a-zA-Z]{1,4}))?(:[0-9]+)?(\/[a-zA-Z0-9\-\_\.%/]?)?(\?[a-zA-Z0-9\-\_\.%=&]*)?(#[a-zA-Z0-9\-\_]*)?$/,
+        var UtilsUrl = function UtilsUrl() {
+            var URL_PARTS_REGEXP = /^([a-zA-Z]+:\/\/)?((?:www\.)?(?:[a-zA-Z0-9\-\_\.%]*[a-zA-Z]+\.[a-zA-Z]{1,4}))?(:[0-9]+)?(\/[a-zA-Z0-9\-\_\.%/]?)?(\?[a-zA-Z0-9\-\_\.%=&]*)?(#[a-zA-Z0-9\-\_]*)?$/;
 
             /**
              *
              */
-            validate: function Utils_url_validate(url) {
-                var match = url.match(this.URL_PARTS_REGEXP);
+            var validate = this.validate = function Utils_url_validate(url) {
+                var match = url.match(URL_PARTS_REGEXP);
 
                 if (!match || !match[2]) {
                     return null;
@@ -495,44 +428,35 @@ window.define && define(
                 urlValid += match[6] || '';
 
                 return urlValid;
-            }
-
+            };
         };
 
         /**
-         * UtilsUrl interface
+         * UtilsUrl constructor
          */
-        var iUtilsDebug = {
-            spy: function (subject) {}
-        };
+        var UtilsDebug = function UtilsDebug() {
+            var FUNCTION_NAME_REGEXP = /[a-z]+ ([^\(]*)/i;
 
-        /**
-         * UtilsUrl logic
-         */
-        var oUtilsDebug = {
-
-            FUNCTION_NAME_REGEXP: /[a-z]+ ([^\(]*)/i,
-
-            spySeq: 0,
+            var spySeq = 0;
 
             /**
              *
              */
-            spy: function Utils_debug_spy(subject) {
+            var spy = this.spy = function Utils_debug_spy(subject) {
                 switch (true) {
                     case typeof subject === 'function':
-                        subject = this.spyItem(subject, subject);
+                        subject = spyItem(subject, subject);
                         break;
 
                     case Array.isArray(subject):
                         for (var i = 0, l = subject.length; i < l; i++) {
-                            subject[i] = this.spyItem(subject, subject[i]);
+                            subject[i] = spyItem(subject, subject[i]);
                         }
                         break;
 
                     case typeof subject === 'object':
                         for (var k in subject) {
-                            subject[k] = this.spyItem(subject, subject[k]);
+                            subject[k] = spyItem(subject, subject[k]);
                         }
                         break;
 
@@ -541,17 +465,17 @@ window.define && define(
                 }
 
                 return subject;
-            },
+            };
 
             /**
              *
              */
-            spyItem: function Utils_debug_spyItem(subject, item) {
+            var spyItem = function Utils_debug_spyItem(subject, item) {
                 switch (true) {
                     case typeof item === 'function':
                         return function Debug_spyItem_spied() {
-                            var seqNumber = oUtilsDebug.spySeq++;
-                            var name = item.toString().split('\n')[0].match(oUtilsDebug.FUNCTION_NAME_REGEXP)[1] || 'anonymous';
+                            var seqNumber = spySeq++;
+                            var name = item.toString().split('\n')[0].match(FUNCTION_NAME_REGEXP)[1] || 'anonymous';
 
                             console.log('[' + seqNumber + '][C]', name, arguments);
                             var result = item.apply(subject, arguments);
@@ -564,25 +488,17 @@ window.define && define(
                     default:
                         return item;
                 }
-            }
-
+            };
         };
-
-        // oUtilsDebug.spy(oUtilsObj);
-        // oUtilsDebug.spy(oUtilsDom);
-        // oUtilsDebug.spy(oUtilsString);
-        // oUtilsDebug.spy(oUtilsRegexp);
-        // oUtilsDebug.spy(oUtilsUrl);
-        // oUtilsDebug.spy(oUtilsDebug);
 
         //
         return {
-            'obj': oUtilsObj.implement({}, oUtilsObj, iUtilsObj),
-            'dom': oUtilsObj.implement({}, oUtilsDom, iUtilsDom),
-            'string': oUtilsObj.implement({}, oUtilsString, iUtilsString),
-            'regexp': oUtilsObj.implement({}, oUtilsRegexp, iUtilsRegexp),
-            'func': oUtilsObj.implement({}, oUtilsFunc, iUtilsFunc),
-            'url': oUtilsObj.implement({}, oUtilsUrl, iUtilsUrl),
-            'debug': oUtilsObj.implement({}, oUtilsDebug, iUtilsDebug)
+            'obj': new UtilsObj(),
+            'dom': new UtilsDom(),
+            'string': new UtilsString(),
+            'regexp': new UtilsRegexp(),
+            'func': new UtilsFunc(),
+            'url': new UtilsUrl(),
+            'debug': new UtilsDebug()
         };
     });
