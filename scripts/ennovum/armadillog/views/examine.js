@@ -2,14 +2,14 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         'Handlebars',
         'text!./../templates/examine.html-template'
     ],
     function (
-        mEnvironment,
-        mUtils,
+        environment,
+        utils,
         Handlebars,
         templateExamine
     ) {
@@ -21,10 +21,8 @@ window.define && define(
 
             /**
              * Initializes instance
-             *
-             * @param {object} config configuration object
              */
-            var init = function ArmadillogView_init(config) {
+            var init = function ArmadillogView_init() {
                 examineViewTemplate = Handlebars.compile(templateExamine);
 
                 return true;
@@ -36,7 +34,7 @@ window.define && define(
              * @param {object} context context object
              */
             var examineViewGet = this.examineViewGet = function ArmadillogView_examineViewGet(context) {
-                var containerEl = mUtils.dom.createElement('div');
+                var containerEl = utils.dom.createElement('div');
                 containerEl.innerHTML = examineViewTemplate(context);
 
                 return {
@@ -56,11 +54,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'ArmadillogExamineView': ArmadillogExamineView
-        };
+        return ArmadillogExamineView;
     });

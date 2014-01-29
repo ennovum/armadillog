@@ -2,20 +2,22 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         'ennovum.Observable',
-        'ennovum.Model',
-        'ennovum.Worker',
+        'ennovum.model.ModelList',
+        'ennovum.model.ModelMap',
+        'ennovum.worker.WorkerFunction',
         './../views/filter'
     ],
     function (
-        mEnvironment,
-        mUtils,
-        mObservable,
-        mModel,
-        mWorker,
-        mArmadillogFilterView
+        environment,
+        utils,
+        Observable,
+        ModelList,
+        ModelMap,
+        WorkerFunction,
+        ArmadillogFilterView
     ) {
         /**
          * ArmadillogFilter constructor
@@ -75,7 +77,7 @@ window.define && define(
 
             var LIST_STORAGE_NAME = 'filterList';
 
-            var oObservable;
+            var observable;
 
             var config;
             var application;
@@ -99,7 +101,7 @@ window.define && define(
              * @param {object} argConfig configuration object
              */
             var init = function ArmadillogFilter_init(argConfig, argApplication) {
-                oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
+                observable = utils.obj.mixin(this, new Observable());
 
                 switch (true) {
                     case !configSet(argConfig):
@@ -154,7 +156,7 @@ window.define && define(
 
                 filterIdSeq = 1;
 
-                filterMList = new mModel.ModelList();
+                filterMList = new ModelList();
 
                 affectTypes = [
                     {
@@ -273,7 +275,7 @@ window.define && define(
              * Initializes view
              */
             var viewInit = function ArmadillogFilter_viewInit() {
-                armadillogView = new mArmadillogFilterView.ArmadillogFilterView();
+                armadillogView = new ArmadillogFilterView();
 
                 boxEl = config.boxEl;
                 if (!boxEl) {
@@ -342,7 +344,7 @@ window.define && define(
                         }
 
                         filterViewListInsert(filterDataList);
-                        oObservable.trigger('list-insert', {'count': dataList.length});
+                        observable.trigger('list-insert', {'count': dataList.length});
                     });
 
                 filterMList.on(
@@ -358,7 +360,7 @@ window.define && define(
                         }
 
                         filterViewListUpdate(filterDataList);
-                        oObservable.trigger('list-update', {'count': dataList.length});
+                        observable.trigger('list-update', {'count': dataList.length});
                     });
 
                 filterMList.on(
@@ -374,7 +376,7 @@ window.define && define(
                         }
 
                         filterViewListDelete(filterDataList);
-                        oObservable.trigger('list-delete', {'count': dataList.length});
+                        observable.trigger('list-delete', {'count': dataList.length});
                     });
 
                 filterMList.on(
@@ -398,16 +400,16 @@ window.define && define(
 
                         if (filterDataList.length) {
                             filterViewListUpdate(filterDataList);
-                            oObservable.trigger('list-update', {'count': dataList.length});
+                            observable.trigger('list-update', {'count': dataList.length});
                         }
                     });
 
-                oObservable.on(
+                observable.on(
                     ['list-insert', 'list-delete'],
                     function ArmadillogFilter_inputUiInit_handlerListToggle() {
-                        mUtils.dom.classDepend(filterView.listEl, HIDDEN_CLASS, filterMList.length() === 0);
-                        mUtils.dom.classDepend(filterView.submitButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
-                        mUtils.dom.classDepend(filterView.clearButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        utils.dom.classDepend(filterView.listEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        utils.dom.classDepend(filterView.submitButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        utils.dom.classDepend(filterView.clearButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
                     });
 
                 return true;
@@ -426,7 +428,7 @@ window.define && define(
              * Creates a filter worker
              */
             var filterWorkerCreate = function ArmadillogFilter_filterWorkerCreate() {
-                workerFilter = new mWorker.WorkerFunction(
+                workerFilter = new WorkerFunction(
                     function ArmadillogFilter_filterWorkerCreate_workerFilter(data, success, error) {
                         var textFiltered = data.text;
                         var filterList = JSON.parse(data.filterListJSON);
@@ -514,7 +516,7 @@ window.define && define(
                     data = {};
                 }
 
-                var filterItemMMap = new mModel.ModelMap();
+                var filterItemMMap = new ModelMap();
                 filterItemMMap.set(
                     'id',
                     filterIdSeq++,
@@ -558,16 +560,16 @@ window.define && define(
              * @param {object} filterItemMMap filter item data
              */
             var filterItemViewUpdate = function ArmadillogFilter_filterItemViewUpdate(filterItemMMap) {
-                mUtils.dom.classDepend(filterItemMMap.get('view').muteEl, HIDDEN_CLASS, filterItemMMap.get('mute'));
-                mUtils.dom.classDepend(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS, !filterItemMMap.get('mute'));
+                utils.dom.classDepend(filterItemMMap.get('view').muteEl, HIDDEN_CLASS, filterItemMMap.get('mute'));
+                utils.dom.classDepend(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS, !filterItemMMap.get('mute'));
 
-                mUtils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl, filterItemMMap.get('affectType'));
+                utils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl, filterItemMMap.get('affectType'));
 
                 filterItemMMap.get('view').valueInputEl.value = filterItemMMap.get('value') || '';
 
-                mUtils.dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl, filterItemMMap.get('valueType'));
+                utils.dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl, filterItemMMap.get('valueType'));
 
-                mUtils.dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl, filterItemMMap.get('highlightType'));
+                utils.dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl, filterItemMMap.get('highlightType'));
 
                 return true;
             };
@@ -648,8 +650,8 @@ window.define && define(
             var filterMute = function ArmadillogFilter_filterMute(filterItemMMap) {
                 filterItemMMap.set('mute', true);
 
-                mUtils.dom.classAdd(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
-                mUtils.dom.classRemove(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
+                utils.dom.classAdd(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
+                utils.dom.classRemove(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
 
                 return true;
             };
@@ -662,8 +664,8 @@ window.define && define(
             var filterUnmute = function ArmadillogFilter_filterUnmute(filterItemMMap) {
                 filterItemMMap.set('mute', false);
 
-                mUtils.dom.classRemove(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
-                mUtils.dom.classAdd(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
+                utils.dom.classRemove(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
+                utils.dom.classAdd(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
 
                 return true;
             };
@@ -749,7 +751,7 @@ window.define && define(
 
                     filterItemMMap.queue('filter-submit');
 
-                    filterItemMMap.set('affectType', mUtils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl));
+                    filterItemMMap.set('affectType', utils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl));
 
                     if (filterItemMMap.get('affectType') === null) {
                         alert('You have to choose a filter affect type!');
@@ -758,14 +760,14 @@ window.define && define(
 
                     filterItemMMap.set('value', filterItemMMap.get('view').valueInputEl.value || '');
 
-                    filterItemMMap.set('valueType', mUtils.dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl));
+                    filterItemMMap.set('valueType', utils.dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl));
 
                     if (filterItemMMap.get('valueType') === null) {
                         alert('You have to choose a filter value type!');
                         return false;
                     }
 
-                    filterItemMMap.set('highlightType', mUtils.dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl));
+                    filterItemMMap.set('highlightType', utils.dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl));
 
                     filterItemMMap.dequeue('filter-submit');
                 }
@@ -856,8 +858,8 @@ window.define && define(
                 for (var i = 0, l = filterMList.length(); i < l; i++) {
                     filterItemMMap = filterMList.getAt(i);
 
-                    mUtils.dom.classDepend(filterItemMMap.get('view').moveUpEl, HIDDEN_CLASS, i === 0);
-                    mUtils.dom.classDepend(filterItemMMap.get('view').moveDownEl, HIDDEN_CLASS, i === l - 1);
+                    utils.dom.classDepend(filterItemMMap.get('view').moveUpEl, HIDDEN_CLASS, i === 0);
+                    utils.dom.classDepend(filterItemMMap.get('view').moveDownEl, HIDDEN_CLASS, i === l - 1);
                 }
 
                 return true;
@@ -937,7 +939,7 @@ window.define && define(
                     switch (filterItemMMap.get('valueType')) {
                         case VALUE_TYPE_TEXT:
                             try {
-                                filterItem.value = mUtils.regexp.escape(filterItemMMap.get('value'));
+                                filterItem.value = utils.regexp.escape(filterItemMMap.get('value'));
                             }
                             catch (err) {
                                 // nothing
@@ -1016,11 +1018,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'ArmadillogFilter': ArmadillogFilter
-        };
+        return ArmadillogFilter;
     });

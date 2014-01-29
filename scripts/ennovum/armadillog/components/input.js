@@ -2,14 +2,14 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         './../views/input'
     ],
     function (
-        mEnvironment,
-        mUtils,
-        mArmadillogInputView
+        environment,
+        utils,
+        ArmadillogInputView
     ) {
         /**
          * ArmadillogInput constructor
@@ -75,7 +75,7 @@ window.define && define(
              * Initializes view
              */
             var viewInit = function ArmadillogInput_viewInit() {
-                view = new mArmadillogInputView.ArmadillogInputView();
+                view = new ArmadillogInputView();
 
                 bodyEl = config.bodyEl;
 
@@ -198,8 +198,8 @@ window.define && define(
              *
              */
             var clearLabelSet = function ArmadillogInput_clearLabelSet(value) {
-                inputView.clearLabelEl.innerHTML = mUtils.string.escapeXML(value || '');
-                mUtils.dom.classDepend(inputView.clearBoxEl, HIDDEN_CLASS, value === null);
+                inputView.clearLabelEl.innerHTML = utils.string.escapeXML(value || '');
+                utils.dom.classDepend(inputView.clearBoxEl, HIDDEN_CLASS, value === null);
 
                 return true;
             };
@@ -213,11 +213,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
-};
+            // utils.debug.spy(this);
+        };
 
         //
-        return {
-            'ArmadillogInput': ArmadillogInput
-        };
+        return ArmadillogInput;
     });

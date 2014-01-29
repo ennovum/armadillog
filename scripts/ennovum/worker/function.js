@@ -2,14 +2,14 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         'ennovum.Queue'
     ],
     function (
-        mEnvironment,
-        mUtils,
-        mQueue
+        environment,
+        utils,
+        Queue
     ) {
         /**
          * WorkerFunction constructor
@@ -46,7 +46,7 @@ window.define && define(
 
             var DISABLE_NATIVE_WORKER_STORAGE_NAME = 'disableNativeWorker';
 
-            var oQueue;
+            var queue;
 
             var config;
             var callback;
@@ -65,7 +65,7 @@ window.define && define(
              * @param {mixed} func Worker body function
              */
             var init = function WorkerFunction_init(argCallback, argConfig) {
-                oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
+                queue = utils.obj.mixin(this, new Queue());
 
                 switch (false) {
                     case argCallback && typeof argCallback === 'function':
@@ -157,7 +157,7 @@ window.define && define(
 
                 workMap[wid] = work;
 
-                oQueue.queue(function () {
+                queue.queue(function () {
                     if (!worker || config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
                         callback(
                             data,
@@ -177,7 +177,7 @@ window.define && define(
                     }
                 });
 
-                oQueue.dequeue();
+                queue.dequeue();
 
                 return true;
             };
@@ -225,15 +225,13 @@ window.define && define(
              *
              */
             var toString =function WorkerFunction_toString() {
-                return 'ennovum.WorkerFunction';
+                return 'ennovum.workerFunction';
             };
 
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'WorkerFunction': WorkerFunction
-        };
+        return WorkerFunction;
     });

@@ -9,12 +9,12 @@ require.config({
             'main': 'handlebars-1.0.rc.1.js'
         },
         {
-            'name': 'ennovum.Environment',
+            'name': 'ennovum.environment',
             'location': 'ennovum',
             'main': 'environment.js'
         },
         {
-            'name': 'ennovum.Utils',
+            'name': 'ennovum.utils',
             'location': 'ennovum',
             'main': 'utils.js'
         },
@@ -29,14 +29,39 @@ require.config({
             'main': 'queue.js'
         },
         {
-            'name': 'ennovum.Model',
+            'name': 'ennovum.model',
             'location': 'ennovum/model',
             'main': 'model.js'
         },
         {
-            'name': 'ennovum.Worker',
+            'name': 'ennovum.model.ModelList',
+            'location': 'ennovum/model',
+            'main': 'list.js'
+        },
+        {
+            'name': 'ennovum.model.ModelMap',
+            'location': 'ennovum/model',
+            'main': 'map.js'
+        },
+        {
+            'name': 'ennovum.model.ModelValue',
+            'location': 'ennovum/model',
+            'main': 'value.js'
+        },
+        {
+            'name': 'ennovum.worker',
             'location': 'ennovum/worker',
             'main': 'worker.js'
+        },
+        {
+            'name': 'ennovum.worker.WorkerFunction',
+            'location': 'ennovum/worker',
+            'main': 'function.js'
+        },
+        {
+            'name': 'ennovum.worker.WorkerDownloader',
+            'location': 'ennovum/worker',
+            'main': 'downloader.js'
         },
         {
             'name': 'ennovum.Buffer',
@@ -66,15 +91,15 @@ require.config({
 
 require(
     [
-        'ennovum.Environment',
+        'ennovum.environment',
         'ennovum.Armadillog',
         'armadillog.Layout',
         'text!./../README.txt'
     ],
     function (
-        mEnvironment,
-        mArmadillog,
-        mLayout,
+        environment,
+        Armadillog,
+        Layout,
         readme
     ) {
         try {
@@ -103,8 +128,8 @@ require(
                 'contentDropEl': document.querySelector('.main')
             };
 
-            var armadillog = new mArmadillog.Armadillog(config);
-            var layout = new mLayout.Layout(config);
+            var armadillog = new Armadillog(config);
+            var layout = new Layout(config);
 
             armadillog.launch();
             armadillog.contentTextSet(readme, 'README.txt');

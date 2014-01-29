@@ -2,17 +2,17 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        './function',
-        './downloader'
+        'ennovum.environment',
+        'ennovum.worker.WorkerFunction',
+        'ennovum.worker.WorkerDownloader'
     ],
     function (
-        mEnvironment,
-        mWorkerFunction,
-        mWorkerDownloader
+        environment,
+        WorkerFunction,
+        WorkerDownloader
     ) {
         return {
-            'WorkerFunction': mWorkerFunction.WorkerFunction,
-            'WorkerDownloader': mWorkerDownloader.WorkerDownloader
+            'WorkerFunction': WorkerFunction,
+            'WorkerDownloader': WorkerDownloader
         };
     });

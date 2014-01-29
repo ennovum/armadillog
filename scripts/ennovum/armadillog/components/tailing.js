@@ -2,12 +2,12 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils'
+        'ennovum.environment',
+        'ennovum.utils'
     ],
     function (
-        mEnvironment,
-        mUtils
+        environment,
+        utils
     ) {
         /**
          * ArmadillogTailing constructor
@@ -160,11 +160,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'ArmadillogTailing': ArmadillogTailing
-        };
+        return ArmadillogTailing;
     });

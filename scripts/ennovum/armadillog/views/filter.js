@@ -2,15 +2,15 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         'Handlebars',
         'text!./../templates/filter.html-template',
         'text!./../templates/filter-item.html-template'
     ],
     function (
-        mEnvironment,
-        mUtils,
+        environment,
+        utils,
         Handlebars,
         templateFilter,
         templateFilterItem
@@ -24,10 +24,8 @@ window.define && define(
 
             /**
              * Initializes instance
-             *
-             * @param {object} config configuration object
              */
-            var init = function ArmadillogFilterView_init(config) {
+            var init = function ArmadillogFilterView_init() {
                 filterViewTemplate = Handlebars.compile(templateFilter);
                 filterItemViewTemplate = Handlebars.compile(templateFilterItem);
 
@@ -40,7 +38,7 @@ window.define && define(
              * @param {object} context context object
              */
             var filterViewGet = this.filterViewGet = function ArmadillogFilterView_filterViewGet(context) {
-                var containerEl = mUtils.dom.createElement('div');
+                var containerEl = utils.dom.createElement('div');
                 containerEl.innerHTML = filterViewTemplate(context);
 
                 return {
@@ -58,7 +56,7 @@ window.define && define(
              * @param {object} context context object
              */
             var filterItemViewGet = this.filterItemViewGet = function ArmadillogFilterView_filterItemViewGet(context) {
-                var containerEl = mUtils.dom.createElement('div');
+                var containerEl = utils.dom.createElement('div');
                 containerEl.innerHTML = filterItemViewTemplate(context);
 
                 var highlightTypeListSelectEl = containerEl.querySelector('.filter-highlight-type-select');
@@ -66,7 +64,7 @@ window.define && define(
 
                 /* hack for select not triggering change event when it's synchronically created and updated
                    TODO get rid of it in some civilised manner */
-                setTimeout(function () {mUtils.dom.triggerEvent(highlightTypeListSelectEl, 'change');}, 0);
+                setTimeout(function () {utils.dom.triggerEvent(highlightTypeListSelectEl, 'change');}, 0);
 
                 return {
                     'el': containerEl.querySelector('.filter-item'),
@@ -95,11 +93,11 @@ window.define && define(
                 var highlightTypeListSelectEl = evt.target;
 
                 var selectedClass = highlightTypeListSelectEl.getAttribute('selected-class') || '';
-                mUtils.dom.classRemove(highlightTypeListSelectEl, selectedClass);
+                utils.dom.classRemove(highlightTypeListSelectEl, selectedClass);
 
                 selectedClass = highlightTypeListSelectEl.options[highlightTypeListSelectEl.selectedIndex].getAttribute('selected-class') || ''
                 highlightTypeListSelectEl.setAttribute('selected-class', selectedClass);
-                mUtils.dom.classAdd(highlightTypeListSelectEl, selectedClass);
+                utils.dom.classAdd(highlightTypeListSelectEl, selectedClass);
             };
 
             /**
@@ -111,11 +109,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'ArmadillogFilterView': ArmadillogFilterView
-        };
+        return ArmadillogFilterView;
     });

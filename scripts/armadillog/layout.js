@@ -2,12 +2,12 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils'
+        'ennovum.environment',
+        'ennovum.utils'
     ],
     function (
-        mEnvironment,
-        mUtils
+        environment,
+        utils
     ) {
         /**
          * Layout constructor
@@ -188,9 +188,9 @@ window.define && define(
              *
              */
             var inputHide = function Layout_inputHide() {
-                mUtils.dom.classRemove(config.mainmenuInputEl, 'pressed');
+                utils.dom.classRemove(config.mainmenuInputEl, 'pressed');
 
-                mUtils.dom.classAdd(config.inputWrapperEl, 'hidden');
+                utils.dom.classAdd(config.inputWrapperEl, 'hidden');
 
                 return true;
             };
@@ -199,15 +199,15 @@ window.define && define(
              *
              */
             var inputToggle = function Layout_inputToggle() {
-                mUtils.dom.classToggle(config.mainmenuInputEl, 'pressed');
-                mUtils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
-                mUtils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
-                mUtils.dom.classRemove(config.mainmenuManualEl, 'pressed')
+                utils.dom.classToggle(config.mainmenuInputEl, 'pressed');
+                utils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuManualEl, 'pressed')
 
-                mUtils.dom.classToggle(config.inputWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.filterWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.examineWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.manualWrapperEl, 'hidden');
+                utils.dom.classToggle(config.inputWrapperEl, 'hidden');
+                utils.dom.classAdd(config.filterWrapperEl, 'hidden');
+                utils.dom.classAdd(config.examineWrapperEl, 'hidden');
+                utils.dom.classAdd(config.manualWrapperEl, 'hidden');
 
                 return true;
             };
@@ -216,9 +216,9 @@ window.define && define(
              *
              */
             var filterHide = function Layout_filterHide() {
-                mUtils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
 
-                mUtils.dom.classAdd(config.filterWrapperEl, 'hidden');
+                utils.dom.classAdd(config.filterWrapperEl, 'hidden');
 
                 return true;
             };
@@ -227,15 +227,15 @@ window.define && define(
              *
              */
             var filterToggle = function Layout_filterToggle() {
-                mUtils.dom.classRemove(config.mainmenuInputEl, 'pressed');
-                mUtils.dom.classToggle(config.mainmenuFilterEl, 'pressed')
-                mUtils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
-                mUtils.dom.classRemove(config.mainmenuManualEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuInputEl, 'pressed');
+                utils.dom.classToggle(config.mainmenuFilterEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuManualEl, 'pressed')
 
-                mUtils.dom.classAdd(config.inputWrapperEl, 'hidden');
-                mUtils.dom.classToggle(config.filterWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.examineWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.manualWrapperEl, 'hidden');
+                utils.dom.classAdd(config.inputWrapperEl, 'hidden');
+                utils.dom.classToggle(config.filterWrapperEl, 'hidden');
+                utils.dom.classAdd(config.examineWrapperEl, 'hidden');
+                utils.dom.classAdd(config.manualWrapperEl, 'hidden');
 
                 return true;
             };
@@ -244,9 +244,9 @@ window.define && define(
              *
              */
             var examineHide = function Layout_examineHide() {
-                mUtils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
 
-                mUtils.dom.classAdd(config.examineWrapperEl, 'hidden');
+                utils.dom.classAdd(config.examineWrapperEl, 'hidden');
 
                 return true;
             };
@@ -255,15 +255,15 @@ window.define && define(
              *
              */
             var examineToggle = function Layout_examineToggle() {
-                mUtils.dom.classRemove(config.mainmenuInputEl, 'pressed');
-                mUtils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
-                mUtils.dom.classToggle(config.mainmenuExamineEl, 'pressed')
-                mUtils.dom.classRemove(config.mainmenuManualEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuInputEl, 'pressed');
+                utils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
+                utils.dom.classToggle(config.mainmenuExamineEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuManualEl, 'pressed')
 
-                mUtils.dom.classAdd(config.inputWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.filterWrapperEl, 'hidden');
-                mUtils.dom.classToggle(config.examineWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.manualWrapperEl, 'hidden');
+                utils.dom.classAdd(config.inputWrapperEl, 'hidden');
+                utils.dom.classAdd(config.filterWrapperEl, 'hidden');
+                utils.dom.classToggle(config.examineWrapperEl, 'hidden');
+                utils.dom.classAdd(config.manualWrapperEl, 'hidden');
 
                 return true;
             };
@@ -272,9 +272,9 @@ window.define && define(
              *
              */
             var manualHide = function Layout_manualHide() {
-                mUtils.dom.classRemove(config.mainmenuManualEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuManualEl, 'pressed')
 
-                mUtils.dom.classAdd(config.manualWrapperEl, 'hidden');
+                utils.dom.classAdd(config.manualWrapperEl, 'hidden');
 
                 return true;
             };
@@ -283,15 +283,15 @@ window.define && define(
              *
              */
             var manualToggle = function Layout_manualToggle() {
-                mUtils.dom.classRemove(config.mainmenuInputEl, 'pressed');
-                mUtils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
-                mUtils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
-                mUtils.dom.classToggle(config.mainmenuManualEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuInputEl, 'pressed');
+                utils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
+                utils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
+                utils.dom.classToggle(config.mainmenuManualEl, 'pressed')
 
-                mUtils.dom.classAdd(config.inputWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.filterWrapperEl, 'hidden');
-                mUtils.dom.classAdd(config.examineWrapperEl, 'hidden');
-                mUtils.dom.classToggle(config.manualWrapperEl, 'hidden');
+                utils.dom.classAdd(config.inputWrapperEl, 'hidden');
+                utils.dom.classAdd(config.filterWrapperEl, 'hidden');
+                utils.dom.classAdd(config.examineWrapperEl, 'hidden');
+                utils.dom.classToggle(config.manualWrapperEl, 'hidden');
 
                 return true;
             };
@@ -305,11 +305,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'Layout': Layout
-        };
+        return Layout;
     });

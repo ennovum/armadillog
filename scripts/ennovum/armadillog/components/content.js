@@ -2,20 +2,24 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         'ennovum.Observable',
-        'ennovum.Model',
-        'ennovum.Worker',
+        'ennovum.model.ModelList',
+        'ennovum.model.ModelMap',
+        'ennovum.worker.WorkerFunction',
+        'ennovum.worker.WorkerDownloader',
         './../views/content'
     ],
     function (
-        mEnvironment,
-        mUtils,
-        mObservable,
-        mModel,
-        mWorker,
-        mArmadillogContentView
+        environment,
+        utils,
+        Observable,
+        ModelList,
+        ModelMap,
+        WorkerFunction,
+        WorkerDownloader,
+        ArmadillogContentView
     ) {
         /**
          * ArmadillogContent constructor
@@ -32,7 +36,7 @@ window.define && define(
             var FILE_UPDATE_DELAY = 1000;
             var URL_UPDATE_DELAY = 1000;
 
-            var oObservable;
+            var observable;
 
             var config;
             var application;
@@ -62,7 +66,7 @@ window.define && define(
              * @param {object} argConfig configuration object
              */
             var init = function ArmadillogContent_init(argConfig, argApplication) {
-                oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
+                observable = utils.obj.mixin(this, new Observable());
 
                 switch (true) {
                     case !configSet(argConfig):
@@ -103,7 +107,7 @@ window.define && define(
             var dataInit = function ArmadillogContent_dataInit(argApplication) {
                 application = argApplication;
 
-                lineMList = new mModel.ModelList();
+                lineMList = new ModelList();
 
                 lineEscapeRegexp = new RegExp(
                     [
@@ -142,9 +146,9 @@ window.define && define(
 
                 dragging = false;
 
-                workerFileReader = new mWorker.WorkerDownloader();
+                workerFileReader = new WorkerDownloader();
 
-                workerTextLineSplitter = new mWorker.WorkerFunction(
+                workerTextLineSplitter = new WorkerFunction(
                     function ArmadillogContent_dataInit_workerTextLineSplitter(data, success, error) {
                         var lineList = data.text.split(/\r?\n/g);
                         var index = 0;
@@ -184,7 +188,7 @@ window.define && define(
              * Initializes view
              */
             var viewInit = function ArmadillogContent_viewInit() {
-                view = new mArmadillogContentView.ArmadillogContentView();
+                view = new ArmadillogContentView();
 
                 boxEl = config.contentBoxEl;
                 if (!boxEl) {
@@ -279,14 +283,14 @@ window.define && define(
                             lineEl = lineEl.parentNode;
                         }
                         if (lineEl) {
-                            if (mUtils.dom.classContains(lineEl, 'selected')) {
-                                mUtils.dom.classRemove(lineEl, 'selected');
+                            if (utils.dom.classContains(lineEl, 'selected')) {
+                                utils.dom.classRemove(lineEl, 'selected');
 
                                 application.examine.clear();
                             }
                             else {
-                                mUtils.dom.classRemove(contentView.lineListEl.querySelector('.selected'), 'selected');
-                                mUtils.dom.classAdd(lineEl, 'selected');
+                                utils.dom.classRemove(contentView.lineListEl.querySelector('.selected'), 'selected');
+                                utils.dom.classAdd(lineEl, 'selected');
 
                                 var lineItemMMap = lineMList.getAt(~~lineEl.getAttribute('data-index'));
                                 application.examine.set(lineItemMMap);
@@ -307,7 +311,7 @@ window.define && define(
                             lineEl = lineEl.parentNode;
                         }
                         if (lineEl) {
-                            mUtils.dom.classToggle(lineEl, 'marked');
+                            utils.dom.classToggle(lineEl, 'marked');
                         }
 
                         evt.preventDefault();
@@ -423,7 +427,7 @@ window.define && define(
                 lineMList.splice(0, lineMList.length());
                 application.examine.clear();
 
-                oObservable.trigger('source-change', {'label': null});
+                observable.trigger('source-change', {'label': null});
 
                 return true;
             };
@@ -523,7 +527,7 @@ window.define && define(
              * @param {string} label content's label
              */
             var urlSet = this.urlSet = function ArmadillogContent_urlSet(url, label) {
-                url = mUtils.url.validate(url);
+                url = utils.url.validate(url);
                 if (!url) {
                     alert('Invalid URL.');
                     return;
@@ -624,7 +628,7 @@ window.define && define(
                     null,
                     function ArmadillogContent_textSet_workerTextLineSplitterSuccess(data, additional) {
                         if ('text' in data) {
-                            var lineItemMMap = new mModel.ModelMap(
+                            var lineItemMMap = new ModelMap(
                                 'textRaw',
                                 data.text,
                                 'textFiltered',
@@ -644,7 +648,7 @@ window.define && define(
                     null,
                     this);
 
-                oObservable.trigger('source-change', {'label': label});
+                observable.trigger('source-change', {'label': label});
 
                 return true;
             };
@@ -675,7 +679,7 @@ window.define && define(
                                 }
                             }
                             else {
-                                lineItemMMap = new mModel.ModelMap(
+                                lineItemMMap = new ModelMap(
                                     'textRaw',
                                     data.text,
                                     'textFiltered',
@@ -739,7 +743,7 @@ window.define && define(
                 var textFiltered = lineItemMMap.get('textFiltered');
 
                 if (textFiltered !== null) {
-                    lineEl.innerHTML = mUtils.string.escapeXML(textFiltered).replace(
+                    lineEl.innerHTML = utils.string.escapeXML(textFiltered).replace(
                         lineEscapeRegexp,
                         function (match) {
                             switch (match) {
@@ -772,7 +776,7 @@ window.define && define(
                         });
                 }
 
-                mUtils.dom.classDepend(lineEl, HIDDEN_CLASS, lineItemMMap.get('hidden'));
+                utils.dom.classDepend(lineEl, HIDDEN_CLASS, lineItemMMap.get('hidden'));
 
                 return true;
             };
@@ -822,7 +826,7 @@ window.define && define(
                     else {
                         application.busy.set(false, 'lineViewListInsert');
 
-                        oObservable.trigger('view-change');
+                        observable.trigger('view-change');
                     }
                 });
 
@@ -862,7 +866,7 @@ window.define && define(
                     else {
                         application.busy.set(false, 'lineViewListUpdate');
 
-                        oObservable.trigger('view-change');
+                        observable.trigger('view-change');
                     }
                 });
 
@@ -902,7 +906,7 @@ window.define && define(
                     else {
                         application.busy.set(false, 'lineViewListDelete');
 
-                        oObservable.trigger('view-change');
+                        observable.trigger('view-change');
                     }
                 });
 
@@ -955,11 +959,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'ArmadillogContent': ArmadillogContent
-        };
+        return ArmadillogContent;
     });

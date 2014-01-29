@@ -2,8 +2,8 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         './components/busy',
         './components/content',
         './components/examine',
@@ -12,14 +12,14 @@ window.define && define(
         './components/tailing'
     ],
     function (
-        mEnvironment,
-        mUtils,
-        mArmadillogBusy,
-        mArmadillogContent,
-        mArmadillogExamine,
-        mArmadillogInput,
-        mArmadillogFilter,
-        mArmadillogTailing
+        environment,
+        utils,
+        ArmadillogBusy,
+        ArmadillogContent,
+        ArmadillogExamine,
+        ArmadillogInput,
+        ArmadillogFilter,
+        ArmadillogTailing
     ) {
         /**
          * Armadillog constructor
@@ -72,12 +72,12 @@ window.define && define(
             var applicationInit = function Armadillog_applicationInit(config) {
                 application = {};
 
-                application.input = new mArmadillogInput.ArmadillogInput(config, application);
-                application.filter = new mArmadillogFilter.ArmadillogFilter(config, application);
-                application.content = new mArmadillogContent.ArmadillogContent(config, application);
-                application.tailing = new mArmadillogTailing.ArmadillogTailing(config, application);
-                application.examine = new mArmadillogExamine.ArmadillogExamine(config, application);
-                application.busy = new mArmadillogBusy.ArmadillogBusy(config, application);
+                application.input = new ArmadillogInput(config, application);
+                application.filter = new ArmadillogFilter(config, application);
+                application.content = new ArmadillogContent(config, application);
+                application.tailing = new ArmadillogTailing(config, application);
+                application.examine = new ArmadillogExamine(config, application);
+                application.busy = new ArmadillogBusy(config, application);
 
                 return true;
             };
@@ -125,11 +125,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'Armadillog': Armadillog
-        };
+        return Armadillog;
     });

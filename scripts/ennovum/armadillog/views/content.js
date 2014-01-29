@@ -2,15 +2,15 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         'Handlebars',
         'text!./../templates/content.html-template',
         'text!./../templates/content-line-item.html-template'
     ],
     function (
-        mEnvironment,
-        mUtils,
+        environment,
+        utils,
         Handlebars,
         templateContent,
         templateContentLineItem
@@ -24,10 +24,8 @@ window.define && define(
 
             /**
              * Initializes instance
-             *
-             * @param {object} config configuration object
              */
-            var init = function ArmadillogContentView_init(config) {
+            var init = function ArmadillogContentView_init() {
                 contentViewTemplate = Handlebars.compile(templateContent);
                 contentLineItemViewTemplate = Handlebars.compile(templateContentLineItem);
 
@@ -40,7 +38,7 @@ window.define && define(
              * @param {object} context context object
              */
             var contentViewGet = this.contentViewGet = function ArmadillogContentView_contentViewGet(context) {
-                var containerEl = mUtils.dom.createElement('div');
+                var containerEl = utils.dom.createElement('div');
                 containerEl.innerHTML = contentViewTemplate(context);
 
                 return {
@@ -55,7 +53,7 @@ window.define && define(
              * @param {object} context context object
              */
             var contentLineItemViewGet = this.contentLineItemViewGet = function ArmadillogContentView_contentLineItemViewGet(context) {
-                var containerEl = mUtils.dom.createElement('div');
+                var containerEl = utils.dom.createElement('div');
                 containerEl.innerHTML = contentLineItemViewTemplate(context);
 
                 return {
@@ -72,11 +70,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'ArmadillogContentView': ArmadillogContentView
-        };
+        return ArmadillogContentView;
     });

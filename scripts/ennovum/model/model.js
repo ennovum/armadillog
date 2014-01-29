@@ -2,20 +2,20 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        './value',
-        './list',
-        './map'
+        'ennovum.environment',
+        'ennovum.model.ModelValue',
+        'ennovum.model.ModelList',
+        'ennovum.model.ModelMap'
     ],
     function (
-        mEnvironment,
-        mModelValue,
-        mModelList,
-        mModelMap
+        environment,
+        ModelValue,
+        ModelList,
+        ModelMap
     ) {
         return {
-            'ModelValue': mModelValue.ModelValue,
-            'ModelList': mModelList.ModelList,
-            'ModelMap': mModelMap.ModelMap
+            'ModelValue': ModelValue,
+            'ModelList': ModelList,
+            'ModelMap': ModelMap
         };
     });

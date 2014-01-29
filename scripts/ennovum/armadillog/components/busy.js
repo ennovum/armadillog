@@ -2,12 +2,12 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils'
+        'ennovum.environment',
+        'ennovum.utils'
     ],
     function (
-        mEnvironment,
-        mUtils
+        environment,
+        utils
     ) {
         /**
          * ArmadillogBusy constructor
@@ -116,7 +116,7 @@ window.define && define(
 
                     if (!busy) {
                         busy = true;
-                        mUtils.dom.classAdd(bodyEl, 'busy');
+                        utils.dom.classAdd(bodyEl, 'busy');
                     }
                 }
                 else {
@@ -126,7 +126,7 @@ window.define && define(
 
                     if (busyTaskList.length === 0) {
                         busy = false;
-                        mUtils.dom.classRemove(bodyEl, 'busy');
+                        utils.dom.classRemove(bodyEl, 'busy');
                     }
                 }
 
@@ -149,11 +149,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'ArmadillogBusy': ArmadillogBusy
-        };
+        return ArmadillogBusy;
     });

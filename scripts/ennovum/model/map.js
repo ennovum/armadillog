@@ -5,23 +5,23 @@
  */
 define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         'ennovum.Observable',
         'ennovum.Queue'
     ],
     function (
-        mEnvironment,
-        mUtils,
-        mObservable,
-        mQueue
+        environment,
+        utils,
+        Observable,
+        Queue
     ) {
         /**
          * ModelMap constructor
          */
         var ModelMap = function ModelMap() {
-            var oObservable;
-            var oQueue;
+            var observable;
+            var queue;
 
             var map;
 
@@ -33,8 +33,8 @@ define(
              * Initializes instance
              */
             var init = function ModelMap_init() {
-                oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
-                oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
+                observable = utils.obj.mixin(this, new Observable());
+                queue = utils.obj.mixin(this, new Queue());
 
                 map = {};
 
@@ -225,11 +225,11 @@ define(
                 if (!flushQueued) {
                     flushQueued = true;
 
-                    oQueue.queue(function ModelMap_eventAdd_eventFlush() {
+                    queue.queue(function ModelMap_eventAdd_eventFlush() {
                         flushQueued = false;
                         eventFlush();
 
-                        oQueue.dequeue();
+                        queue.dequeue();
                     });
                 }
 
@@ -242,7 +242,7 @@ define(
             var eventFlush = function ModelMap_eventFlush() {
                 for (var i = 0, l = eventGroupList.length; i < l; i++) {
                     if (eventGroupList[i].dataList.length) {
-                        oObservable.trigger(eventGroupList[i].event, eventGroupList[i].dataList);
+                        observable.trigger(eventGroupList[i].event, eventGroupList[i].dataList);
                     }
                 }
 
@@ -267,10 +267,9 @@ define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
-        return {
-            'ModelMap': ModelMap
-        };
+        //
+        return ModelMap;
     });

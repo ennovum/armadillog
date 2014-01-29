@@ -2,20 +2,20 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
-        './function'
+        'ennovum.environment',
+        'ennovum.utils',
+        'ennovum.worker.WorkerFunction'
     ],
     function (
-        mEnvironment,
-        mUtils,
-        mWorkerFunction
+        environment,
+        utils,
+        WorkerFunction
     ) {
         /**
          * WorkerDownloader constructor
          */
         var WorkerDownloader = function WorkerDownloader() {
-            var oWorkerFunction;
+            var workerFunction;
 
             var callback;
 
@@ -80,7 +80,7 @@ window.define && define(
                     }
                 };
 
-                oWorkerFunction = mUtils.obj.mixin(this, new mWorkerFunction.WorkerFunction(callback, config));
+                workerFunction = utils.obj.mixin(this, new WorkerFunction(callback, config));
 
                 return true;
             };
@@ -89,15 +89,13 @@ window.define && define(
              *
              */
             var toString = this.toString = function WorkerDownloader_toString() {
-                return 'ennovum.WorkerDownloader';
+                return 'ennovum.workerDownloader';
             };
 
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'WorkerDownloader': WorkerDownloader
-        };
+        return WorkerDownloader;
     });

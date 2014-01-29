@@ -2,10 +2,10 @@
 
 window.define && define(
     [
-        'ennovum.Environment'
+        'ennovum.environment'
     ],
     function (
-        mEnvironment
+        environment
     ) {
         /**
          * UtilsObj interface

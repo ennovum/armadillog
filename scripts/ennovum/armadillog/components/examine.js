@@ -2,14 +2,14 @@
 
 window.define && define(
     [
-        'ennovum.Environment',
-        'ennovum.Utils',
+        'ennovum.environment',
+        'ennovum.utils',
         './../views/examine'
     ],
     function (
-        mEnvironment,
-        mUtils,
-        mArmadillogExamineView
+        environment,
+        utils,
+        ArmadillogExamineView
     ) {
         /**
          * ArmadillogExamine constructor
@@ -73,7 +73,7 @@ window.define && define(
              * Initializes view
              */
             var viewInit = function ArmadillogExamine_viewInit() {
-                view = new mArmadillogExamineView.ArmadillogExamineView();
+                view = new ArmadillogExamineView();
 
                 bodyEl = config.bodyEl;
 
@@ -132,7 +132,7 @@ window.define && define(
              * @param {object} contentLineItemMMap content line model object
              */
             var set = this.set = function ArmadillogExamine_set(contentLineItemMMap) {
-                examineView.rawContentEl.innerHTML = mUtils.string.escapeXML(contentLineItemMMap.get('textRaw'));
+                examineView.rawContentEl.innerHTML = utils.string.escapeXML(contentLineItemMMap.get('textRaw'));
                 examineView.filteredContentEl.innerHTML = contentLineItemMMap.get('view').el.innerHTML;
 
                 return true;
@@ -157,11 +157,9 @@ window.define && define(
 
             //
             init.apply(this, arguments);
-            // mUtils.debug.spy(this);
+            // utils.debug.spy(this);
         };
 
         //
-        return {
-            'ArmadillogExamine': ArmadillogExamine
-        };
+        return ArmadillogExamine;
     });
