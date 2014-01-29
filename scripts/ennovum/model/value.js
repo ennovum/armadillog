@@ -1,6 +1,9 @@
 'use strict';
 
-window.define && define(
+/**
+ * ModelValue module
+ */
+define(
     [
         'ennovum.Environment',
         'ennovum.Utils',
@@ -13,191 +16,177 @@ window.define && define(
         mObservable,
         mQueue
     ) {
-/* ==================================================================================================== */
+        /**
+         * ModelValue constructor
+         */
+        var ModelValue = function ModelValue() {
+            var oObservable;
+            var oQueue;
 
-/**
- * ModelValue interface
- */
-var iModelValue = {
-    'get': function () {},
-    'set': function (value) {},
-    'toString': function () {}
-};
+            var value;
 
-/**
- * ModelValue constructor
- */
-var ModelValue = function ModelValue() {
-    this.init.apply(this, arguments);
-    // mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, [iModelValue, mObservable.iObservable, mQueue.iQueue]);
-};
+            var eventGroupList;
+            var flushQueued;
+            var valueListener;
 
-/**
- * ModelValue prototype
- */
-ModelValue.prototype = {
+            /**
+             * Initializes instance
+             */
+            var init = function ModelValue_init() {
+                oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
+                oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
 
-    /**
-     * Initializes instance
-     */
-    init: function ModelValue_init(value) {
-        this.oObservable = mUtils.obj.mixin(this, new mObservable.Observable());
-        this.oQueue = mUtils.obj.mixin(this, new mQueue.Queue());
+                eventGroupList = [];
+                flushQueued = false;
+                valueListener = null;
 
-        this.eventGroupList = [];
-        this.flushQueued = false;
-        this.valueListener = null;
+                arguments.length && this.set.apply(this, arguments);
 
-        if (value !== undefined) {
-            this.set(value);
-        }
-
-        return true;
-    },
-
-    /**
-     * Returns the value
-     */
-    get: function ModelValue_get() {
-        return this.value;
-    },
-
-    /**
-     * Sets the value
-     *
-     * @param {mixed} value item's value
-     */
-    set: function ModelValue_set(value) {
-        var valueOld = this.value;
-
-        if (value !== valueOld) {
-            this.value = value;
-
-            this.valueOff(valueOld);
-            this.valueOn(value);
-
-            this.eventAdd(
-                'model-update',
-                [{
-                    'valueNew': value,
-                    'valueOld': valueOld
-                }]);
-        }
-
-        return true;
-    },
-
-    /**
-     * Attaches event forwarding
-     *
-     * @param {mixed} value value to attach
-     */
-    valueOn: function ModelValue_valueOn(value) {
-        if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
-            value.on(
-                [
-                    'model-insert',
-                    'model-update',
-                    'model-delete',
-                    'model-forward'
-                ],
-                this.valueListener = function ModelValue_valueOn_valueListener(event, dataList) {
-                    this.eventAdd(
-                        'model-forward',
-                        [{
-                            'valueNew': value,
-                            'event': event,
-                            'dataList': dataList
-                        }]);
-                }.bind(this));
-        }
-
-        return true;
-    },
-
-    /**
-     * Detaches event forwarding
-     *
-     * @param {mixed} value value to detach
-     */
-    valueOff: function ModelValue_valueOff(value) {
-        if (this.valueListener) {
-            value.off(
-                [
-                    'model-insert',
-                    'model-update',
-                    'model-delete',
-                    'model-forward'
-                ],
-                this.valueListener);
-
-            this.valueListener = null;
-        }
-
-        return true;
-    },
-
-    /**
-     * Adds the event to the event group list and queues event flush
-     *
-     * @param {string} event event name
-     * @param {dataList} event data list
-     */
-    eventAdd: function ModelValue_eventAdd(event, dataList) {
-        var eventGroup = this.eventGroupList[this.eventGroupList.length - 1] || null;
-        if (!eventGroup || eventGroup.event !== event) {
-            eventGroup = {
-                'event': event,
-                'dataList': []
+                return true;
             };
-            this.eventGroupList.push(eventGroup);
-        }
 
-        eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
+            /**
+             * Returns the value
+             */
+            var get = this.get = function ModelValue_get() {
+                return value;
+            };
 
-        if (!this.flushQueued) {
-            this.flushQueued = true;
+            /**
+             * Sets the value
+             *
+             * @param {mixed} value item's value
+             */
+            var set = this.set = function ModelValue_set(valueTmp) {
+                var valueOld = value;
 
-            this.queue(function ModelMap_eventAdd_eventFlush() {
-                this.flushQueued = false;
-                this.eventFlush();
+                if (valueTmp !== valueOld) {
+                    value = valueTmp;
 
-                this.dequeue();
-            }.bind(this));
-        }
+                    valueOff(valueOld);
+                    valueOn(value);
 
-        return true;
-    },
+                    eventAdd(
+                        'model-update',
+                        [{
+                            'valueNew': valueTmp,
+                            'valueOld': valueOld
+                        }]);
+                }
 
-    /**
-     * Flushes events
-     */
-    eventFlush: function ModelValue_eventFlush() {
-        var eventGroupList = this.eventGroupList;
-        this.eventGroupList = [];
+                return true;
+            };
 
-        for (var i = 0, l = eventGroupList.length; i < l; i++) {
-            if (eventGroupList[i].dataList.length) {
-                this.trigger(eventGroupList[i].event, eventGroupList[i].dataList);
-            }
-        }
+            /**
+             * Attaches event forwarding
+             *
+             * @param {mixed} valueTmp value to attach
+             */
+            var valueOn = function ModelValue_valueOn(valueTmp) {
+                if (valueTmp && typeof valueTmp === 'object' && 'on' in valueTmp && typeof valueTmp.on === 'function') {
+                    valueTmp.on(
+                        [
+                            'model-insert',
+                            'model-update',
+                            'model-delete',
+                            'model-forward'
+                        ],
+                        valueListener = function ModelValue_valueOn_valueListener(event, dataList) {
+                            eventAdd(
+                                'model-forward',
+                                [{
+                                    'valueNew': valueTmp,
+                                    'event': event,
+                                    'dataList': dataList
+                                }]);
+                        });
+                }
 
-        return this.map;
-    },
+                return true;
+            };
 
-    /**
-     *
-     */
-    toString: function ModelValue_toString() {
-        return 'ennovum.model.ModelValue';
-    }
+            /**
+             * Detaches event forwarding
+             *
+             * @param {mixed} valueTmp value to detach
+             */
+            var valueOff = function ModelValue_valueOff(valueTmp) {
+                if (valueListener) {
+                    valueTmp.off(
+                        [
+                            'model-insert',
+                            'model-update',
+                            'model-delete',
+                            'model-forward'
+                        ],
+                        valueListener);
 
-};
+                    valueListener = null;
+                }
 
-/* ==================================================================================================== */
+                return true;
+            };
+
+            /**
+             * Adds the event to the event group list and queues event flush
+             *
+             * @param {string} event event name
+             * @param {dataList} event data list
+             */
+            var eventAdd = function ModelValue_eventAdd(event, dataList) {
+                var eventGroup = eventGroupList[eventGroupList.length - 1] || null;
+                if (!eventGroup || eventGroup.event !== event) {
+                    eventGroup = {
+                        'event': event,
+                        'dataList': []
+                    };
+                    eventGroupList.push(eventGroup);
+                }
+
+                eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
+
+                if (!flushQueued) {
+                    flushQueued = true;
+
+                    oQueue.queue(function ModelValue_eventAdd_eventFlush() {
+                        flushQueued = false;
+                        eventFlush();
+
+                        oQueue.dequeue();
+                    });
+                }
+
+                return true;
+            };
+
+            /**
+             * Flushes events
+             */
+            var eventFlush = function ModelValue_eventFlush() {
+                for (var i = 0, l = eventGroupList.length; i < l; i++) {
+                    if (eventGroupList[i].dataList.length) {
+                        oObservable.trigger(eventGroupList[i].event, eventGroupList[i].dataList);
+                    }
+                }
+
+                eventGroupList = [];
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var toString = this.toString = function ModelValue_toString() {
+                return 'ennovum.model.ModelValue';
+            };
+
+            //
+            init.apply(this, arguments);
+            // mUtils.debug.spy(this);
+        };
+
         return {
-            'ModelValue': ModelValue,
-            'iModelValue': iModelValue
+            'ModelValue': ModelValue
         };
     });

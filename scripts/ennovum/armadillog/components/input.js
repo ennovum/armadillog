@@ -11,229 +11,213 @@ window.define && define(
         mUtils,
         mArmadillogInputView
     ) {
-/* ==================================================================================================== */
+        /**
+         * ArmadillogInput constructor
+         */
+        var ArmadillogInput = function ArmadillogInput() {
+            var HIDDEN_CLASS = 'hidden';
 
-/**
- * ArmadillogInput static
- */
-var armadillogInputStatic = {
+            var config;
+            var application;
+
+            var view;
+            var bodyEl;
+            var boxEl;
+            var inputView;
+
+            /**
+             * Initializes instance
+             *
+             * @param {object} argConfig configuration object
+             */
+            var init = function ArmadillogInput_init(argConfig, argApplication) {
+                switch (true) {
+                    case !configSet(argConfig):
+                    case !dataInit(argApplication):
+                    case !viewInit():
+                        return false;
+                        break;
+                }
+
+                return true;
+            };
+
+            /**
+             * Initializes config
+             *
+             * @param {object} argConfig configuration object
+             */
+            var configSet = function ArmadillogInput_configSet(argConfig) {
+                switch (false) {
+                    case !!argConfig:
+                    case typeof argConfig === 'object':
+                        console.error('ArmadillogInput', 'configSet', 'invalid input');
+                        return false;
+                };
+
+                config = {
+                    boxEl: argConfig.inputBoxEl || null
+                };
+
+                return true;
+            };
+
+            /**
+             * Initializes data
+             */
+            var dataInit = function ArmadillogInput_dataInit(argApplication) {
+                application = argApplication;
+
+                return true;
+            };
+
+            /**
+             * Initializes view
+             */
+            var viewInit = function ArmadillogInput_viewInit() {
+                view = new mArmadillogInputView.ArmadillogInputView();
+
+                bodyEl = config.bodyEl;
+
+                boxEl = config.boxEl;
+                if (!boxEl) {
+                    console.error('ArmadillogInput', 'viewInit', 'invalid boxEl');
+                    return false;
+                };
+
+                inputView = view.inputViewGet();
+                boxEl.appendChild(inputView.clearBoxEl);
+                boxEl.appendChild(inputView.fileBoxEl);
+                boxEl.appendChild(inputView.pasteBoxEl);
+                boxEl.appendChild(inputView.urlBoxEl);
+
+                return true;
+            };
+
+            /**
+             * Launches component
+             */
+            var launch = this.launch = function ArmadillogInput_launch() {
+                switch (true) {
+                    case !uiInit():
+                        return false;
+                        break;
+                }
+
+                return true;
+            };
+
+            /**
+             * Initializes UI
+             */
+            var uiInit = function ArmadillogInput_uiInit() {
+                inputView.clearButtonEl.addEventListener(
+                    'click',
+                    function ArmadillogInput_uiInit_clearButtonElClickHandler(evt) {
+                        if (!application.busy.check() && confirm('Are you sure?')) {
+                            application.content.clear();
+                        }
+
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                    });
+
+                inputView.fileInputEl.addEventListener(
+                    'change',
+                    function ArmadillogInput_uiInit_fileInputElChangeHandler(evt) {
+                        if (!application.busy.check()) {
+                            var files = evt.target.files;
+                            if (files.length) {
+                                application.content.clear();
+                                application.content.fileSet(files[0], files[0].name);
+                            }
+                        }
+
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                    });
+
+                inputView.fileButtonEl.addEventListener(
+                    'click',
+                    function ArmadillogInput_uiInit_fileButtonElClickHandler(evt) {
+                        if (!application.busy.check()) {
+                            inputView.fileInputEl.click();
+                        }
+
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                    });
+
+                inputView.pasteButtonEl.addEventListener(
+                    'click',
+                    function ArmadillogInput_uiInit_pasteButtonElClickHandler(evt) {
+                        if (!application.busy.check() && inputView.pasteInputEl.value) {
+                            application.content.clear();
+                            application.content.textSet(inputView.pasteInputEl.value, '(pasted text)');
+                            inputView.pasteInputEl.value = '';
+                        }
+
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                    });
+
+                inputView.urlInputEl.addEventListener(
+                    'keypress',
+                    function ArmadillogInput_uiInit_urlInputElKeypressHandler(evt) {
+                        if (evt.keyCode === 13) {
+                            inputView.urlButtonEl.click();
+
+                            evt.preventDefault();
+                            evt.stopPropagation();
+                        }
+                    });
+
+                inputView.urlButtonEl.addEventListener(
+                    'click',
+                    function ArmadillogInput_uiInit_urlButtonElClickHandler(evt) {
+                        if (!application.busy.check() && inputView.urlInputEl.value) {
+                            application.content.clear();
+                            application.content.urlSet(inputView.urlInputEl.value, inputView.urlInputEl.value);
+                            inputView.urlInputEl.value = '';
+                        }
+
+                        evt.preventDefault();
+                        evt.stopPropagation();
+                    });
+
+                application.content.on(
+                    'source-change',
+                    function ArmadillogInput_uiInit_applicationSourceChangeHandler(evt, data) {
+                        clearLabelSet(data.label);
+                    });
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var clearLabelSet = function ArmadillogInput_clearLabelSet(value) {
+                inputView.clearLabelEl.innerHTML = mUtils.string.escapeXML(value || '');
+                mUtils.dom.classDepend(inputView.clearBoxEl, HIDDEN_CLASS, value === null);
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var toString = this.toString = function ArmadillogInput_toString() {
+                return 'ennovum.ArmadillogInput';
+            };
+
+            //
+            init.apply(this, arguments);
+            // mUtils.debug.spy(this);
 };
 
-/**
- * ArmadillogInput interface
- */
-var armadillogInputInterface = {
-    launch: function () {}
-};
-
-/**
- * ArmadillogInput constructor
- */
-var ArmadillogInput = function ArmadillogInput() {
-    this.init.apply(this, arguments);
-    // mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, armadillogInputInterface);
-};
-
-/**
- * ArmadillogInput prototype
- */
-ArmadillogInput.prototype = {
-
-    HIDDEN_CLASS: 'hidden',
-
-    /**
-     * Initializes instance
-     *
-     * @param {object} config configuration object
-     */
-    init: function ArmadillogInput_init(config, application) {
-        switch (true) {
-            case !this.configSet(config):
-            case !this.dataInit(application):
-            case !this.viewInit():
-                return false;
-                break;
-        }
-
-        return true;
-    },
-
-    /**
-     * Initializes config
-     *
-     * @param {object} config configuration object
-     */
-    configSet: function ArmadillogInput_configSet(config) {
-        switch (false) {
-            case !!config:
-            case typeof config === 'object':
-                console.error('ArmadillogInput', 'configSet', 'invalid input');
-                return false;
-        };
-
-        this.config = {
-            boxEl: config.inputBoxEl || null
-        };
-
-        return true;
-    },
-
-    /**
-     * Initializes data
-     */
-    dataInit: function ArmadillogInput_dataInit(application) {
-        this.application = application;
-
-        return true;
-    },
-
-    /**
-     * Initializes view
-     */
-    viewInit: function ArmadillogInput_viewInit() {
-        this.armadillogView = new mArmadillogInputView.ArmadillogInputView();
-
-        this.bodyEl = this.config.bodyEl;
-
-        this.boxEl = this.config.boxEl;
-        if (!this.boxEl) {
-            console.error('ArmadillogInput', 'viewInit', 'invalid boxEl');
-            return false;
-        };
-
-        this.view = this.armadillogView.inputViewGet();
-        this.boxEl.appendChild(this.view.clearBoxEl);
-        this.boxEl.appendChild(this.view.fileBoxEl);
-        this.boxEl.appendChild(this.view.pasteBoxEl);
-        this.boxEl.appendChild(this.view.urlBoxEl);
-
-        return true;
-    },
-
-    /**
-     * Launches component
-     */
-    launch: function ArmadillogInput_launch() {
-        switch (true) {
-            case !this.uiInit():
-                return false;
-                break;
-        }
-
-        return true;
-    },
-
-    /**
-     * Initializes UI
-     */
-    uiInit: function ArmadillogInput_uiInit() {
-        this.view.clearButtonEl.addEventListener(
-            'click',
-            function ArmadillogInput_uiInit_clearButtonElClickHandler(evt) {
-                if (!this.application.busy.check() && confirm('Are you sure?')) {
-                    this.application.content.clear();
-                }
-
-                evt.preventDefault();
-                evt.stopPropagation();
-            }.bind(this));
-
-        this.view.fileInputEl.addEventListener(
-            'change',
-            function ArmadillogInput_uiInit_fileInputElChangeHandler(evt) {
-                if (!this.application.busy.check()) {
-                    var files = evt.target.files;
-                    if (files.length) {
-                        this.application.content.clear();
-                        this.application.content.fileSet(files[0], files[0].name);
-                    }
-                }
-
-                evt.preventDefault();
-                evt.stopPropagation();
-            }.bind(this));
-
-        this.view.fileButtonEl.addEventListener(
-            'click',
-            function ArmadillogInput_uiInit_fileButtonElClickHandler(evt) {
-                if (!this.application.busy.check()) {
-                    this.view.fileInputEl.click();
-                }
-
-                evt.preventDefault();
-                evt.stopPropagation();
-            }.bind(this));
-
-        this.view.pasteButtonEl.addEventListener(
-            'click',
-            function ArmadillogInput_uiInit_pasteButtonElClickHandler(evt) {
-                if (!this.application.busy.check() && this.view.pasteInputEl.value) {
-                    this.application.content.clear();
-                    this.application.content.textSet(this.view.pasteInputEl.value, '(pasted text)');
-                    this.view.pasteInputEl.value = '';
-                }
-
-                evt.preventDefault();
-                evt.stopPropagation();
-            }.bind(this));
-
-        this.view.urlInputEl.addEventListener(
-            'keypress',
-            function ArmadillogInput_uiInit_urlInputElKeypressHandler(evt) {
-                if (evt.keyCode === 13) {
-                    this.view.urlButtonEl.click();
-
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                }
-            }.bind(this));
-
-        this.view.urlButtonEl.addEventListener(
-            'click',
-            function ArmadillogInput_uiInit_urlButtonElClickHandler(evt) {
-                if (!this.application.busy.check() && this.view.urlInputEl.value) {
-                    this.application.content.clear();
-                    this.application.content.urlSet(this.view.urlInputEl.value, this.view.urlInputEl.value);
-                    this.view.urlInputEl.value = '';
-                }
-
-                evt.preventDefault();
-                evt.stopPropagation();
-            }.bind(this));
-
-        this.application.content.on(
-            'source-change',
-            function ArmadillogInput_uiInit_applicationSourceChangeHandler(evt, data) {
-                this.clearLabelSet(data.label);
-            }.bind(this));
-
-        return true;
-    },
-
-    /**
-     *
-     */
-    clearLabelSet: function ArmadillogInput_clearLabelSet(value) {
-        this.view.clearLabelEl.innerHTML = mUtils.string.escapeXML(value || '');
-        mUtils.dom.classDepend(this.view.clearBoxEl, this.HIDDEN_CLASS, value === null);
-
-        return true;
-    },
-
-    /**
-     *
-     */
-    toString: function ArmadillogInput_toString() {
-        return 'ennovum.ArmadillogInput';
-    }
-
-};
-
-/* ==================================================================================================== */
+        //
         return {
-            'armadillogInputStatic': armadillogInputStatic,
-            'armadillogInputInterface': armadillogInputInterface,
             'ArmadillogInput': ArmadillogInput
         };
     });

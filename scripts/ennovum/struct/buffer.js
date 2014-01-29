@@ -9,246 +9,224 @@ window.define && define(
         mEnvironment,
         mUtils
     ) {
-/* ==================================================================================================== */
+        /**
+         * Buffer constructor
+         */
+        var Buffer = function Buffer() {
+            var LENGTH_STEP = 1000;
 
-/**
- * Buffer interface
- */
-var iBuffer = {
-    setAt: function (outdex, value) {},
-    getAt: function (outdex) {},
-    push: function (value) {},
-    pop: function () {},
-    unshift: function (value) {},
-    shift: function () {},
-    splice: function (outdex, count, value) {},
-    indexOf: function (value) {},
-    lastIndexOf: function (value) {},
-    length: function () {}
-};
+            var list;
+            var firstIndex;
+            var lastIndex;
 
-/**
- * Buffer constructor
- */
-var Buffer = function Buffer() {
-    this.init.apply(this, arguments);
-    // mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, iBuffer);
-};
+            /**
+             * Initializes instance
+             */
+            var init = function Buffer_init() {
+                list = [];
+                firstIndex = 0;
+                lastIndex = -1;
 
-/**
- * Buffer prototype
- */
-Buffer.prototype = {
+                return true;
+            },
 
-    LENGTH_STEP: 1000,
+            /**
+             * Sets the value at the index
+             */
+            var setAt = this.setAt = function Buffer_setAt(outdex, value) {
+                var index = firstIndex + outdex;
 
-    /**
-     * Initializes instance
-     */
-    init: function Buffer_init() {
-        this.list = [];
-        this.firstIndex = 0;
-        this.lastIndex = -1;
+                while (index < 0) {
+                    var args = [];
+                    args.length += LENGTH_STEP;
+                    list = args.concat(list);
+                    firstIndex += LENGTH_STEP;
+                    lastIndex += LENGTH_STEP;
+                    index += LENGTH_STEP;
+                }
+                while (index >= list.length) {
+                    list.length += LENGTH_STEP;
+                }
 
-        return true;
-    },
+                list[index] = value;
 
-    /**
-     * Sets the value at the index
-     */
-    setAt: function Buffer_setAt(outdex, value) {
-        var index = this.firstIndex + outdex;
+                if (index < firstIndex) {
+                    firstIndex = index;
+                }
+                if (index > lastIndex) {
+                    lastIndex = index;
+                }
 
-        while (index < 0) {
-            var args = [];
-            args.length += this.LENGTH_STEP;
-            this.list = args.concat(this.list);
-            this.firstIndex += this.LENGTH_STEP;
-            this.lastIndex += this.LENGTH_STEP;
-            index += this.LENGTH_STEP;
-        }
-        while (index >= this.list.length) {
-            this.list.length += this.LENGTH_STEP;
-        }
+                return length();
+            };
 
-        this.list[index] = value;
+            /**
+             * Gets a value at the index
+             */
+            var getAt = this.getAt = function Buffer_getAt(outdex) {
+                var index = firstIndex + outdex;
 
-        if (index < this.firstIndex) {
-            this.firstIndex = index;
-        }
-        if (index > this.lastIndex) {
-            this.lastIndex = index;
-        }
+                if (index < firstIndex || index > lastIndex) {
+                    return undefined;
+                }
+                else {
+                    return list[index];
+                }
+            };
 
-        return this.length();
-    },
+            /**
+             * Deletes the value at the index
+             */
+            var delAt = this.delAt = function Buffer_delAt(outdex) {
+                var index = firstIndex + outdex;
 
-    /**
-     * Gets a value at the index
-     */
-    getAt: function Buffer_getAt(outdex) {
-        var index = this.firstIndex + outdex;
+                list[index] = undefined;
 
-        if (index < this.firstIndex || index > this.lastIndex) {
-            return undefined;
-        }
-        else {
-            return this.list[index];
-        }
-    },
+                if (index === firstIndex) {
+                    firstIndex += 1;
+                }
+                else if (index === lastIndex) {
+                    lastIndex -= 1;
+                }
 
-    /**
-     * Deletes the value at the index
-     */
-    delAt: function Buffer_delAt(outdex) {
-        var index = this.firstIndex + outdex;
+                return length();
+            };
 
-        this.list[index] = undefined;
+            /**
+             * Pushes to the buffer
+             */
+            var push = this.push = function Buffer_push(value) {
+                var outdex;
 
-        if (index === this.firstIndex) {
-            this.firstIndex += 1;
-        }
-        else if (index === this.lastIndex) {
-            this.lastIndex -= 1;
-        }
+                for (var i = 0, l = arguments.length; i < l; i++) {
+                    value = arguments[i];
+                    outdex = lastIndex - firstIndex + 1;
+                    setAt(outdex, value);
+                }
 
-        return this.length();
-    },
+                return length();
+            };
 
-    /**
-     * Pushes to the buffer
-     */
-    push: function Buffer_push(value) {
-        var outdex;
+            /**
+             * Pops from the index
+             */
+            var pop = this.pop = function Buffer_pop() {
+                var outdex = lastIndex - firstIndex;
+                var value = getAt(outdex);
 
-        for (var i = 0, l = arguments.length; i < l; i++) {
-            value = arguments[i];
-            outdex = this.lastIndex - this.firstIndex + 1;
-            this.setAt(outdex, value);
-        }
+                delAt(outdex);
 
-        return this.length();
-    },
+                return value;
+            };
 
-    /**
-     * Pops from the index
-     */
-    pop: function Buffer_pop() {
-        var outdex = this.lastIndex - this.firstIndex;
-        var value = this.getAt(outdex);
+            /**
+             * Unshifts to the index
+             */
+            var unshift = this.unshift = function Buffer_unshift(value) {
+                var outdex;
 
-        this.delAt(outdex);
+                for (var i = arguments.length - 1; i >= 0; i--) {
+                    value = arguments[i];
+                    outdex = -1;
+                    setAt(outdex, value);
+                }
 
-        return value;
-    },
+                return length();
+            };
 
-    /**
-     * Unshifts to the index
-     */
-    unshift: function Buffer_unshift(value) {
-        var outdex;
+            /**
+             * Shifts from the index
+             */
+            var shift = this.shift = function Buffer_shift() {
+                var outdex = 0;
+                var value = getAt(outdex);
 
-        for (var i = arguments.length - 1; i >= 0; i--) {
-            value = arguments[i];
-            outdex = -1;
-            this.setAt(outdex, value);
-        }
+                delAt(outdex);
 
-        return this.length();
-    },
+                return value;
+            };
 
-    /**
-     * Shifts from the index
-     */
-    shift: function Buffer_shift() {
-        var outdex = 0;
-        var value = this.getAt(outdex);
+            /**
+             * Splices buffer
+             */
+            var splice = this.splice = function Buffer_splice(outdex, count, value) {
+                var index = firstIndex + outdex;
 
-        this.delAt(outdex);
+                if (index < firstIndex || index + count > lastIndex + 1) {
+                    throw new Error('splice failed: invalid input');
+                }
 
-        return value;
-    },
+                var list = [];
+                for (var i = index, l = index + count; i < l; i++) {
+                    list.push(list[i]);
+                }
 
-    /**
-     * Splices buffer
-     */
-    splice: function Buffer_splice(outdex, count, value) {
-        var index = this.firstIndex + outdex;
+                var newList = Array.prototype.slice.call(arguments, 2);
+                var newCount = newList.length;
+                var delta = newCount - count;
 
-        if (index < this.firstIndex || index + count > this.lastIndex + 1) {
-            throw new Error('splice failed: invalid input');
-        }
+                if (delta < 0) {
+                    for (var i = index + newCount, l = lastIndex + delta; i <= l; i++) {
+                        list[i] = list[i - delta];
+                    }
+                    for (var i = lastIndex + delta + 1, l = lastIndex; i <= l; i++) {
+                        list[i] = undefined;
+                    }
+                }
+                else if (delta > 0) {
+                    for (var i = lastIndex + delta; i >= index + newCount; i--) {
+                        list[i] = list[i - delta];
+                    }
+                }
 
-        var list = [];
-        for (var i = index, l = index + count; i < l; i++) {
-            list.push(this.list[i]);
-        }
+                lastIndex += delta;
 
-        var newList = Array.prototype.slice.call(arguments, 2);
-        var newCount = newList.length;
-        var delta = newCount - count;
+                for (var i = index, l = index + newCount; i < l; i++) {
+                    list[i] = newList[i - index];
+                }
 
-        if (delta < 0) {
-            for (var i = index + newCount, l = this.lastIndex + delta; i <= l; i++) {
-                this.list[i] = this.list[i - delta];
-            }
-            for (var i = this.lastIndex + delta + 1, l = this.lastIndex; i <= l; i++) {
-                this.list[i] = undefined;
-            }
-        }
-        else if (delta > 0) {
-            for (var i = this.lastIndex + delta; i >= index + newCount; i--) {
-                this.list[i] = this.list[i - delta];
-            }
-        }
+                return list;
+            };
 
-        this.lastIndex += delta;
+            /**
+             * Returns index of element or -1
+             */
+            var indexOf = this.indexOf = function Buffer_indexOf(value) {
+                var index = list.indexOf(value);
 
-        for (var i = index, l = index + newCount; i < l; i++) {
-            this.list[i] = newList[i - index];
-        }
+                return index === -1 ? -1 : index - firstIndex;
+            };
 
-        return list;
-    },
+            /**
+             * Returns last index of element or -1
+             */
+            var lastIndexOf = lastIndexOf = function Buffer_lastIndexOf(value) {
+                var index = list.lastIndexOf(value);
 
-    /**
-     * Returns index of element or -1
-     */
-    indexOf: function Buffer_indexOf(value) {
-        var index = this.list.indexOf(value);
+                return index === -1 ? -1 : index - firstIndex;
+            };
 
-        return index === -1 ? -1 : index - this.firstIndex;
-    },
+            /**
+             * Returns length of the buffer
+             */
+            var length = this.length = function Buffer_length() {
+                return lastIndex - firstIndex + 1;
+            };
 
-    /**
-     * Returns last index of element or -1
-     */
-    lastIndexOf: function Buffer_lastIndexOf(value) {
-        var index = this.list.lastIndexOf(value);
+            /**
+             *
+             */
+            var toString = this.toString = function Buffer_toString() {
+                return 'ennovum.Buffer';
+            };
 
-        return index === -1 ? -1 : index - this.firstIndex;
-    },
+            //
+            init.apply(this, arguments);
+            // mUtils.debug.spy(this);
+        };
 
-    /**
-     * Returns length of the buffer
-     */
-    length: function Buffer_length() {
-        return this.lastIndex - this.firstIndex + 1;
-    },
-
-    /**
-     *
-     */
-    toString: function Buffer_toString() {
-        return 'ennovum.Buffer';
-    }
-
-};
-
-/* ==================================================================================================== */
+        //
         return {
-            'Buffer': Buffer,
-            'iBuffer': iBuffer
+            'Buffer': Buffer
         };
     });

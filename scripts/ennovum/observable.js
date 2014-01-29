@@ -9,146 +9,129 @@ window.define && define(
         mEnvironment,
         mUtils
     ) {
-/* ==================================================================================================== */
+        /**
+         * Observable constructor
+         */
+        var Observable = function Observable() {
+            var eventsMap;
 
-/**
- * Observable interface
- */
-var iObservable = {
-    'on': function (event, callback) {},
-    'off': function (event, callback) {},
-    'trigger': function (event) {}
-};
+            /**
+             * Initializes instance
+             */
+            var init = function Observable_init() {
+                eventsMap = {};
 
-/**
- * Observable constructor
- */
-var Observable = function Observable() {
-    this.init.apply(this, arguments);
-    // mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, iObservable);
-};
+                return true;
+            };
 
-/**
- * Observable prototype
- */
-Observable.prototype = {
-
-    /**
-     * Initializes instance
-     */
-    init: function Observable_init() {
-        this.eventsMap = {};
-
-        return true;
-    },
-
-    /**
-     * Binds events with a callback
-     *
-     * @param {mixed} eventList list of or a single event name
-     * @param {function} callback callback to bind with events
-     */
-    on: function Observable_on(eventList, callback) {
-        if (!Array.isArray(eventList)) {
-            eventList = [eventList];
-        }
-
-        var event;
-
-        for (var i = 0, l = eventList.length; i < l; i++) {
-            event = eventList[i];
-
-            if (!(event in this.eventsMap)) {
-                this.eventsMap[event] = [];
-            }
-
-            this.eventsMap[event].push(callback);
-        }
-
-        return true;
-    },
-
-    /**
-     * Unbinds events from a callback
-     *
-     * @param {mixed} eventList list of or a single event name
-     * @param {function} callback callback to unbind from events
-     */
-    off: function Observable_off(eventList, callback) {
-        if (!Array.isArray(eventList)) {
-            eventList = [eventList];
-        }
-
-        var event;
-
-        for (var i = 0, l = eventList.length; i < l; i++) {
-            event = eventList[i];
-
-            if (!(event in this.eventsMap) || this.eventsMap[event].length === 0) {
-                console.error('Observable', 'off', 'list of event handlers is empty', event);
-                return false;
-            }
-
-            var callbackIdx = this.eventsMap[event].indexOf(callback);
-            if (callbackIdx === -1) {
-                console.error('Observable', 'off', 'no such event handler', event, callback);
-                return false;
-            }
-
-            this.eventsMap[event].splice(callbackIdx, 1);
-        }
-
-        return true;
-    },
-
-    /**
-     * Triggers events
-     *
-     * @param {mixed} eventList list of or a single event name
-     */
-    trigger: function Observable_trigger(eventList, data) {
-        if (!Array.isArray(eventList)) {
-            eventList = [eventList];
-        }
-
-        var event;
-        var handler;
-
-        for (var i = 0, l = eventList.length; i < l; i++) {
-            event = eventList[i];
-
-            if (!(event in this.eventsMap) || this.eventsMap[event].length === 0) {
-                continue;
-            }
-
-            for (var i = 0, l = this.eventsMap[event].length; i < l; i++) {
-                handler = this.eventsMap[event][i];
-
-                try {
-                    handler.apply(handler, [event, data]);
+            /**
+             * Binds events with a callback
+             *
+             * @param {mixed} eventList list of or a single event name
+             * @param {function} callback callback to bind with events
+             */
+            var on = this.on = function Observable_on(eventList, callback) {
+                if (!Array.isArray(eventList)) {
+                    eventList = [eventList];
                 }
-                catch (err) {
-                    console.error('Observable', 'trigger', 'event handler run error', err);
+
+                var event;
+
+                for (var i = 0, l = eventList.length; i < l; i++) {
+                    event = eventList[i];
+
+                    if (!(event in eventsMap)) {
+                        eventsMap[event] = [];
+                    }
+
+                    eventsMap[event].push(callback);
                 }
-            }
-        }
 
-        return true;
-    },
+                return true;
+            };
 
-    /**
-     *
-     */
-    toString: function Observable_toString() {
-        return 'ennovum.Observable';
-    }
+            /**
+             * Unbinds events from a callback
+             *
+             * @param {mixed} eventList list of or a single event name
+             * @param {function} callback callback to unbind from events
+             */
+            var off = this.off = function Observable_off(eventList, callback) {
+                if (!Array.isArray(eventList)) {
+                    eventList = [eventList];
+                }
 
-};
+                var event;
 
-/* ==================================================================================================== */
+                for (var i = 0, l = eventList.length; i < l; i++) {
+                    event = eventList[i];
+
+                    if (!(event in eventsMap) || eventsMap[event].length === 0) {
+                        console.error('Observable', 'off', 'list of event handlers is empty', event);
+                        return false;
+                    }
+
+                    var callbackIdx = eventsMap[event].indexOf(callback);
+                    if (callbackIdx === -1) {
+                        console.error('Observable', 'off', 'no such event handler', event, callback);
+                        return false;
+                    }
+
+                    eventsMap[event].splice(callbackIdx, 1);
+                }
+
+                return true;
+            };
+
+            /**
+             * Triggers events
+             *
+             * @param {mixed} eventList list of or a single event name
+             */
+            var trigger = this.trigger = function Observable_trigger(eventList, data) {
+                if (!Array.isArray(eventList)) {
+                    eventList = [eventList];
+                }
+
+                var event;
+                var handler;
+
+                for (var i = 0, l = eventList.length; i < l; i++) {
+                    event = eventList[i];
+
+                    if (!(event in eventsMap) || eventsMap[event].length === 0) {
+                        continue;
+                    }
+
+                    for (var i = 0, l = eventsMap[event].length; i < l; i++) {
+                        handler = eventsMap[event][i];
+
+                        try {
+                            handler.apply(handler, [event, data]);
+                        }
+                        catch (err) {
+                            console.error('Observable', 'trigger', 'event handler run error', err);
+                        }
+                    }
+                }
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var toString = this.toString = function Observable_toString() {
+                return 'ennovum.Observable';
+            };
+
+            //
+            init.apply(this, arguments);
+            // mUtils.debug.spy(this);
+        };
+
+        //
         return {
-            'Observable': Observable,
-            'iObservable': iObservable
+            'Observable': Observable
         };
     });

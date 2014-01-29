@@ -11,176 +11,157 @@ window.define && define(
         mUtils,
         mArmadillogExamineView
     ) {
-/* ==================================================================================================== */
+        /**
+         * ArmadillogExamine constructor
+         */
+        var ArmadillogExamine = function ArmadillogExamine() {
+            var config;
+            var application;
 
-/**
- * ArmadillogExamine static
- */
-var armadillogExamineStatic = {
-};
+            var view;
+            var bodyEl;
+            var boxEl;
+            var examineView;
 
-/**
- * ArmadillogExamine interface
- */
-var armadillogExamineInterface = {
-    launch: function () {},
-
-    set: function (contentLineItemMMap) {},
-    clear: function () {}
-};
-
-/**
- * ArmadillogExamine constructor
- */
-var ArmadillogExamine = function ArmadillogExamine() {
-    this.init.apply(this, arguments);
-    // mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, armadillogExamineInterface);
-};
-
-/**
- * ArmadillogExamine prototype
- */
-ArmadillogExamine.prototype = {
-
-    /**
-     * Initializes instance
-     *
-     * @param {object} config configuration object
-     */
-    init: function ArmadillogExamine_init(config, application) {
-        switch (true) {
-            case !this.configSet(config):
-            case !this.dataInit(application):
-            case !this.viewInit():
-                return false;
-                break;
-        }
-
-        return true;
-    },
-
-    /**
-     * Initializes config
-     *
-     * @param {object} config configuration object
-     */
-    configSet: function ArmadillogExamine_configSet(config) {
-        switch (false) {
-            case !!config:
-            case typeof config === 'object':
-                console.error('ArmadillogExamine', 'configSet', 'invalid input');
-                return false;
-        };
-
-        this.config = {
-            boxEl: config.examineBoxEl || null
-        };
-
-        return true;
-    },
-
-    /**
-     * Initializes data
-     */
-    dataInit: function ArmadillogExamine_dataInit(application) {
-        this.application = application;
-
-        return true;
-    },
-
-    /**
-     * Initializes view
-     */
-    viewInit: function ArmadillogExamine_viewInit() {
-        this.armadillogView = new mArmadillogExamineView.ArmadillogExamineView();
-
-        this.bodyEl = this.config.bodyEl;
-
-        this.boxEl = this.config.boxEl;
-        if (!this.boxEl) {
-            console.error('ArmadillogExamine', 'viewInit', 'invalid boxEl');
-            return false;
-        };
-
-        this.view = this.armadillogView.examineViewGet();
-        this.boxEl.appendChild(this.view.rawBoxEl);
-        this.boxEl.appendChild(this.view.filteredBoxEl);
-
-        return true;
-    },
-
-    /**
-     * Launches component
-     */
-    launch: function ArmadillogExamine_launch() {
-        switch (true) {
-            case !this.uiInit():
-                return false;
-                break;
-        }
-
-        return true;
-    },
-
-    /**
-     * Initializes UI
-     */
-    uiInit: function ArmadillogExamine_uiInit() {
-        this.view.rawContentEl.addEventListener(
-            'keyup',
-            function (evt) {
-                if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
-                    evt.stopPropagation();
+            /**
+             * Initializes instance
+             *
+             * @param {object} argConfig configuration object
+             */
+            var init = function ArmadillogExamine_init(argConfig, argApplication) {
+                switch (true) {
+                    case !configSet(argConfig):
+                    case !dataInit(argApplication):
+                    case !viewInit():
+                        return false;
+                        break;
                 }
-            }.bind(this));
 
-        this.view.filteredContentEl.addEventListener(
-            'keyup',
-            function (evt) {
-                if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
-                    evt.stopPropagation();
+                return true;
+            };
+
+            /**
+             * Initializes config
+             *
+             * @param {object} argConfig configuration object
+             */
+            var configSet = function ArmadillogExamine_configSet(argConfig) {
+                switch (false) {
+                    case !!argConfig:
+                    case typeof argConfig === 'object':
+                        console.error('ArmadillogExamine', 'configSet', 'invalid input');
+                        return false;
+                };
+
+                config = {
+                    boxEl: argConfig.examineBoxEl || null
+                };
+
+                return true;
+            };
+
+            /**
+             * Initializes data
+             */
+            var dataInit = function ArmadillogExamine_dataInit(argApplication) {
+                application = argApplication;
+
+                return true;
+            };
+
+            /**
+             * Initializes view
+             */
+            var viewInit = function ArmadillogExamine_viewInit() {
+                view = new mArmadillogExamineView.ArmadillogExamineView();
+
+                bodyEl = config.bodyEl;
+
+                boxEl = config.boxEl;
+                if (!boxEl) {
+                    console.error('ArmadillogExamine', 'viewInit', 'invalid boxEl');
+                    return false;
+                };
+
+                examineView = view.examineViewGet();
+                boxEl.appendChild(examineView.rawBoxEl);
+                boxEl.appendChild(examineView.filteredBoxEl);
+
+                return true;
+            };
+
+            /**
+             * Launches component
+             */
+            var launch = this.launch =function ArmadillogExamine_launch() {
+                switch (true) {
+                    case !uiInit():
+                        return false;
+                        break;
                 }
-            }.bind(this));
 
-        return true;
-    },
+                return true;
+            };
 
-    /**
-     * Sets examine content
-     *
-     * @param {object} contentLineItemMMap content line model object
-     */
-    set: function ArmadillogExamine_set(contentLineItemMMap) {
-        this.view.rawContentEl.innerHTML = mUtils.string.escapeXML(contentLineItemMMap.get('textRaw'));
-        this.view.filteredContentEl.innerHTML = contentLineItemMMap.get('view').el.innerHTML;
+            /**
+             * Initializes UI
+             */
+            var uiInit = function ArmadillogExamine_uiInit() {
+                examineView.rawContentEl.addEventListener(
+                    'keyup',
+                    function (evt) {
+                        if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
+                            evt.stopPropagation();
+                        }
+                    });
 
-        return true;
-    },
+                examineView.filteredContentEl.addEventListener(
+                    'keyup',
+                    function (evt) {
+                        if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
+                            evt.stopPropagation();
+                        }
+                    });
 
-    /**
-     * Clears examine content
-     */
-    clear: function ArmadillogExamine_clear() {
-        this.view.rawContentEl.innerHTML = '';
-        this.view.filteredContentEl.innerHTML = '';
+                return true;
+            };
 
-        return true;
-    },
+            /**
+             * Sets examine content
+             *
+             * @param {object} contentLineItemMMap content line model object
+             */
+            var set = this.set = function ArmadillogExamine_set(contentLineItemMMap) {
+                examineView.rawContentEl.innerHTML = mUtils.string.escapeXML(contentLineItemMMap.get('textRaw'));
+                examineView.filteredContentEl.innerHTML = contentLineItemMMap.get('view').el.innerHTML;
 
-    /**
-     *
-     */
-    toString: function ArmadillogExamine_toString() {
-        return 'ennovum.ArmadillogExamine';
-    }
+                return true;
+            };
 
-};
+            /**
+             * Clears examine content
+             */
+            var clear = this.clear = function ArmadillogExamine_clear() {
+                examineView.rawContentEl.innerHTML = '';
+                examineView.filteredContentEl.innerHTML = '';
 
-/* ==================================================================================================== */
+                return true;
+            };
+
+            /**
+             *
+             */
+            var toString = this.toString = function ArmadillogExamine_toString() {
+                return 'ennovum.ArmadillogExamine';
+            };
+
+            //
+            init.apply(this, arguments);
+            // mUtils.debug.spy(this);
+        };
+
+        //
         return {
-            'armadillogExamineStatic': armadillogExamineStatic,
-            'armadillogExamineInterface': armadillogExamineInterface,
             'ArmadillogExamine': ArmadillogExamine
         };
     });

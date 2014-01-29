@@ -15,83 +15,68 @@ window.define && define(
         templateContent,
         templateContentLineItem
     ) {
-/* ==================================================================================================== */
+        /**
+         * ArmadillogContentView constructor
+         */
+        var ArmadillogContentView = function ArmadillogContentView() {
+            var contentViewTemplate;
+            var contentLineItemViewTemplate;
 
-/**
- * ArmadillogContentView interface
- */
-var iArmadillogContentView = {
-    contentViewGet: function (context) {},
-    contentLineItemViewGet: function (context) {}
-};
+            /**
+             * Initializes instance
+             *
+             * @param {object} config configuration object
+             */
+            var init = function ArmadillogContentView_init(config) {
+                contentViewTemplate = Handlebars.compile(templateContent);
+                contentLineItemViewTemplate = Handlebars.compile(templateContentLineItem);
 
-/**
- * ArmadillogContentView constructor
- */
-var ArmadillogContentView = function ArmadillogContentView() {
-    this.init.apply(this, arguments);
-    // mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, iArmadillogContentView);
-};
+                return true;
+            };
 
-/**
- * ArmadillogContentView prototype
- */
-ArmadillogContentView.prototype = {
+            /**
+             * Returns content view
+             *
+             * @param {object} context context object
+             */
+            var contentViewGet = this.contentViewGet = function ArmadillogContentView_contentViewGet(context) {
+                var containerEl = mUtils.dom.createElement('div');
+                containerEl.innerHTML = contentViewTemplate(context);
 
-    /**
-     * Initializes instance
-     *
-     * @param {object} config configuration object
-     */
-    init: function ArmadillogContentView_init(config) {
-        this.contentViewTemplate = Handlebars.compile(templateContent);
-        this.contentLineItemViewTemplate = Handlebars.compile(templateContentLineItem);
+                return {
+                    'frameEl': containerEl.querySelector('.content-frame'),
+                    'lineListEl': containerEl.querySelector('.content-line-list')
+                };
+            };
 
-        return true;
-    },
+            /**
+             * Returns content line view
+             *
+             * @param {object} context context object
+             */
+            var contentLineItemViewGet = this.contentLineItemViewGet = function ArmadillogContentView_contentLineItemViewGet(context) {
+                var containerEl = mUtils.dom.createElement('div');
+                containerEl.innerHTML = contentLineItemViewTemplate(context);
 
-    /**
-     * Returns content view
-     *
-     * @param {object} context context object
-     */
-    contentViewGet: function ArmadillogContentView_contentViewGet(context) {
-        var containerEl = mUtils.dom.createElement('div');
-        containerEl.innerHTML = this.contentViewTemplate(context);
+                return {
+                    'el': containerEl.querySelector('.content-line-item')
+                };
+            };
 
-        return {
-            'frameEl': containerEl.querySelector('.content-frame'),
-            'lineListEl': containerEl.querySelector('.content-line-list')
+            /**
+             *
+             */
+            var toString = this.toString = function ArmadillogContentView_toString() {
+                return 'ennovum.ArmadillogContentView';
+            };
+
+            //
+            init.apply(this, arguments);
+            // mUtils.debug.spy(this);
         };
-    },
 
-    /**
-     * Returns content line view
-     *
-     * @param {object} context context object
-     */
-    contentLineItemViewGet: function ArmadillogContentView_contentLineItemViewGet(context) {
-        var containerEl = mUtils.dom.createElement('div');
-        containerEl.innerHTML = this.contentLineItemViewTemplate(context);
-
+        //
         return {
-            'el': containerEl.querySelector('.content-line-item')
-        };
-    },
-
-    /**
-     *
-     */
-    toString: function ArmadillogContentView_toString() {
-        return 'ennovum.ArmadillogContentView';
-    }
-
-};
-
-/* ==================================================================================================== */
-        return {
-            'ArmadillogContentView': ArmadillogContentView,
-            'iArmadillogContentView': iArmadillogContentView
+            'ArmadillogContentView': ArmadillogContentView
         };
     });

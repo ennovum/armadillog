@@ -15,10 +15,7 @@ window.define && define(
     ) {
         return {
             'ModelValue': mModelValue.ModelValue,
-            'iModelValue': mModelValue.iModelValue,
             'ModelList': mModelList.ModelList,
-            'iModelList': mModelList.iModelList,
-            'ModelMap': mModelMap.ModelMap,
-            'iModelMap': mModelMap.iModelMap
+            'ModelMap': mModelMap.ModelMap
         };
     });

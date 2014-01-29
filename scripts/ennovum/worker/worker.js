@@ -13,8 +13,6 @@ window.define && define(
     ) {
         return {
             'WorkerFunction': mWorkerFunction.WorkerFunction,
-            'iWorkerFunction': mWorkerFunction.iWorkerFunction,
-            'WorkerDownloader': mWorkerDownloader.WorkerDownloader,
-            'iWorkerDownloader': mWorkerDownloader.iWorkerDownloader
+            'WorkerDownloader': mWorkerDownloader.WorkerDownloader
         };
     });

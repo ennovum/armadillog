@@ -9,321 +9,307 @@ window.define && define(
         mEnvironment,
         mUtils
     ) {
-/* ==================================================================================================== */
+        /**
+         * Layout constructor
+         */
+        var Layout = function Layout() {
+            var config;
 
-/**
- * Layout interface
- */
-var iLayout = {
-};
-
-/**
- * Layout constructor
- */
-var Layout = function Layout() {
-    this.init.apply(this, arguments);
-    // mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, iLayout);
-};
-
-/**
- * Layout prototype
- */
-Layout.prototype = {
-
-    /**
-     * Initializes instance
-     *
-     * @param {object} config configuration object
-     */
-    init: function Layout_init(config) {
-        switch (true) {
-            case !this.configSet(config):
-            case !this.viewInit():
-            case !this.uiInit():
-            case !this.keyboardInit():
-                return false;
-                break;
-        }
-
-        return true;
-    },
-
-    /**
-     * Initializes config
-     *
-     * @param {object} config configuration object
-     */
-    configSet: function Layout_configSet(config) {
-        switch (false) {
-            case !!config:
-            case typeof config === 'object':
-                console.error('Layout', 'configSet', 'invalid input');
-                return false;
-        };
-
-        this.config = {
-            mainmenuInputEl: config.mainmenuInputEl || null,
-            inputWrapperEl: config.inputWrapperEl || null,
-            inputFoldEl: config.inputFoldEl || null,
-            mainmenuFilterEl: config.mainmenuFilterEl || null,
-            filterWrapperEl: config.filterWrapperEl || null,
-            filterFoldEl: config.filterFoldEl || null,
-            mainmenuExamineEl: config.mainmenuExamineEl || null,
-            examineWrapperEl: config.examineWrapperEl || null,
-            examineFoldEl: config.examineFoldEl || null,
-            mainmenuManualEl: config.mainmenuManualEl || null,
-            manualWrapperEl: config.manualWrapperEl || null,
-            manualFoldEl: config.manualFoldEl || null,
-            contentBoxEl: config.contentBoxEl || null
-        };
-
-        return true;
-    },
-
-    /**
-     * Initializes view
-     */
-    viewInit: function Layout_viewInit() {
-        // nothing
-
-        return true;
-    },
-
-    /**
-     * Initializes UI
-     */
-    uiInit: function Layout_uiInit() {
-        this.config.mainmenuInputEl.addEventListener(
-            'click',
-            function (evt) {
-                this.inputToggle();
-                evt.preventDefault();
-            }.bind(this));
-
-        this.config.inputFoldEl.addEventListener(
-            'click',
-            function (evt) {
-                this.inputToggle();
-                evt.preventDefault();
-            }.bind(this));
-
-        this.config.mainmenuFilterEl.addEventListener(
-            'click',
-            function (evt) {
-                this.filterToggle();
-                evt.preventDefault();
-            }.bind(this));
-
-        this.config.filterFoldEl.addEventListener(
-            'click',
-            function (evt) {
-                this.filterToggle();
-                evt.preventDefault();
-            }.bind(this));
-
-        this.config.mainmenuExamineEl.addEventListener(
-            'click',
-            function (evt) {
-                this.examineToggle();
-                evt.preventDefault();
-            }.bind(this));
-
-        this.config.examineFoldEl.addEventListener(
-            'click',
-            function (evt) {
-                this.examineToggle();
-                evt.preventDefault();
-            }.bind(this));
-
-        this.config.mainmenuManualEl.addEventListener(
-            'click',
-            function (evt) {
-                this.manualToggle();
-                evt.preventDefault();
-            }.bind(this));
-
-        this.config.manualFoldEl.addEventListener(
-            'click',
-            function (evt) {
-                this.manualToggle();
-                evt.preventDefault();
-            }.bind(this));
-
-        return true;
-    },
-
-    /**
-     *
-     */
-    keyboardInit: function Layout_keyboardInit() {
-        document.addEventListener(
-            'keyup',
-            function (evt) {
-                switch (evt.target.tagName.toLowerCase()) {
-                    case 'input':
-                    case 'textarea':
-                        return;
-                        break;
-                }
-
+            /**
+             * Initializes instance
+             *
+             * @param {object} argConfig configuration object
+             */
+            var init = function Layout_init(argConfig) {
                 switch (true) {
-                    case evt.keyCode === 73 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // i
-                        this.inputToggle();
-                        this.config.mainmenuInputEl.focus();
-                        break;
-
-                    case evt.keyCode === 70 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // f
-                        this.filterToggle();
-                        this.config.mainmenuFilterEl.focus();
-                        break;
-
-                    case evt.keyCode === 69 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // e
-                        this.examineToggle();
-                        this.config.mainmenuExamineEl.focus();
-                        break;
-
-                    case evt.keyCode === 77 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // m
-                        this.manualToggle();
-                        this.config.mainmenuManualEl.focus();
-                        break;
-
-                    case evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // esc
-                        this.inputHide();
-                        this.filterHide();
-                        this.examineHide();
-                        this.manualHide();
+                    case !configSet(argConfig):
+                    case !viewInit():
+                    case !uiInit():
+                    case !keyboardInit():
+                        return false;
                         break;
                 }
-            }.bind(this));
 
-        return true;
-    },
+                return true;
+            };
 
-    /**
-     *
-     */
-    inputHide: function Layout_inputHide() {
-        mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
+            /**
+             * Initializes config
+             *
+             * @param {object} argConfig configuration object
+             */
+            var configSet = function Layout_configSet(argConfig) {
+                switch (false) {
+                    case !!argConfig:
+                    case typeof argConfig === 'object':
+                        console.error('Layout', 'configSet', 'invalid input');
+                        return false;
+                };
 
-        mUtils.dom.classAdd(this.config.inputWrapperEl, 'hidden');
+                config = {
+                    mainmenuInputEl: argConfig.mainmenuInputEl || null,
+                    inputWrapperEl: argConfig.inputWrapperEl || null,
+                    inputFoldEl: argConfig.inputFoldEl || null,
+                    mainmenuFilterEl: argConfig.mainmenuFilterEl || null,
+                    filterWrapperEl: argConfig.filterWrapperEl || null,
+                    filterFoldEl: argConfig.filterFoldEl || null,
+                    mainmenuExamineEl: argConfig.mainmenuExamineEl || null,
+                    examineWrapperEl: argConfig.examineWrapperEl || null,
+                    examineFoldEl: argConfig.examineFoldEl || null,
+                    mainmenuManualEl: argConfig.mainmenuManualEl || null,
+                    manualWrapperEl: argConfig.manualWrapperEl || null,
+                    manualFoldEl: argConfig.manualFoldEl || null,
+                    contentBoxEl: argConfig.contentBoxEl || null
+                };
 
-        return true;
-    },
+                return true;
+            };
 
-    /**
-     *
-     */
-    inputToggle: function Layout_inputToggle() {
-        mUtils.dom.classToggle(this.config.mainmenuInputEl, 'pressed');
-        mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
-        mUtils.dom.classRemove(this.config.mainmenuExamineEl, 'pressed')
-        mUtils.dom.classRemove(this.config.mainmenuManualEl, 'pressed')
+            /**
+             * Initializes view
+             */
+            var viewInit = function Layout_viewInit() {
+                // nothing
 
-        mUtils.dom.classToggle(this.config.inputWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.filterWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.examineWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.manualWrapperEl, 'hidden');
+                return true;
+            };
 
-        return true;
-    },
+            /**
+             * Initializes UI
+             */
+            var uiInit = function Layout_uiInit() {
+                config.mainmenuInputEl.addEventListener(
+                    'click',
+                    function (evt) {
+                        inputToggle();
+                        evt.preventDefault();
+                    });
 
-    /**
-     *
-     */
-    filterHide: function Layout_filterHide() {
-        mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
+                config.inputFoldEl.addEventListener(
+                    'click',
+                    function (evt) {
+                        inputToggle();
+                        evt.preventDefault();
+                    });
 
-        mUtils.dom.classAdd(this.config.filterWrapperEl, 'hidden');
+                config.mainmenuFilterEl.addEventListener(
+                    'click',
+                    function (evt) {
+                        filterToggle();
+                        evt.preventDefault();
+                    });
 
-        return true;
-    },
+                config.filterFoldEl.addEventListener(
+                    'click',
+                    function (evt) {
+                        filterToggle();
+                        evt.preventDefault();
+                    });
 
-    /**
-     *
-     */
-    filterToggle: function Layout_filterToggle() {
-        mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
-        mUtils.dom.classToggle(this.config.mainmenuFilterEl, 'pressed')
-        mUtils.dom.classRemove(this.config.mainmenuExamineEl, 'pressed')
-        mUtils.dom.classRemove(this.config.mainmenuManualEl, 'pressed')
+                config.mainmenuExamineEl.addEventListener(
+                    'click',
+                    function (evt) {
+                        examineToggle();
+                        evt.preventDefault();
+                    });
 
-        mUtils.dom.classAdd(this.config.inputWrapperEl, 'hidden');
-        mUtils.dom.classToggle(this.config.filterWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.examineWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.manualWrapperEl, 'hidden');
+                config.examineFoldEl.addEventListener(
+                    'click',
+                    function (evt) {
+                        examineToggle();
+                        evt.preventDefault();
+                    });
 
-        return true;
-    },
+                config.mainmenuManualEl.addEventListener(
+                    'click',
+                    function (evt) {
+                        manualToggle();
+                        evt.preventDefault();
+                    });
 
-    /**
-     *
-     */
-    examineHide: function Layout_examineHide() {
-        mUtils.dom.classRemove(this.config.mainmenuExamineEl, 'pressed')
+                config.manualFoldEl.addEventListener(
+                    'click',
+                    function (evt) {
+                        manualToggle();
+                        evt.preventDefault();
+                    });
 
-        mUtils.dom.classAdd(this.config.examineWrapperEl, 'hidden');
+                return true;
+            };
 
-        return true;
-    },
+            /**
+             *
+             */
+            var keyboardInit = function Layout_keyboardInit() {
+                document.addEventListener(
+                    'keyup',
+                    function (evt) {
+                        switch (evt.target.tagName.toLowerCase()) {
+                            case 'input':
+                            case 'textarea':
+                                return;
+                                break;
+                        }
 
-    /**
-     *
-     */
-    examineToggle: function Layout_examineToggle() {
-        mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
-        mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
-        mUtils.dom.classToggle(this.config.mainmenuExamineEl, 'pressed')
-        mUtils.dom.classRemove(this.config.mainmenuManualEl, 'pressed')
+                        switch (true) {
+                            case evt.keyCode === 73 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // i
+                                inputToggle();
+                                config.mainmenuInputEl.focus();
+                                break;
 
-        mUtils.dom.classAdd(this.config.inputWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.filterWrapperEl, 'hidden');
-        mUtils.dom.classToggle(this.config.examineWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.manualWrapperEl, 'hidden');
+                            case evt.keyCode === 70 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // f
+                                filterToggle();
+                                config.mainmenuFilterEl.focus();
+                                break;
 
-        return true;
-    },
+                            case evt.keyCode === 69 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // e
+                                examineToggle();
+                                config.mainmenuExamineEl.focus();
+                                break;
 
-    /**
-     *
-     */
-    manualHide: function Layout_manualHide() {
-        mUtils.dom.classRemove(this.config.mainmenuManualEl, 'pressed')
+                            case evt.keyCode === 77 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // m
+                                manualToggle();
+                                config.mainmenuManualEl.focus();
+                                break;
 
-        mUtils.dom.classAdd(this.config.manualWrapperEl, 'hidden');
+                            case evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey: // esc
+                                inputHide();
+                                filterHide();
+                                examineHide();
+                                manualHide();
+                                break;
+                        }
+                    });
 
-        return true;
-    },
+                return true;
+            };
 
-    /**
-     *
-     */
-    manualToggle: function Layout_manualToggle() {
-        mUtils.dom.classRemove(this.config.mainmenuInputEl, 'pressed');
-        mUtils.dom.classRemove(this.config.mainmenuFilterEl, 'pressed')
-        mUtils.dom.classRemove(this.config.mainmenuExamineEl, 'pressed')
-        mUtils.dom.classToggle(this.config.mainmenuManualEl, 'pressed')
+            /**
+             *
+             */
+            var inputHide = function Layout_inputHide() {
+                mUtils.dom.classRemove(config.mainmenuInputEl, 'pressed');
 
-        mUtils.dom.classAdd(this.config.inputWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.filterWrapperEl, 'hidden');
-        mUtils.dom.classAdd(this.config.examineWrapperEl, 'hidden');
-        mUtils.dom.classToggle(this.config.manualWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.inputWrapperEl, 'hidden');
 
-        return true;
-    },
+                return true;
+            };
 
-    /**
-     *
-     */
-    toString: function Layout_toString() {
-        return 'ennovum.Layout';
-    }
+            /**
+             *
+             */
+            var inputToggle = function Layout_inputToggle() {
+                mUtils.dom.classToggle(config.mainmenuInputEl, 'pressed');
+                mUtils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
+                mUtils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
+                mUtils.dom.classRemove(config.mainmenuManualEl, 'pressed')
 
-};
+                mUtils.dom.classToggle(config.inputWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.filterWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.examineWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.manualWrapperEl, 'hidden');
 
-/* ==================================================================================================== */
+                return true;
+            };
+
+            /**
+             *
+             */
+            var filterHide = function Layout_filterHide() {
+                mUtils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
+
+                mUtils.dom.classAdd(config.filterWrapperEl, 'hidden');
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var filterToggle = function Layout_filterToggle() {
+                mUtils.dom.classRemove(config.mainmenuInputEl, 'pressed');
+                mUtils.dom.classToggle(config.mainmenuFilterEl, 'pressed')
+                mUtils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
+                mUtils.dom.classRemove(config.mainmenuManualEl, 'pressed')
+
+                mUtils.dom.classAdd(config.inputWrapperEl, 'hidden');
+                mUtils.dom.classToggle(config.filterWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.examineWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.manualWrapperEl, 'hidden');
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var examineHide = function Layout_examineHide() {
+                mUtils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
+
+                mUtils.dom.classAdd(config.examineWrapperEl, 'hidden');
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var examineToggle = function Layout_examineToggle() {
+                mUtils.dom.classRemove(config.mainmenuInputEl, 'pressed');
+                mUtils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
+                mUtils.dom.classToggle(config.mainmenuExamineEl, 'pressed')
+                mUtils.dom.classRemove(config.mainmenuManualEl, 'pressed')
+
+                mUtils.dom.classAdd(config.inputWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.filterWrapperEl, 'hidden');
+                mUtils.dom.classToggle(config.examineWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.manualWrapperEl, 'hidden');
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var manualHide = function Layout_manualHide() {
+                mUtils.dom.classRemove(config.mainmenuManualEl, 'pressed')
+
+                mUtils.dom.classAdd(config.manualWrapperEl, 'hidden');
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var manualToggle = function Layout_manualToggle() {
+                mUtils.dom.classRemove(config.mainmenuInputEl, 'pressed');
+                mUtils.dom.classRemove(config.mainmenuFilterEl, 'pressed')
+                mUtils.dom.classRemove(config.mainmenuExamineEl, 'pressed')
+                mUtils.dom.classToggle(config.mainmenuManualEl, 'pressed')
+
+                mUtils.dom.classAdd(config.inputWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.filterWrapperEl, 'hidden');
+                mUtils.dom.classAdd(config.examineWrapperEl, 'hidden');
+                mUtils.dom.classToggle(config.manualWrapperEl, 'hidden');
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var toString = function Layout_toString() {
+                return 'ennovum.Layout';
+            };
+
+            //
+            init.apply(this, arguments);
+            // mUtils.debug.spy(this);
+        };
+
+        //
         return {
-            'Layout': Layout,
-            'iLayout': iLayout
+            'Layout': Layout
         };
     });

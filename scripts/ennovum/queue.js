@@ -4,136 +4,117 @@ window.define && define(
     [
         'ennovum.Environment',
         'ennovum.Utils'
-,    ],
+    ],
     function (
         mEnvironment,
         mUtils
     ) {
-/* ==================================================================================================== */
+        /**
+         * Queue constructor
+         */
+        var Queue = function Queue() {
+            var thingList;
 
-/**
- * Queue interface
- */
-var iQueue = {
-    'queue': function (thing) {},
-    'dequeue': function (thing) {},
-    'queued': function (thing) {}
-};
+            /**
+             * Initializes instance
+             */
+            var init = function Queue_init() {
+                thingList = [];
 
-/**
- * Queue constructor
- */
-var Queue = function Queue() {
-    this.init.apply(this, arguments);
-    // mUtils.debug.spy(this);
-    return mUtils.obj.implement({}, this, iQueue);
-};
+                return true;
+            };
 
-/**
- * Queue prototype
- */
-Queue.prototype = {
+            /**
+             * Puts a thing to the queue
+             */
+            var queue = this.queue = function Queue_queue(thing) {
+                if (thingList.push(thing) === 1) {
+                    run();
+                }
 
-    /**
-     * Initializes instance
-     */
-    init: function Queue_init() {
-        this.thingList = [];
+                return true;
+            };
 
-        this.runBound = this.run.bind(this);
+            /**
+             * Removes certain thing from the queue
+             */
+            var dequeue = this.dequeue =function Queue_dequeue(thing) {
+                if (typeof thing === 'undefined') {
+                    if (thingList.length === 0) {
+                        return false;
+                    }
 
-        return true;
-    },
+                    thingList.shift();
 
-    /**
-     * Puts a thing to the queue
-     */
-    queue: function Queue_queue(thing) {
-        if (this.thingList.push(thing) === 1) {
-            this.run();
-        }
+                    mUtils.func.async(run);
+                }
+                else {
+                    var thingIndex = thingList.indexOf(thing);
+                    if (!~thingIndex) {
+                        return false;
+                    }
 
-        return true;
-    },
+                    thingList.splice(thingIndex, 1);
 
-    /**
-     * Removes certain thing from the queue
-     */
-    dequeue: function Queue_dequeue(thing) {
-        if (typeof thing === 'undefined') {
-            if (this.thingList.length === 0) {
-                return false;
-            }
+                    if (thingIndex === 0) {
+                        mUtils.func.async(run);
+                    }
+                }
 
-            this.thingList.shift();
+                return true;
+            };
 
-            mUtils.func.async(this.runBound);
-        }
-        else {
-            var thingIndex = this.thingList.indexOf(thing);
-            if (!~thingIndex) {
-                return false;
-            }
+            /**
+             * Runs the queue
+             */
+            var run = function Queue_run() {
+                var thingIndex = 0;
+                var thing = thingList[thingIndex];
 
-            this.thingList.splice(thingIndex, 1);
+                if (thing === undefined) {
+                    return false;
+                }
 
-            if (thingIndex === 0) {
-                mUtils.func.async(this.runBound);
-            }
-        }
+                if (typeof thing === 'function') {
+                    thing();
+                }
 
-        return true;
-    },
+                return true;
+            };
 
-    /**
-     * Runs the queue
-     */
-    run: function Queue_run() {
-        var thingIndex = 0;
-        var thing = this.thingList[thingIndex];
+            /**
+             * Returns number of queued elements matching argument or any
+             */
+            var queued = this.queued = function Queue_queued(thing) {
+                if (typeof thing === 'undefined') {
+                    return thingList.length;
+                }
+                else {
+                    var index = -1;
+                    var count = 0;
 
-        if (thing === undefined) {
-            return false;
-        }
+                    while (~(index = thingList.indexOf(thing, index + 1))) {
+                        count++;
+                    }
 
-        if (typeof thing === 'function') {
-            thing();
-        }
+                    return count;
+                }
+            };
 
-        return true;
-    },
+            /**
+             *
+             */
+            var toString = this.toString = function Queue_toString() {
+                return 'ennovum.Queue';
+            };
 
-    /**
-     * Returns number of queued elements matching argument or any
-     */
-    queued: function Queue_queued(thing) {
-        if (typeof thing === 'undefined') {
-            return this.thingList.length;
-        }
-        else {
-            var index = -1;
-            var count = 0;
+            //
+            init.apply(this, arguments);
+            // mUtils.debug.spy(this);
+        };
 
-            while (~(index = this.thingList.indexOf(thing, index + 1))) {
-                count++;
-            }
-
-            return count;
-        }
-    },
-
-    /**
-     *
-     */
-    toString: function Queue_toString() {
-        return 'ennovum.Queue';
-    }
-
-};
-
-/* ==================================================================================================== */
+        //
         return {
-            'Queue': Queue,
-            'iQueue': iQueue
+            'Queue': Queue
         };
     });
