@@ -211,60 +211,50 @@ define(
              * Initializes UI
              */
             var uiInit = function ArmadillogContent_uiInit() {
-                dropEl.addEventListener(
-                    'dragstart',
+                dom.handle(
+                    dropEl, 'dragstart',
                     function ArmadillogContent_uiInit_dropElDragstartHandler(evt) {
                         dragging = true;
-
-                        // evt.preventDefault();
-                        evt.stopPropagation();
                     },
-                    false);
+                    false, false, true, this);
 
-                dropEl.addEventListener(
-                    'dragover',
-                    function ArmadillogContent_uiInit_dropElDragoverHandler(evt) {
+                dom.handle(
+                    dropEl, 'dragover',
+                    function ArmadillogContent_uiInit_dropElDragovertHandler(evt) {
                         evt.dataTransfer.dropEffect = dragging ? 'none' : 'copy';
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
                     },
-                    false);
+                    false, true, true, this);
 
-                dropEl.addEventListener(
-                    'dragend',
+                dom.handle(
+                    dropEl, 'dragend',
                     function ArmadillogContent_uiInit_dropElDragendHandler(evt) {
                         dragging = false;
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
                     },
-                    false);
+                    false, true, true, this);
 
-                dropEl.addEventListener(
-                    'drop',
+                dom.handle(
+                    dropEl, 'drop',
                     function ArmadillogContent_uiInit_dropElDropHandler(evt) {
-                        if (!dragging) {
-                            var files = evt.dataTransfer.files;
-                            if (files.length) {
-                                clear();
-                                fileSet(files[0], files[0].name);
-                            }
-
-                            var data = evt.dataTransfer.getData('text/plain');
-                            if (data) {
-                                clear();
-                                textSet(data, '(dragged text)');
-                            }
+                        if (dragging) {
+                            return;
                         }
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    },
-                    false);
+                        var files = evt.dataTransfer.files;
+                        if (files.length) {
+                            clear();
+                            fileSet(files[0], files[0].name);
+                        }
 
-                contentView.lineListEl.addEventListener(
-                    'click',
+                        var data = evt.dataTransfer.getData('text/plain');
+                        if (data) {
+                            clear();
+                            textSet(data, '(dragged text)');
+                        }
+                    },
+                    false, true, true, this);
+
+                dom.handle(
+                    contentView.lineListEl, 'click',
                     function ArmadillogContent_uiInit_lineListElClickHandler(evt) {
                         var lineEl;
 
@@ -286,13 +276,11 @@ define(
                                 application.examine.set(lineItemMMap);
                             }
                         }
+                    },
+                    false, true, true, this);
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                contentView.lineListEl.addEventListener(
-                    'dblclick',
+                dom.handle(
+                    contentView.lineListEl, 'dblclick',
                     function ArmadillogContent_uiInit_lineListElDblclickHandler(evt) {
                         var lineEl;
 
@@ -303,10 +291,8 @@ define(
                         if (lineEl) {
                             dom.classToggle(lineEl, 'marked');
                         }
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
+                    },
+                    false, true, true, this);
 
                 lineMList.on(
                     'model-insert',

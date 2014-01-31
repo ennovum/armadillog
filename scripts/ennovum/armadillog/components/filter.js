@@ -284,19 +284,17 @@ define(
              * Initializes UI
              */
             var uiInit = function ArmadillogFilter_uiInit() {
-                filterView.clearButtonEl.addEventListener(
-                    'click',
+                dom.handle(
+                    filterView.clearButtonEl, 'click',
                     function ArmadillogFilter_inputUiInit_clearButtonElClickHandler(evt) {
                         if (!application.busy.check() && confirm('Are you sure?')) {
                             clear();
                         }
+                    },
+                    false, true, true, this);
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                filterView.createButtonEl.addEventListener(
-                    'click',
+                dom.handle(
+                    filterView.createButtonEl, 'click',
                     function ArmadillogFilter_inputUiInit_filterCreateButtonElClickHandler(evt) {
                         if (!application.busy.check()) {
                             var filterItemMMap = filterItemCreate();
@@ -305,21 +303,16 @@ define(
                             filterView.listEl.scrollTop = filterView.listEl.scrollHeight;
                             filterItemMMap.get('view').valueInputEl.focus();
                         }
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
                     });
 
-                filterView.submitButtonEl.addEventListener(
-                    'click',
+                dom.handle(
+                    filterView.submitButtonEl, 'click',
                     function ArmadillogFilter_inputUiInit_submitButtonElClickHandler(evt) {
                         if (!application.busy.check()) {
                             submit();
                         }
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
+                    },
+                    false, true, true, this);
 
                 filterMList.on(
                     'model-insert',
@@ -550,16 +543,18 @@ define(
              * @param {object} filterItemMMap filter item data
              */
             var filterItemViewUpdate = function ArmadillogFilter_filterItemViewUpdate(filterItemMMap) {
-                dom.classDepend(filterItemMMap.get('view').muteEl, HIDDEN_CLASS, filterItemMMap.get('mute'));
-                dom.classDepend(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS, !filterItemMMap.get('mute'));
+                var filterItemView = filterItemMMap.get('view');
 
-                dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl, filterItemMMap.get('affectType'));
+                dom.classDepend(filterItemView.muteEl, HIDDEN_CLASS, filterItemMMap.get('mute'));
+                dom.classDepend(filterItemView.unmuteEl, HIDDEN_CLASS, !filterItemMMap.get('mute'));
 
-                filterItemMMap.get('view').valueInputEl.value = filterItemMMap.get('value') || '';
+                dom.selectValue(filterItemView.affectTypeListSelectEl, filterItemMMap.get('affectType'));
 
-                dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl, filterItemMMap.get('valueType'));
+                filterItemView.valueInputEl.value = filterItemMMap.get('value') || '';
 
-                dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl, filterItemMMap.get('highlightType'));
+                dom.selectValue(filterItemView.valueTypeListSelectEl, filterItemMMap.get('valueType'));
+
+                dom.selectValue(filterItemView.highlightTypeListSelectEl, filterItemMMap.get('highlightType'));
 
                 return true;
             };
@@ -570,55 +565,23 @@ define(
              * @param {object} filterItemMMap filter item data
              */
             var filterItemUiInit = function ArmadillogFilter_filterItemUiInit(filterItemMMap) {
-                filterItemMMap.get('view').muteEl.addEventListener(
-                    'click',
-                    function ArmadillogFilter_filterItemUiInit_filterItemViewMuteElClickHandler(evt) {
-                        filterMute(filterItemMMap);
+                var filterItemView = filterItemMMap.get('view');
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
+                dom.handle(filterItemView.muteEl, 'click', filterMute.bind(this, filterItemMMap), false, true, true, this);
+                dom.handle(filterItemView.unmuteEl, 'click', filterUnmute.bind(this, filterItemMMap), false, true, true, this);
+                dom.handle(filterItemView.moveUpEl, 'click', filterItemMoveUp.bind(this, filterItemMMap), false, true, true, this);
+                dom.handle(filterItemView.moveDownEl, 'click', filterItemMoveDown.bind(this, filterItemMMap), false, true, true, this);
 
-                filterItemMMap.get('view').unmuteEl.addEventListener(
-                    'click',
-                    function ArmadillogFilter_filterItemUiInit_filterItemViewUnmuteElClickHandler(evt) {
-                        filterUnmute(filterItemMMap);
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                filterItemMMap.get('view').moveUpEl.addEventListener(
-                    'click',
-                    function ArmadillogFilter_filterItemUiInit_filterItemViewMoveUpElClickHandler(evt) {
-                        filterItemMoveUp(filterItemMMap);
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                filterItemMMap.get('view').moveDownEl.addEventListener(
-                    'click',
-                    function ArmadillogFilter_filterItemUiInit_filterItemViewMoveDownElClickHandler(evt) {
-                        filterItemMoveDown(filterItemMMap);
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                filterItemMMap.get('view').removeEl.addEventListener(
-                    'click',
+                dom.handle(
+                    filterItemView.removeEl, 'click',
                     function ArmadillogFilter_filterItemUiInit_filterItemViewRemoveElClickHandler(evt) {
                         if (confirm('Are you sure?')) {
                             filterItemRemove(filterItemMMap);
                         }
+                    }, false, true, true, this);
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                filterItemMMap.get('view').valueInputEl.addEventListener(
-                    'keypress',
+                dom.handle(
+                    filterItemView.valueInputEl, 'keypress',
                     function ArmadillogFilter_filterItemUiInit_filterItemViewValueInputElKeypressHandler(evt) {
                         if (evt.keyCode === 13) {
                             submit();
@@ -627,7 +590,8 @@ define(
                             evt.preventDefault();
                             evt.stopPropagation();
                         }
-                    });
+                    },
+                    false, false, false, this);
 
                 return true;
             };
@@ -640,8 +604,9 @@ define(
             var filterMute = function ArmadillogFilter_filterMute(filterItemMMap) {
                 filterItemMMap.set('mute', true);
 
-                dom.classAdd(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
-                dom.classRemove(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
+                var filterItemView = filterItemMMap.get('view');
+                dom.classAdd(filterItemView.muteEl, HIDDEN_CLASS);
+                dom.classRemove(filterItemView.unmuteEl, HIDDEN_CLASS);
 
                 return true;
             };
@@ -654,8 +619,9 @@ define(
             var filterUnmute = function ArmadillogFilter_filterUnmute(filterItemMMap) {
                 filterItemMMap.set('mute', false);
 
-                dom.classRemove(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
-                dom.classAdd(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
+                var filterItemView = filterItemMMap.get('view');
+                dom.classRemove(filterItemView.muteEl, HIDDEN_CLASS);
+                dom.classAdd(filterItemView.unmuteEl, HIDDEN_CLASS);
 
                 return true;
             };
@@ -733,31 +699,33 @@ define(
              */
             var submit = function ArmadillogFilter_submit() {
                 var filterItemMMap;
+                var filterItemView;
 
                 filterMList.queue('filter-submit');
 
                 for (var i = 0, l = filterMList.length(); i < l; i++) {
                     filterItemMMap = filterMList.getAt(i);
+                    filterItemView = filterItemMMap.get('view');
 
                     filterItemMMap.queue('filter-submit');
 
-                    filterItemMMap.set('affectType', dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl));
+                    filterItemMMap.set('affectType', dom.selectValue(filterItemView.affectTypeListSelectEl));
 
                     if (filterItemMMap.get('affectType') === null) {
                         alert('You have to choose a filter affect type!');
                         return false;
                     }
 
-                    filterItemMMap.set('value', filterItemMMap.get('view').valueInputEl.value || '');
+                    filterItemMMap.set('value', filterItemView.valueInputEl.value || '');
 
-                    filterItemMMap.set('valueType', dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl));
+                    filterItemMMap.set('valueType', dom.selectValue(filterItemView.valueTypeListSelectEl));
 
                     if (filterItemMMap.get('valueType') === null) {
                         alert('You have to choose a filter value type!');
                         return false;
                     }
 
-                    filterItemMMap.set('highlightType', dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl));
+                    filterItemMMap.set('highlightType', dom.selectValue(filterItemView.highlightTypeListSelectEl));
 
                     filterItemMMap.dequeue('filter-submit');
                 }
@@ -844,12 +812,14 @@ define(
              */
             var filterViewOrderApply = function ArmadillogFilter_filterViewOrderApply() {
                 var filterItemMMap;
+                var filterItemView;
 
                 for (var i = 0, l = filterMList.length(); i < l; i++) {
                     filterItemMMap = filterMList.getAt(i);
+                    filterItemView = filterItemMMap.get('view');
 
-                    dom.classDepend(filterItemMMap.get('view').moveUpEl, HIDDEN_CLASS, i === 0);
-                    dom.classDepend(filterItemMMap.get('view').moveDownEl, HIDDEN_CLASS, i === l - 1);
+                    dom.classDepend(filterItemView.moveUpEl, HIDDEN_CLASS, i === 0);
+                    dom.classDepend(filterItemView.moveDownEl, HIDDEN_CLASS, i === l - 1);
                 }
 
                 return true;

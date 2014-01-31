@@ -62,7 +62,7 @@ define(
                 containerEl.innerHTML = filterItemViewTemplate(context);
 
                 var highlightTypeListSelectEl = containerEl.querySelector('.filter-highlight-type-select');
-                highlightTypeListSelectEl.addEventListener('change', highlightTypeChangeHandle);
+                dom.handle(highlightTypeListSelectEl, 'change', highlightTypeChangeHandle, false, false, false, this);
 
                 /* hack for select not triggering change event when it's synchronically created and updated
                    TODO get rid of it in some civilised manner */

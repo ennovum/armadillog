@@ -101,19 +101,17 @@ define(
              * Initializes UI
              */
             var uiInit = function ArmadillogInput_uiInit() {
-                inputView.clearButtonEl.addEventListener(
-                    'click',
+                dom.handle(
+                    inputView.clearButtonEl, 'click',
                     function ArmadillogInput_uiInit_clearButtonElClickHandler(evt) {
                         if (!application.busy.check() && confirm('Are you sure?')) {
                             application.content.clear();
                         }
+                    },
+                    false, true, true, this);
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                inputView.fileInputEl.addEventListener(
-                    'change',
+                dom.handle(
+                    inputView.fileInputEl, 'change',
                     function ArmadillogInput_uiInit_fileInputElChangeHandler(evt) {
                         if (!application.busy.check()) {
                             var files = evt.target.files;
@@ -122,37 +120,31 @@ define(
                                 application.content.fileSet(files[0], files[0].name);
                             }
                         }
+                    },
+                    false, true, true, this);
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                inputView.fileButtonEl.addEventListener(
-                    'click',
+                dom.handle(
+                    inputView.fileButtonEl, 'click',
                     function ArmadillogInput_uiInit_fileButtonElClickHandler(evt) {
                         if (!application.busy.check()) {
                             inputView.fileInputEl.click();
                         }
+                    },
+                    false, true, true, this);
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                inputView.pasteButtonEl.addEventListener(
-                    'click',
+                dom.handle(
+                    inputView.pasteButtonEl, 'click',
                     function ArmadillogInput_uiInit_pasteButtonElClickHandler(evt) {
                         if (!application.busy.check() && inputView.pasteInputEl.value) {
                             application.content.clear();
                             application.content.textSet(inputView.pasteInputEl.value, '(pasted text)');
                             inputView.pasteInputEl.value = '';
                         }
+                    },
+                    false, true, true, this);
 
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
-
-                inputView.urlInputEl.addEventListener(
-                    'keypress',
+                dom.handle(
+                    inputView.urlInputEl, 'keypress',
                     function ArmadillogInput_uiInit_urlInputElKeypressHandler(evt) {
                         if (evt.keyCode === 13) {
                             inputView.urlButtonEl.click();
@@ -160,20 +152,19 @@ define(
                             evt.preventDefault();
                             evt.stopPropagation();
                         }
-                    });
+                    },
+                    false, false, false, this);
 
-                inputView.urlButtonEl.addEventListener(
-                    'click',
+                dom.handle(
+                    inputView.urlButtonEl, 'click',
                     function ArmadillogInput_uiInit_urlButtonElClickHandler(evt) {
                         if (!application.busy.check() && inputView.urlInputEl.value) {
                             application.content.clear();
                             application.content.urlSet(inputView.urlInputEl.value, inputView.urlInputEl.value);
                             inputView.urlInputEl.value = '';
                         }
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    });
+                    },
+                    false, true, true, this);
 
                 application.content.on(
                     'source-change',

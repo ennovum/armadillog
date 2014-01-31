@@ -3,10 +3,12 @@
 define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils'
     ],
     function (
         environment,
+        dom,
         utils
     ) {
         /**
@@ -82,29 +84,10 @@ define(
              * Initializes UI
              */
             var uiInit = function ArmadillogTailing_uiInit() {
-                window.addEventListener(
-                    'load',
-                    function ArmadillogTailing_uiInit_windowLoadHandler(evt) {
-                        check();
-                    },
-                    false);
+                dom.handle(window, 'load', check, false, false, false, this);
+                dom.handle(scrollEl, 'scroll', check, false, true, true, this);
 
-                scrollEl.addEventListener(
-                    'scroll',
-                    function ArmadillogTailing_uiInit_scrollElScrollHandler(evt) {
-                        check();
-
-                        evt.preventDefault();
-                        evt.stopPropagation();
-                    },
-                    false);
-
-                application.content.on(
-                    'view-change',
-                    function ArmadillogTailing_uiInit_applicationContentViewChangeHandler(evt) {
-                        execute();
-                    },
-                    false);
+                application.content.on('view-change', execute);
 
                 return true;
             };

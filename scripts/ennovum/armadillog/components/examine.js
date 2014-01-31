@@ -3,11 +3,13 @@
 define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils',
         './../views/examine'
     ],
     function (
         environment,
+        dom,
         utils,
         ArmadillogExamineView
     ) {
@@ -95,21 +97,23 @@ define(
              * Initializes UI
              */
             var uiInit = function ArmadillogExamine_uiInit() {
-                examineView.rawContentEl.addEventListener(
-                    'keyup',
+                dom.handle(
+                    examineView.rawContentEl, 'keyup',
                     function (evt) {
                         if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
                             evt.stopPropagation();
                         }
-                    });
+                    },
+                    false, false, false, this);
 
-                examineView.filteredContentEl.addEventListener(
-                    'keyup',
+                dom.handle(
+                    examineView.filteredContentEl, 'keyup',
                     function (evt) {
                         if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
                             evt.stopPropagation();
                         }
-                    });
+                    },
+                    false, false, false, this);
 
                 return true;
             };

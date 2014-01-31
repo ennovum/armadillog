@@ -268,6 +268,20 @@ define(
 
                 return true;
             };
+
+            /**
+             *
+             */
+            var handle = this.handle = function Dom_handle(el, eventType, handler, useCapture, preventDefault, stopPropagation, ctx) {
+                el && el.addEventListener(
+                    eventType,
+                    function (event) {
+                        handler && handler.call(ctx, event);
+                        preventDefault && event.preventDefault();
+                        stopPropagation && event.stopPropagation();
+                    },
+                    useCapture);
+            };
         };
 
         //

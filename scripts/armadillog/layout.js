@@ -80,61 +80,14 @@ define(
              * Initializes UI
              */
             var uiInit = function Layout_uiInit() {
-                config.mainmenuInputEl.addEventListener(
-                    'click',
-                    function (evt) {
-                        inputToggle();
-                        evt.preventDefault();
-                    });
-
-                config.inputFoldEl.addEventListener(
-                    'click',
-                    function (evt) {
-                        inputToggle();
-                        evt.preventDefault();
-                    });
-
-                config.mainmenuFilterEl.addEventListener(
-                    'click',
-                    function (evt) {
-                        filterToggle();
-                        evt.preventDefault();
-                    });
-
-                config.filterFoldEl.addEventListener(
-                    'click',
-                    function (evt) {
-                        filterToggle();
-                        evt.preventDefault();
-                    });
-
-                config.mainmenuExamineEl.addEventListener(
-                    'click',
-                    function (evt) {
-                        examineToggle();
-                        evt.preventDefault();
-                    });
-
-                config.examineFoldEl.addEventListener(
-                    'click',
-                    function (evt) {
-                        examineToggle();
-                        evt.preventDefault();
-                    });
-
-                config.mainmenuManualEl.addEventListener(
-                    'click',
-                    function (evt) {
-                        manualToggle();
-                        evt.preventDefault();
-                    });
-
-                config.manualFoldEl.addEventListener(
-                    'click',
-                    function (evt) {
-                        manualToggle();
-                        evt.preventDefault();
-                    });
+                dom.handle(config.mainmenuInputEl, 'click', inputToggle, false, true, false, this);
+                dom.handle(config.inputFoldEl, 'click', inputToggle, false, true, false, this);
+                dom.handle(config.mainmenuFilterEl, 'click', filterToggle, false, true, false, this);
+                dom.handle(config.filterFoldEl, 'click', filterToggle, false, true, false, this);
+                dom.handle(config.mainmenuExamineEl, 'click', examineToggle, false, true, false, this);
+                dom.handle(config.examineFoldEl, 'click', examineToggle, false, true, false, this);
+                dom.handle(config.mainmenuManualEl, 'click', manualToggle, false, true, false, this);
+                dom.handle(config.manualFoldEl, 'click', manualToggle, false, true, false, this);
 
                 return true;
             };
@@ -143,8 +96,8 @@ define(
              *
              */
             var keyboardInit = function Layout_keyboardInit() {
-                document.addEventListener(
-                    'keyup',
+                dom.handle(
+                    document, 'keyup',
                     function (evt) {
                         switch (evt.target.tagName.toLowerCase()) {
                             case 'input':
@@ -181,7 +134,8 @@ define(
                                 manualHide();
                                 break;
                         }
-                    });
+                    },
+                    false, false, false, this);
 
                 return true;
             };

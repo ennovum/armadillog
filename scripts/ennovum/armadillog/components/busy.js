@@ -33,7 +33,6 @@ define(
                     case !configSet(argConfig):
                     case !dataInit(argApplication):
                     case !viewInit():
-                    case !uiInit():
                         return false;
                         break;
                 }
@@ -83,23 +82,14 @@ define(
             };
 
             /**
-             * Initializes UI
-             */
-            var uiInit = function ArmadillogBusy_uiInit() {
-                // nothing
-
-                return true;
-            };
-
-            /**
              * Sets app busy mode
              *
              * @param {boolean} busy busy flag value
              */
-            var set = this.set = function ArmadillogBusy_set(busy, task) {
+            var set = this.set = function ArmadillogBusy_set(argBusy, task) {
                 var taskIndex = busyTaskList.indexOf(task);
 
-                if (busy) {
+                if (argBusy) {
                     if (!~taskIndex) {
                         busyTaskList.push(task);
                     }
