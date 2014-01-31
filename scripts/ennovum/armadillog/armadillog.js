@@ -111,7 +111,6 @@ define(
 
             //
             init.apply(this, arguments);
-            // utils.debug.spy(this);
         };
 
         //
