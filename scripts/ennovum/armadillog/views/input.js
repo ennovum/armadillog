@@ -1,14 +1,16 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils',
         'Handlebars',
         'text!./../templates/input.html-template'
     ],
     function (
         environment,
+        dom,
         utils,
         Handlebars,
         templateInput
@@ -34,7 +36,7 @@ window.define && define(
              * @param {object} context context object
              */
             var inputViewGet = this.inputViewGet = function ArmadillogInputView_inputViewGet(context) {
-                var containerEl = utils.dom.createElement('div');
+                var containerEl = dom.createElement('div');
                 containerEl.innerHTML = inputViewTemplate(context);
 
                 return {

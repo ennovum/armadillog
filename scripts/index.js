@@ -14,6 +14,11 @@ require.config({
             'main': 'environment.js'
         },
         {
+            'name': 'ennovum.dom',
+            'location': 'ennovum',
+            'main': 'dom.js'
+        },
+        {
             'name': 'ennovum.utils',
             'location': 'ennovum',
             'main': 'utils.js'

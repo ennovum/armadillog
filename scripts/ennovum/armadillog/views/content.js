@@ -1,8 +1,9 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils',
         'Handlebars',
         'text!./../templates/content.html-template',
@@ -10,6 +11,7 @@ window.define && define(
     ],
     function (
         environment,
+        dom,
         utils,
         Handlebars,
         templateContent,
@@ -38,7 +40,7 @@ window.define && define(
              * @param {object} context context object
              */
             var contentViewGet = this.contentViewGet = function ArmadillogContentView_contentViewGet(context) {
-                var containerEl = utils.dom.createElement('div');
+                var containerEl = dom.createElement('div');
                 containerEl.innerHTML = contentViewTemplate(context);
 
                 return {
@@ -53,7 +55,7 @@ window.define && define(
              * @param {object} context context object
              */
             var contentLineItemViewGet = this.contentLineItemViewGet = function ArmadillogContentView_contentLineItemViewGet(context) {
-                var containerEl = utils.dom.createElement('div');
+                var containerEl = dom.createElement('div');
                 containerEl.innerHTML = contentLineItemViewTemplate(context);
 
                 return {

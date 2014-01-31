@@ -1,8 +1,9 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils',
         'Handlebars',
         'text!./../templates/filter.html-template',
@@ -10,6 +11,7 @@ window.define && define(
     ],
     function (
         environment,
+        dom,
         utils,
         Handlebars,
         templateFilter,
@@ -38,7 +40,7 @@ window.define && define(
              * @param {object} context context object
              */
             var filterViewGet = this.filterViewGet = function ArmadillogFilterView_filterViewGet(context) {
-                var containerEl = utils.dom.createElement('div');
+                var containerEl = dom.createElement('div');
                 containerEl.innerHTML = filterViewTemplate(context);
 
                 return {
@@ -56,7 +58,7 @@ window.define && define(
              * @param {object} context context object
              */
             var filterItemViewGet = this.filterItemViewGet = function ArmadillogFilterView_filterItemViewGet(context) {
-                var containerEl = utils.dom.createElement('div');
+                var containerEl = dom.createElement('div');
                 containerEl.innerHTML = filterItemViewTemplate(context);
 
                 var highlightTypeListSelectEl = containerEl.querySelector('.filter-highlight-type-select');
@@ -64,7 +66,7 @@ window.define && define(
 
                 /* hack for select not triggering change event when it's synchronically created and updated
                    TODO get rid of it in some civilised manner */
-                setTimeout(function () {utils.dom.triggerEvent(highlightTypeListSelectEl, 'change');}, 0);
+                setTimeout(function () {dom.triggerEvent(highlightTypeListSelectEl, 'change');}, 0);
 
                 return {
                     'el': containerEl.querySelector('.filter-item'),
@@ -93,11 +95,11 @@ window.define && define(
                 var highlightTypeListSelectEl = evt.target;
 
                 var selectedClass = highlightTypeListSelectEl.getAttribute('selected-class') || '';
-                utils.dom.classRemove(highlightTypeListSelectEl, selectedClass);
+                dom.classRemove(highlightTypeListSelectEl, selectedClass);
 
                 selectedClass = highlightTypeListSelectEl.options[highlightTypeListSelectEl.selectedIndex].getAttribute('selected-class') || ''
                 highlightTypeListSelectEl.setAttribute('selected-class', selectedClass);
-                utils.dom.classAdd(highlightTypeListSelectEl, selectedClass);
+                dom.classAdd(highlightTypeListSelectEl, selectedClass);
             };
 
             /**

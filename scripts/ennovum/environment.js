@@ -1,6 +1,6 @@
 'use strict';
 
-window.define && define(
+define(
     [],
     function () {
         // html tag class 'no-js' to be removed

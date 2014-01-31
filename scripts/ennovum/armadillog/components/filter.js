@@ -1,8 +1,9 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils',
         'ennovum.Observable',
         'ennovum.model.ModelList',
@@ -12,6 +13,7 @@ window.define && define(
     ],
     function (
         environment,
+        dom,
         utils,
         Observable,
         ModelList,
@@ -395,9 +397,9 @@ window.define && define(
                 observable.on(
                     ['list-insert', 'list-delete'],
                     function ArmadillogFilter_inputUiInit_handlerListToggle() {
-                        utils.dom.classDepend(filterView.listEl, HIDDEN_CLASS, filterMList.length() === 0);
-                        utils.dom.classDepend(filterView.submitButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
-                        utils.dom.classDepend(filterView.clearButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        dom.classDepend(filterView.listEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        dom.classDepend(filterView.submitButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        dom.classDepend(filterView.clearButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
                     });
 
                 return true;
@@ -548,16 +550,16 @@ window.define && define(
              * @param {object} filterItemMMap filter item data
              */
             var filterItemViewUpdate = function ArmadillogFilter_filterItemViewUpdate(filterItemMMap) {
-                utils.dom.classDepend(filterItemMMap.get('view').muteEl, HIDDEN_CLASS, filterItemMMap.get('mute'));
-                utils.dom.classDepend(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS, !filterItemMMap.get('mute'));
+                dom.classDepend(filterItemMMap.get('view').muteEl, HIDDEN_CLASS, filterItemMMap.get('mute'));
+                dom.classDepend(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS, !filterItemMMap.get('mute'));
 
-                utils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl, filterItemMMap.get('affectType'));
+                dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl, filterItemMMap.get('affectType'));
 
                 filterItemMMap.get('view').valueInputEl.value = filterItemMMap.get('value') || '';
 
-                utils.dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl, filterItemMMap.get('valueType'));
+                dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl, filterItemMMap.get('valueType'));
 
-                utils.dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl, filterItemMMap.get('highlightType'));
+                dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl, filterItemMMap.get('highlightType'));
 
                 return true;
             };
@@ -638,8 +640,8 @@ window.define && define(
             var filterMute = function ArmadillogFilter_filterMute(filterItemMMap) {
                 filterItemMMap.set('mute', true);
 
-                utils.dom.classAdd(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
-                utils.dom.classRemove(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
+                dom.classAdd(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
+                dom.classRemove(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
 
                 return true;
             };
@@ -652,8 +654,8 @@ window.define && define(
             var filterUnmute = function ArmadillogFilter_filterUnmute(filterItemMMap) {
                 filterItemMMap.set('mute', false);
 
-                utils.dom.classRemove(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
-                utils.dom.classAdd(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
+                dom.classRemove(filterItemMMap.get('view').muteEl, HIDDEN_CLASS);
+                dom.classAdd(filterItemMMap.get('view').unmuteEl, HIDDEN_CLASS);
 
                 return true;
             };
@@ -739,7 +741,7 @@ window.define && define(
 
                     filterItemMMap.queue('filter-submit');
 
-                    filterItemMMap.set('affectType', utils.dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl));
+                    filterItemMMap.set('affectType', dom.selectValue(filterItemMMap.get('view').affectTypeListSelectEl));
 
                     if (filterItemMMap.get('affectType') === null) {
                         alert('You have to choose a filter affect type!');
@@ -748,14 +750,14 @@ window.define && define(
 
                     filterItemMMap.set('value', filterItemMMap.get('view').valueInputEl.value || '');
 
-                    filterItemMMap.set('valueType', utils.dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl));
+                    filterItemMMap.set('valueType', dom.selectValue(filterItemMMap.get('view').valueTypeListSelectEl));
 
                     if (filterItemMMap.get('valueType') === null) {
                         alert('You have to choose a filter value type!');
                         return false;
                     }
 
-                    filterItemMMap.set('highlightType', utils.dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl));
+                    filterItemMMap.set('highlightType', dom.selectValue(filterItemMMap.get('view').highlightTypeListSelectEl));
 
                     filterItemMMap.dequeue('filter-submit');
                 }
@@ -846,8 +848,8 @@ window.define && define(
                 for (var i = 0, l = filterMList.length(); i < l; i++) {
                     filterItemMMap = filterMList.getAt(i);
 
-                    utils.dom.classDepend(filterItemMMap.get('view').moveUpEl, HIDDEN_CLASS, i === 0);
-                    utils.dom.classDepend(filterItemMMap.get('view').moveDownEl, HIDDEN_CLASS, i === l - 1);
+                    dom.classDepend(filterItemMMap.get('view').moveUpEl, HIDDEN_CLASS, i === 0);
+                    dom.classDepend(filterItemMMap.get('view').moveDownEl, HIDDEN_CLASS, i === l - 1);
                 }
 
                 return true;

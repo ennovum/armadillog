@@ -1,14 +1,16 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils',
         'Handlebars',
         'text!./../templates/examine.html-template'
     ],
     function (
         environment,
+        dom,
         utils,
         Handlebars,
         templateExamine
@@ -34,7 +36,7 @@ window.define && define(
              * @param {object} context context object
              */
             var examineViewGet = this.examineViewGet = function ArmadillogView_examineViewGet(context) {
-                var containerEl = utils.dom.createElement('div');
+                var containerEl = dom.createElement('div');
                 containerEl.innerHTML = examineViewTemplate(context);
 
                 return {

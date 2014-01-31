@@ -1,6 +1,6 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
         'ennovum.utils',

@@ -1,8 +1,9 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils',
         'ennovum.Observable',
         'ennovum.model.ModelList',
@@ -13,6 +14,7 @@ window.define && define(
     ],
     function (
         environment,
+        dom,
         utils,
         Observable,
         ModelList,
@@ -271,14 +273,14 @@ window.define && define(
                             lineEl = lineEl.parentNode;
                         }
                         if (lineEl) {
-                            if (utils.dom.classContains(lineEl, 'selected')) {
-                                utils.dom.classRemove(lineEl, 'selected');
+                            if (dom.classContains(lineEl, 'selected')) {
+                                dom.classRemove(lineEl, 'selected');
 
                                 application.examine.clear();
                             }
                             else {
-                                utils.dom.classRemove(contentView.lineListEl.querySelector('.selected'), 'selected');
-                                utils.dom.classAdd(lineEl, 'selected');
+                                dom.classRemove(contentView.lineListEl.querySelector('.selected'), 'selected');
+                                dom.classAdd(lineEl, 'selected');
 
                                 var lineItemMMap = lineMList.getAt(~~lineEl.getAttribute('data-index'));
                                 application.examine.set(lineItemMMap);
@@ -299,7 +301,7 @@ window.define && define(
                             lineEl = lineEl.parentNode;
                         }
                         if (lineEl) {
-                            utils.dom.classToggle(lineEl, 'marked');
+                            dom.classToggle(lineEl, 'marked');
                         }
 
                         evt.preventDefault();
@@ -764,7 +766,7 @@ window.define && define(
                         });
                 }
 
-                utils.dom.classDepend(lineEl, HIDDEN_CLASS, lineItemMMap.get('hidden'));
+                dom.classDepend(lineEl, HIDDEN_CLASS, lineItemMMap.get('hidden'));
 
                 return true;
             };

@@ -1,12 +1,14 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils'
     ],
     function (
         environment,
+        dom,
         utils
     ) {
         /**
@@ -104,7 +106,7 @@ window.define && define(
 
                     if (!busy) {
                         busy = true;
-                        utils.dom.classAdd(bodyEl, 'busy');
+                        dom.classAdd(bodyEl, 'busy');
                     }
                 }
                 else {
@@ -114,7 +116,7 @@ window.define && define(
 
                     if (busyTaskList.length === 0) {
                         busy = false;
-                        utils.dom.classRemove(bodyEl, 'busy');
+                        dom.classRemove(bodyEl, 'busy');
                     }
                 }
 

@@ -1,13 +1,15 @@
 'use strict';
 
-window.define && define(
+define(
     [
         'ennovum.environment',
+        'ennovum.dom',
         'ennovum.utils',
         './../views/input'
     ],
     function (
         environment,
+        dom,
         utils,
         ArmadillogInputView
     ) {
@@ -187,7 +189,7 @@ window.define && define(
              */
             var clearLabelSet = function ArmadillogInput_clearLabelSet(value) {
                 inputView.clearLabelEl.innerHTML = utils.string.escapeXML(value || '');
-                utils.dom.classDepend(inputView.clearBoxEl, HIDDEN_CLASS, value === null);
+                dom.classDepend(inputView.clearBoxEl, HIDDEN_CLASS, value === null);
 
                 return true;
             };
