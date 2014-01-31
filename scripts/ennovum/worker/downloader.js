@@ -17,13 +17,13 @@ define(
         var WorkerDownloader = function WorkerDownloader() {
             var workerFunction;
 
-            var callback;
+            var fn;
 
             /**
              * Initializes instance
              */
             var init = function WorkerDownloader_init(config) {
-                callback = function (data, success, failure) {
+                fn = function (data, success, failure) {
                     try {
                         var xhr = new XMLHttpRequest();
                         xhr.open('GET', data.url, true);
@@ -80,7 +80,7 @@ define(
                     }
                 };
 
-                workerFunction = utils.obj.mixin(this, new WorkerFunction(callback, config));
+                workerFunction = utils.obj.mixin(this, new WorkerFunction(fn, config));
 
                 return true;
             };

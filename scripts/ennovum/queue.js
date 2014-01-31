@@ -49,14 +49,14 @@ define(
                     utils.func.async(run);
                 }
                 else {
-                    var thingIndex = thingList.indexOf(thing);
-                    if (!~thingIndex) {
+                    var thingIx = thingList.indexOf(thing);
+                    if (!~thingIx) {
                         return false;
                     }
 
-                    thingList.splice(thingIndex, 1);
+                    thingList.splice(thingIx, 1);
 
-                    if (thingIndex === 0) {
+                    if (thingIx === 0) {
                         utils.func.async(run);
                     }
                 }
@@ -68,8 +68,8 @@ define(
              * Runs the queue
              */
             var run = function Queue_run() {
-                var thingIndex = 0;
-                var thing = thingList[thingIndex];
+                var thingIx = 0;
+                var thing = thingList[thingIx];
 
                 if (thing === undefined) {
                     return false;
@@ -90,10 +90,10 @@ define(
                     return thingList.length;
                 }
                 else {
-                    var index = -1;
+                    var ix = -1;
                     var count = 0;
 
-                    while (~(index = thingList.indexOf(thing, index + 1))) {
+                    while (~(ix = thingList.indexOf(thing, ix + 1))) {
                         count++;
                     }
 

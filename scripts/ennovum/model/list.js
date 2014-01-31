@@ -50,49 +50,49 @@ define(
             /**
              * Returns a value at the given index
              *
-             * @param {number} index index of the value to return
+             * @param {number} ix index of the value to return
              */
-            var getAt = this.getAt = function ModelList_getAt(index) {
-                return list[index];
+            var getAt = this.getAt = function ModelList_getAt(ix) {
+                return list[ix];
             };
 
             /**
              * Sets the given values at the given indexes
              *
-             * @param {number} index index of the value to be set
+             * @param {number} ix index of the value to be set
              * @param {mixed} value value to be set
              */
-            var setAt = this.setAt = function ModelList_setAt(index, value) {
+            var setAt = this.setAt = function ModelList_setAt(ix, value) {
                 var insertList = [];
                 var updateList = [];
 
                 for (var i = 0, l = arguments.length; i < l; i += 2) {
-                    index = ~~arguments[i];
+                    ix = ~~arguments[i];
                     value = arguments[i + 1];
 
-                    if (index < list.length) {
-                        var valueOld = list[index];
+                    if (ix < list.length) {
+                        var valueOld = list[ix];
 
                         if (value !== valueOld) {
-                            list[index] = value;
+                            list[ix] = value;
 
-                            valueOff(index, valueOld);
-                            valueOn(index, value);
+                            valueOff(ix, valueOld);
+                            valueOn(ix, value);
 
                             updateList.push({
-                                'index': index,
+                                'ix': ix,
                                 'valueNew': value,
                                 'valueOld': valueOld
                             });
                         }
                     }
                     else {
-                        list[index] = value;
+                        list[ix] = value;
 
-                        valueOn(index, value);
+                        valueOn(ix, value);
 
                         insertList.push({
-                            'index': index,
+                            'ix': ix,
                             'valueNew': value
                         });
                     }
@@ -107,23 +107,23 @@ define(
             /**
              * Removes a value at the given index
              *
-             * @param {number} index index of the value to be deleted
+             * @param {number} ix index of the value to be deleted
              */
-            var delAt = this.delAt = function ModelList_delAt(index) {
+            var delAt = this.delAt = function ModelList_delAt(ix) {
                 var deleteList = [];
 
                 for (var i = 0, l = arguments.length; i < l; i++) {
-                    index = ~~arguments[i];
+                    ix = ~~arguments[i];
 
-                    if (index < list.length) {
-                        var valueOld = list[index];
+                    if (ix < list.length) {
+                        var valueOld = list[ix];
 
-                        list[index] = value;
+                        list[ix] = value;
 
-                        valueOff(index, valueOld);
+                        valueOff(ix, valueOld);
 
                         deleteList.push({
-                            'index': index,
+                            'ix': ix,
                             'valueOld': valueOld
                         });
                     }
@@ -138,7 +138,7 @@ define(
              * Pushes values to the list
              */
             var push = this.push = function ModelList_push(/*, value1, ..., valueN*/) {
-                var index = list.length;
+                var ix = list.length;
 
                 var insertValueList = Array.prototype.slice.call(arguments);
                 var insertList = [];
@@ -146,10 +146,10 @@ define(
                 list.push.apply(list, arguments);
 
                 for (var i = 0, l = insertValueList.length; i < l; i++) {
-                    valueOn(index + i, insertValueList[i]);
+                    valueOn(ix + i, insertValueList[i]);
 
                     insertList.push({
-                        'index': index + i,
+                        'ix': ix + i,
                         'valueNew': insertValueList[i]
                     });
                 }
@@ -167,15 +167,15 @@ define(
                     return false;
                 }
 
-                var index = list.length - 1;
+                var ix = list.length - 1;
                 var valueOld = list.pop();
 
-                valueOff(index, valueOld);
+                valueOff(ix, valueOld);
 
                 eventAdd(
                     'model-delete',
                     [{
-                        'index': index,
+                        'ix': ix,
                         'valueOld': valueOld
                     }]);
 
@@ -190,15 +190,15 @@ define(
                     return false;
                 }
 
-                var index = 0;
+                var ix = 0;
                 var valueOld = list.shift();
 
-                valueOff(index, valueOld);
+                valueOff(ix, valueOld);
 
                 eventAdd(
                     'model-delete',
                     [{
-                        'index': index,
+                        'ix': ix,
                         'valueOld': valueOld
                     }]);
 
@@ -209,7 +209,7 @@ define(
              * Unshifts values to the list
              */
             var unshift = this.unshift = function ModelList_unshift(/*, value1, ..., valueN*/) {
-                var index = 0;
+                var ix = 0;
 
                 var insertValueList = Array.prototype.slice.call(arguments);
                 var insertList = [];
@@ -217,10 +217,10 @@ define(
                 list.unshift.apply(list, arguments);
 
                 for (var i = 0, l = insertValueList.length; i < l; i++) {
-                    valueOn(index + i, insertValueList[i]);
+                    valueOn(ix + i, insertValueList[i]);
 
                     insertList.push({
-                        'index': index + i,
+                        'ix': ix + i,
                         'valueNew': insertValueList[i]
                     });
                 }
@@ -233,31 +233,31 @@ define(
             /**
              * Removes a given count of values from the list starting at the given index, then adds new values starting at the same place
              *
-             * @param {number} index index of a first value to splice
+             * @param {number} ix index of a first value to splice
              * @param {number} count values to splice count
              */
-            var splice = this.splice = function ModelList_splice(index, count/*, value1, ..., valueN*/) {
-                if (typeof index !== 'number' || index < 0) {
+            var splice = this.splice = function ModelList_splice(ix, count/*, value1, ..., valueN*/) {
+                if (typeof ix !== 'number' || ix < 0) {
                     return false;
                 }
 
                 if (typeof count !== 'number' || count < 0) {
-                    count = list.length - index;
+                    count = list.length - ix;
                 }
 
                 var insertValueList = Array.prototype.slice.call(arguments, 2);
                 var insertList = [];
 
-                var deleteValueList = list.slice(index, index + count);
+                var deleteValueList = list.slice(ix, ix + count);
                 var deleteList = [];
 
                 list.splice.apply(list, arguments);
 
                 for (var i = 0, l = insertValueList.length; i < l; i++) {
-                    valueOn(index + i, insertValueList[i]);
+                    valueOn(ix + i, insertValueList[i]);
 
                     insertList.push({
-                        'index': index + i,
+                        'ix': ix + i,
                         'valueNew': insertValueList[i]
                     });
                 }
@@ -265,10 +265,10 @@ define(
                 insertList.length && eventAdd('model-insert', insertList);
 
                 for (var i = 0, l = deleteValueList.length; i < l; i++) {
-                    valueOff(index + i, deleteValueList[i]);
+                    valueOff(ix + i, deleteValueList[i]);
 
                     deleteList.push({
-                        'index': index + i,
+                        'ix': ix + i,
                         'valueOld': deleteValueList[i]
                     });
                 }
@@ -299,10 +299,10 @@ define(
             /**
              * Attaches event forwarding
              *
-             * @param {number} index index of the value to attach
+             * @param {number} ix index of the value to attach
              * @param {mixed} value value to attach
              */
-            var valueOn = function ModelList_valueOn(index, value) {
+            var valueOn = function ModelList_valueOn(ix, value) {
                 if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
                     value.on(
                         [
@@ -311,11 +311,11 @@ define(
                             'model-delete',
                             'model-forward'
                         ],
-                        valueListenerList[index] = function ModelList_valueOn_valueListener(event, dataList) {
+                        valueListenerList[ix] = function ModelList_valueOn_valueListener(event, dataList) {
                             eventAdd(
                                 'model-forward',
                                 [{
-                                    'index': index,
+                                    'ix': ix,
                                     'valueNew': value,
                                     'event': event,
                                     'dataList': dataList
@@ -329,11 +329,11 @@ define(
             /**
              * Detaches event forwarding
              *
-             * @param {number} index index of the value to detach
+             * @param {number} ix index of the value to detach
              * @param {mixed} value value to detach
              */
-            var valueOff = function ModelList_valueOff(index, value) {
-                if (valueListenerList[index]) {
+            var valueOff = function ModelList_valueOff(ix, value) {
+                if (valueListenerList[ix]) {
                     value.off(
                         [
                             'model-insert',
@@ -341,9 +341,9 @@ define(
                             'model-delete',
                             'model-forward'
                         ],
-                        valueListenerList[index]);
+                        valueListenerList[ix]);
 
-                    valueListenerList[index] = null;
+                    valueListenerList[ix] = null;
                 }
 
                 return true;

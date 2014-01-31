@@ -120,12 +120,12 @@ define(
             /**
              *
              */
-            var async = this.async =function Utils_func_async(callback) {
-                asyncList.push(callback);
+            var async = this.async =function Utils_func_async(fn) {
+                asyncList.push(fn);
 
                 if (!asyncTimeout) {
                     asyncTimeout = setTimeout(
-                        function Utils_func_async_callback() {
+                        function Utils_func_async_fn() {
                             for (var i = 0, l = asyncList.length; i < l; i++) {
                                 asyncList[i].call();
                             }

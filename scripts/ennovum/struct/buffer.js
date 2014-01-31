@@ -16,16 +16,16 @@ define(
             var LENGTH_STEP = 1000;
 
             var list;
-            var firstIndex;
-            var lastIndex;
+            var firstIx;
+            var lastIx;
 
             /**
              * Initializes instance
              */
             var init = function Buffer_init() {
                 list = [];
-                firstIndex = 0;
-                lastIndex = -1;
+                firstIx = 0;
+                lastIx = -1;
 
                 return true;
             },
@@ -34,27 +34,27 @@ define(
              * Sets the value at the index
              */
             var setAt = this.setAt = function Buffer_setAt(outdex, value) {
-                var index = firstIndex + outdex;
+                var ix = firstIx + outdex;
 
-                while (index < 0) {
+                while (ix < 0) {
                     var args = [];
                     args.length += LENGTH_STEP;
                     list = args.concat(list);
-                    firstIndex += LENGTH_STEP;
-                    lastIndex += LENGTH_STEP;
-                    index += LENGTH_STEP;
+                    firstIx += LENGTH_STEP;
+                    lastIx += LENGTH_STEP;
+                    ix += LENGTH_STEP;
                 }
-                while (index >= list.length) {
+                while (ix >= list.length) {
                     list.length += LENGTH_STEP;
                 }
 
-                list[index] = value;
+                list[ix] = value;
 
-                if (index < firstIndex) {
-                    firstIndex = index;
+                if (ix < firstIx) {
+                    firstIx = ix;
                 }
-                if (index > lastIndex) {
-                    lastIndex = index;
+                if (ix > lastIx) {
+                    lastIx = ix;
                 }
 
                 return length();
@@ -64,13 +64,13 @@ define(
              * Gets a value at the index
              */
             var getAt = this.getAt = function Buffer_getAt(outdex) {
-                var index = firstIndex + outdex;
+                var ix = firstIx + outdex;
 
-                if (index < firstIndex || index > lastIndex) {
+                if (ix < firstIx || ix > lastIx) {
                     return undefined;
                 }
                 else {
-                    return list[index];
+                    return list[ix];
                 }
             };
 
@@ -78,15 +78,15 @@ define(
              * Deletes the value at the index
              */
             var delAt = this.delAt = function Buffer_delAt(outdex) {
-                var index = firstIndex + outdex;
+                var ix = firstIx + outdex;
 
-                list[index] = undefined;
+                list[ix] = undefined;
 
-                if (index === firstIndex) {
-                    firstIndex += 1;
+                if (ix === firstIx) {
+                    firstIx += 1;
                 }
-                else if (index === lastIndex) {
-                    lastIndex -= 1;
+                else if (ix === lastIx) {
+                    lastIx -= 1;
                 }
 
                 return length();
@@ -100,7 +100,7 @@ define(
 
                 for (var i = 0, l = arguments.length; i < l; i++) {
                     value = arguments[i];
-                    outdex = lastIndex - firstIndex + 1;
+                    outdex = lastIx - firstIx + 1;
                     setAt(outdex, value);
                 }
 
@@ -111,7 +111,7 @@ define(
              * Pops from the index
              */
             var pop = this.pop = function Buffer_pop() {
-                var outdex = lastIndex - firstIndex;
+                var outdex = lastIx - firstIx;
                 var value = getAt(outdex);
 
                 delAt(outdex);
@@ -150,14 +150,14 @@ define(
              * Splices buffer
              */
             var splice = this.splice = function Buffer_splice(outdex, count, value) {
-                var index = firstIndex + outdex;
+                var ix = firstIx + outdex;
 
-                if (index < firstIndex || index + count > lastIndex + 1) {
+                if (ix < firstIx || ix + count > lastIx + 1) {
                     throw new Error('splice failed: invalid input');
                 }
 
                 var list = [];
-                for (var i = index, l = index + count; i < l; i++) {
+                for (var i = ix, l = ix + count; i < l; i++) {
                     list.push(list[i]);
                 }
 
@@ -166,23 +166,23 @@ define(
                 var delta = newCount - count;
 
                 if (delta < 0) {
-                    for (var i = index + newCount, l = lastIndex + delta; i <= l; i++) {
+                    for (var i = ix + newCount, l = lastIx + delta; i <= l; i++) {
                         list[i] = list[i - delta];
                     }
-                    for (var i = lastIndex + delta + 1, l = lastIndex; i <= l; i++) {
+                    for (var i = lastIx + delta + 1, l = lastIx; i <= l; i++) {
                         list[i] = undefined;
                     }
                 }
                 else if (delta > 0) {
-                    for (var i = lastIndex + delta; i >= index + newCount; i--) {
+                    for (var i = lastIx + delta; i >= ix + newCount; i--) {
                         list[i] = list[i - delta];
                     }
                 }
 
-                lastIndex += delta;
+                lastIx += delta;
 
-                for (var i = index, l = index + newCount; i < l; i++) {
-                    list[i] = newList[i - index];
+                for (var i = ix, l = ix + newCount; i < l; i++) {
+                    list[i] = newList[i - ix];
                 }
 
                 return list;
@@ -192,25 +192,25 @@ define(
              * Returns index of element or -1
              */
             var indexOf = this.indexOf = function Buffer_indexOf(value) {
-                var index = list.indexOf(value);
+                var ix = list.indexOf(value);
 
-                return index === -1 ? -1 : index - firstIndex;
+                return ix === -1 ? -1 : ix - firstIx;
             };
 
             /**
              * Returns last index of element or -1
              */
-            var lastIndexOf = lastIndexOf = function Buffer_lastIndexOf(value) {
-                var index = list.lastIndexOf(value);
+            var lastIxOf = lastIxOf = function Buffer_lastIxOf(value) {
+                var ix = list.lastIxOf(value);
 
-                return index === -1 ? -1 : index - firstIndex;
+                return ix === -1 ? -1 : ix - firstIx;
             };
 
             /**
              * Returns length of the buffer
              */
             var length = this.length = function Buffer_length() {
-                return lastIndex - firstIndex + 1;
+                return lastIx - firstIx + 1;
             };
 
             /**

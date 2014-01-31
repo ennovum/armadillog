@@ -321,7 +321,7 @@ define(
 
                         for (var i = 0, l = dataList.length; i < l; i++) {
                             filterDataList.push({
-                                'filterIndex': dataList[i].index,
+                                'filterIx': dataList[i].ix,
                                 'filterItemMMap': dataList[i].valueNew
                             });
                         }
@@ -337,7 +337,7 @@ define(
 
                         for (var i = 0, l = dataList.length; i < l; i++) {
                             filterDataList.push({
-                                'filterIndex': dataList[i].index,
+                                'filterIx': dataList[i].ix,
                                 'filterItemMMap': dataList[i].valueNew
                             });
                         }
@@ -353,7 +353,7 @@ define(
 
                         for (var i = 0, l = dataList.length; i < l; i++) {
                             filterDataList.push({
-                                'filterIndex': dataList[i].index,
+                                'filterIx': dataList[i].ix,
                                 'filterItemMMap': dataList[i].valueOld
                             });
                         }
@@ -375,7 +375,7 @@ define(
                                 })
                             ) {
                                 filterDataList.push({
-                                    'filterIndex': dataList[i].index,
+                                    'filterIx': dataList[i].ix,
                                     'filterItemMMap': dataList[i].valueNew
                                 });
                             }
@@ -740,11 +740,11 @@ define(
              * @param {array} filterDataList model data list
              */
             var filterViewListInsert = function ArmadillogFilter_filterViewListInsert(filterDataList) {
-                var filterIndex,
+                var filterIx,
                     filterItemMMap;
 
                 for (var i = 0, l = filterDataList.length; i < l; i++) {
-                    filterIndex = filterDataList[i].filterIndex;
+                    filterIx = filterDataList[i].filterIx;
                     filterItemMMap = filterDataList[i].filterItemMMap;
 
                     filterItemUiInit(filterItemMMap);
@@ -752,7 +752,7 @@ define(
 
                     filterView.listEl.insertBefore(
                         filterItemMMap.get('view').el,
-                        filterView.listEl.childNodes[filterIndex] || null);
+                        filterView.listEl.childNodes[filterIx] || null);
                 }
 
                 filterViewOrderApply();
@@ -766,18 +766,18 @@ define(
              * @param {array} filterDataList model data list
              */
             var filterViewListUpdate = function ArmadillogFilter_filterViewListUpdate(filterDataList) {
-                var filterIndex,
+                var filterIx,
                     filterItemMMap;
 
                 for (var i = 0, l = filterDataList.length; i < l; i++) {
-                    filterIndex = filterDataList[i].filterIndex;
+                    filterIx = filterDataList[i].filterIx;
                     filterItemMMap = filterDataList[i].filterItemMMap;
 
                     filterItemViewUpdate(filterItemMMap);
 
                     filterView.listEl.insertBefore(
                         filterItemMMap.get('view').el,
-                        filterView.listEl.childNodes[filterIndex] || null);
+                        filterView.listEl.childNodes[filterIx] || null);
                 }
 
                 filterViewOrderApply();
@@ -791,11 +791,11 @@ define(
              * @param {array} filterDataList model data list
              */
             var filterViewListDelete = function ArmadillogFilter_filterViewListDelete(filterDataList) {
-                var filterIndex,
+                var filterIx,
                     filterItemMMap;
 
                 for (var i = 0, l = filterDataList.length; i < l; i++) {
-                    filterIndex = filterDataList[i].filterIndex;
+                    filterIx = filterDataList[i].filterIx;
                     filterItemMMap = filterDataList[i].filterItemMMap;
 
                     filterView.listEl.removeChild(filterItemMMap.get('view').el);

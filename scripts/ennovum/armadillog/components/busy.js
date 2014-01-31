@@ -87,10 +87,10 @@ define(
              * @param {boolean} busy busy flag value
              */
             var set = this.set = function ArmadillogBusy_set(argBusy, task) {
-                var taskIndex = busyTaskList.indexOf(task);
+                var taskIx = busyTaskList.indexOf(task);
 
                 if (argBusy) {
-                    if (!~taskIndex) {
+                    if (!~taskIx) {
                         busyTaskList.push(task);
                     }
 
@@ -100,8 +100,8 @@ define(
                     }
                 }
                 else {
-                    if (~taskIndex) {
-                        busyTaskList.splice(taskIndex, 1);
+                    if (~taskIx) {
+                        busyTaskList.splice(taskIx, 1);
                     }
 
                     if (busyTaskList.length === 0) {

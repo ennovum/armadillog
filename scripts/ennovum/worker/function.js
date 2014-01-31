@@ -49,7 +49,7 @@ define(
             var queue;
 
             var config;
-            var callback;
+            var fn;
 
             var widSeq;
             var workMap;
@@ -64,11 +64,11 @@ define(
              *
              * @param {mixed} func Worker body function
              */
-            var init = function WorkerFunction_init(argCallback, argConfig) {
+            var init = function WorkerFunction_init(argFn, argConfig) {
                 queue = utils.obj.mixin(this, new Queue());
 
                 switch (false) {
-                    case argCallback && typeof argCallback === 'function':
+                    case argFn && typeof argFn === 'function':
                     case !argConfig || typeof argConfig === 'object':
                         console.error('WorkerFunction', 'init', 'invalid input');
                         return false;
@@ -78,12 +78,12 @@ define(
                 config = {};
                 configure(argConfig || {});
 
-                callback = argCallback;
+                fn = argFn;
 
                 widSeq = 0;
                 workMap = {};
 
-                source = SOURCE.replace('{{function}}', callback.toString());
+                source = SOURCE.replace('{{function}}', fn.toString());
                 sourceURL = URL.createObjectURL(new Blob([source], {'type': 'text/javascript'}));
 
                 try {
@@ -159,7 +159,7 @@ define(
 
                 queue.queue(function () {
                     if (!worker || config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
-                        callback(
+                        fn(
                             data,
                             function (data) {
                                 messageHandler(wid, true, data);

@@ -92,8 +92,8 @@ define(
 
         // requestAnimationFrame
         if (!window.requestAnimationFrame) {
-            window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function (callback) {
-                setTimeout(callback, 1000 / 60);
+            window.requestAnimationFrame = window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || function (fn) {
+                setTimeout(fn, 1000 / 60);
             };
         }
 

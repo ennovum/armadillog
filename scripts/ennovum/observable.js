@@ -25,12 +25,12 @@ define(
             };
 
             /**
-             * Binds events with a callback
+             * Binds events with a function
              *
              * @param {mixed} eventList list of or a single event name
-             * @param {function} callback callback to bind with events
+             * @param {function} fn function to bind with events
              */
-            var on = this.on = function Observable_on(eventList, callback) {
+            var on = this.on = function Observable_on(eventList, fn) {
                 if (!Array.isArray(eventList)) {
                     eventList = [eventList];
                 }
@@ -44,19 +44,19 @@ define(
                         eventsMap[event] = [];
                     }
 
-                    eventsMap[event].push(callback);
+                    eventsMap[event].push(fn);
                 }
 
                 return true;
             };
 
             /**
-             * Unbinds events from a callback
+             * Unbinds events from a function
              *
              * @param {mixed} eventList list of or a single event name
-             * @param {function} callback callback to unbind from events
+             * @param {function} fn function to unbind from events
              */
-            var off = this.off = function Observable_off(eventList, callback) {
+            var off = this.off = function Observable_off(eventList, fn) {
                 if (!Array.isArray(eventList)) {
                     eventList = [eventList];
                 }
@@ -71,13 +71,13 @@ define(
                         return false;
                     }
 
-                    var callbackIdx = eventsMap[event].indexOf(callback);
-                    if (callbackIdx === -1) {
-                        console.error('Observable', 'off', 'no such event handler', event, callback);
+                    var fnIdx = eventsMap[event].indexOf(fn);
+                    if (fnIdx === -1) {
+                        console.error('Observable', 'off', 'no such event handler', event, fn);
                         return false;
                     }
 
-                    eventsMap[event].splice(callbackIdx, 1);
+                    eventsMap[event].splice(fnIdx, 1);
                 }
 
                 return true;

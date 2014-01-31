@@ -154,23 +154,23 @@ define(
                 workerTextLineSplitter = new WorkerFunction(
                     function ArmadillogContent_dataInit_workerTextLineSplitter(data, success, error) {
                         var lineList = data.text.split(/\r?\n/g);
-                        var index = 0;
+                        var ix = 0;
                         var length = lineList.length;
                         var lengthOriginal = length;
 
                         if (data.limit && length > Math.abs(data.limit)) {
                             if (data.limit < 0) {
-                                index = Math.max(0, lineList.length + data.limit);
+                                ix = Math.max(0, lineList.length + data.limit);
                             }
                             else {
                                 length = Math.min(lineList.length, data.limit);
                             }
                         }
 
-                        for (var i = index, l = length; i < l; i++) {
+                        for (var i = ix, l = length; i < l; i++) {
                             success(
                                 {
-                                    'index': i - index,
+                                    'ix': i - ix,
                                     'text': lineList[i]
                                 },
                                 null);
@@ -178,7 +178,7 @@ define(
 
                         success(
                             {
-                                'count': length - index,
+                                'count': length - ix,
                                 'countOriginal': lengthOriginal
                             },
                             null);
@@ -272,7 +272,7 @@ define(
                                 dom.classRemove(contentView.lineListEl.querySelector('.selected'), 'selected');
                                 dom.classAdd(lineEl, 'selected');
 
-                                var lineItemMMap = lineMList.getAt(~~lineEl.getAttribute('data-index'));
+                                var lineItemMMap = lineMList.getAt(~~lineEl.getAttribute('data-ix'));
                                 application.examine.set(lineItemMMap);
                             }
                         }
@@ -302,7 +302,7 @@ define(
 
                         for (var i = 0, l = dataList.length; i < l; i++) {
                             lineViewList.push({
-                                'lineIndex': dataList[i].index,
+                                'lineIx': dataList[i].ix,
                                 'lineItemMMap': dataList[i].valueNew
                             });
                             lineList.push(dataList[i].valueNew);
@@ -320,7 +320,7 @@ define(
 
                         for (var i = 0, l = dataList.length; i < l; i++) {
                             lineViewList.push({
-                                'lineIndex': dataList[i].index,
+                                'lineIx': dataList[i].ix,
                                 'lineItemMMap': dataList[i].valueNew
                             });
                             lineList.push(dataList[i].valueNew);
@@ -337,7 +337,7 @@ define(
 
                         for (var i = 0, l = dataList.length; i < l; i++) {
                             lineViewList.push({
-                                'lineIndex': dataList[i].index,
+                                'lineIx': dataList[i].ix,
                                 'lineItemMMap': dataList[i].valueOld
                             });
                         }
@@ -359,7 +359,7 @@ define(
                                 })
                             ) {
                                 lineViewList.push({
-                                    'lineIndex': dataList[i].index,
+                                    'lineIx': dataList[i].ix,
                                     'lineItemMMap': dataList[i].valueNew
                                 });
                             }
@@ -614,7 +614,7 @@ define(
                                 'view',
                                 null);
 
-                            lineMList.setAt(data.index, lineItemMMap);
+                            lineMList.setAt(data.ix, lineItemMMap);
                         }
 
                         if ('count' in data) {
@@ -645,7 +645,7 @@ define(
                     null,
                     function ArmadillogContent_textUpdate_workerTextLineSplitterSuccess(data, additional) {
                         if ('text' in data) {
-                            var lineItemMMap = lineMList.getAt(data.index);
+                            var lineItemMMap = lineMList.getAt(data.ix);
 
                             if (lineItemMMap) {
                                 if (lineItemMMap.get('textRaw') !== data.text) {
@@ -666,7 +666,7 @@ define(
                                     null);
                             }
 
-                            lineMList.setAt(data.index, lineItemMMap);
+                            lineMList.setAt(data.ix, lineItemMMap);
                         }
 
                         if ('count' in data) {
@@ -695,14 +695,14 @@ define(
             /**
              * Creates a content line view structure
              *
-             * @param {number} lineIndex index in result source
+             * @param {number} lineIx index in result source
              * @param {object} lineItemMMap content line model object
              */
-            var lineItemViewCreate = function ArmadillogContent_lineItemViewCreate(lineIndex, lineItemMMap) {
+            var lineItemViewCreate = function ArmadillogContent_lineItemViewCreate(lineIx, lineItemMMap) {
                 lineItemMMap.set(
                     'view',
                     view.contentLineItemViewGet({
-                        'number': lineIndex + 1
+                        'number': lineIx + 1
                     }));
 
                 return true;
@@ -711,10 +711,10 @@ define(
             /**
              * Updates a content line view structure
              *
-             * @param {number} lineIndex index in result source
+             * @param {number} lineIx index in result source
              * @param {object} lineItemMMap content line model object
              */
-            var lineItemViewUpdate = function ArmadillogContent_lineItemViewUpdate(lineIndex, lineItemMMap) {
+            var lineItemViewUpdate = function ArmadillogContent_lineItemViewUpdate(lineIx, lineItemMMap) {
                 var lineEl = lineItemMMap.get('view').el;
                 var textFiltered = lineItemMMap.get('textFiltered');
 
@@ -760,42 +760,42 @@ define(
             /**
              * Inserts a line of source in view
              *
-             * @param {array} lineViewList lineIndex & lineItemMMap list
-             * @param {number} chunkIndex chunk index
+             * @param {array} lineViewList lineIx & lineItemMMap list
+             * @param {number} chunkIx chunk index
              * @param {number} chunkSize chunk size
              */
-            var lineViewListInsert = function ArmadillogContent_lineViewListInsert(lineViewList, chunkIndex, chunkSize) {
+            var lineViewListInsert = function ArmadillogContent_lineViewListInsert(lineViewList, chunkIx, chunkSize) {
                 requestAnimationFrame(function ArmadillogContent_lineViewListInsert_animationFrame() {
                     application.busy.set(true, 'lineViewListInsert');
 
-                    chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
-                    chunkSize = typeof chunkSize === 'undefined' ? lineViewList.length - chunkIndex : Math.min(chunkSize, lineViewList.length - chunkIndex);
+                    chunkIx = typeof chunkIx === 'undefined' ? 0 : chunkIx;
+                    chunkSize = typeof chunkSize === 'undefined' ? lineViewList.length - chunkIx : Math.min(chunkSize, lineViewList.length - chunkIx);
 
-                    var lineIndex, lineItemMMap, lineItemView;
+                    var lineIx, lineItemMMap, lineItemView;
                     var documentFragment = document.createDocumentFragment();
 
                     for (var i = 0; i < chunkSize && i < OVERFLOW_CHUNK_SIZE; i++) {
-                        lineIndex = lineViewList[chunkIndex + i].lineIndex;
-                        lineItemMMap = lineViewList[chunkIndex + i].lineItemMMap;
+                        lineIx = lineViewList[chunkIx + i].lineIx;
+                        lineItemMMap = lineViewList[chunkIx + i].lineItemMMap;
 
-                        lineItemViewCreate(lineIndex, lineItemMMap);
+                        lineItemViewCreate(lineIx, lineItemMMap);
                         lineItemView = lineItemMMap.get('view');
 
-                        lineItemView.el.setAttribute('data-index', lineIndex);
+                        lineItemView.el.setAttribute('data-ix', lineIx);
 
-                        lineItemViewUpdate(lineIndex, lineItemMMap);
+                        lineItemViewUpdate(lineIx, lineItemMMap);
 
                         documentFragment.appendChild(lineItemView.el);
                     }
 
                     contentView.lineListEl.insertBefore(
                         documentFragment,
-                        contentView.lineListEl.childNodes[lineViewList[chunkIndex].lineIndex] || null);
+                        contentView.lineListEl.childNodes[lineViewList[chunkIx].lineIx] || null);
 
                     if (chunkSize > OVERFLOW_CHUNK_SIZE) {
                         setTimeout(
                             function ArmadillogContent_lineViewListInsert_overflowChunk() {
-                                lineViewListInsert(lineViewList, chunkIndex + OVERFLOW_CHUNK_SIZE);
+                                lineViewListInsert(lineViewList, chunkIx + OVERFLOW_CHUNK_SIZE);
                             },
                             OVERFLOW_DELAY);
                     }
@@ -812,30 +812,30 @@ define(
             /**
              * Updates a line of source in view
              *
-             * @param {array} lineViewList lineIndex & lineItemMMap list
-             * @param {number} chunkIndex chunk index
+             * @param {array} lineViewList lineIx & lineItemMMap list
+             * @param {number} chunkIx chunk index
              * @param {number} chunkSize chunk size
              */
-            var lineViewListUpdate = function ArmadillogContent_lineViewListUpdate(lineViewList, chunkIndex, chunkSize) {
+            var lineViewListUpdate = function ArmadillogContent_lineViewListUpdate(lineViewList, chunkIx, chunkSize) {
                 requestAnimationFrame(function ArmadillogContent_lineViewListUpdate_animationFrame() {
                     application.busy.set(true, 'lineViewListUpdate');
 
-                    chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
-                    chunkSize = typeof chunkSize === 'undefined' ? lineViewList.length - chunkIndex : Math.min(chunkSize, lineViewList.length - chunkIndex);
+                    chunkIx = typeof chunkIx === 'undefined' ? 0 : chunkIx;
+                    chunkSize = typeof chunkSize === 'undefined' ? lineViewList.length - chunkIx : Math.min(chunkSize, lineViewList.length - chunkIx);
 
-                    var lineIndex, lineItemMMap;
+                    var lineIx, lineItemMMap;
 
                     for (var i = 0; i < chunkSize && i < OVERFLOW_CHUNK_SIZE; i++) {
-                        lineIndex = lineViewList[chunkIndex + i].lineIndex;
-                        lineItemMMap = lineViewList[chunkIndex + i].lineItemMMap;
+                        lineIx = lineViewList[chunkIx + i].lineIx;
+                        lineItemMMap = lineViewList[chunkIx + i].lineItemMMap;
 
-                        lineItemViewUpdate(lineIndex, lineItemMMap);
+                        lineItemViewUpdate(lineIx, lineItemMMap);
                     }
 
                     if (chunkSize > OVERFLOW_CHUNK_SIZE) {
                         setTimeout(
                             function ArmadillogContent_lineViewListUpdate_overflowChunk() {
-                                lineViewListUpdate(lineViewList, chunkIndex + OVERFLOW_CHUNK_SIZE);
+                                lineViewListUpdate(lineViewList, chunkIx + OVERFLOW_CHUNK_SIZE);
                             },
                             OVERFLOW_DELAY);
                     }
@@ -852,22 +852,22 @@ define(
             /**
              * Deletes a line of source in view
              *
-             * @param {array} lineViewList lineIndex & lineItemMMap list
-             * @param {number} chunkIndex chunk index
+             * @param {array} lineViewList lineIx & lineItemMMap list
+             * @param {number} chunkIx chunk index
              * @param {number} chunkSize chunk size
              */
-            var lineViewListDelete = function ArmadillogContent_lineViewListDelete(lineViewList, chunkIndex, chunkSize) {
+            var lineViewListDelete = function ArmadillogContent_lineViewListDelete(lineViewList, chunkIx, chunkSize) {
                 requestAnimationFrame(function ArmadillogContent_lineViewListDelete_animationFrame() {
                     application.busy.set(true, 'lineViewListDelete');
 
-                    chunkIndex = typeof chunkIndex === 'undefined' ? 0 : chunkIndex;
-                    chunkSize = typeof chunkSize === 'undefined' ? lineViewList.length - chunkIndex : Math.min(chunkSize, lineViewList.length - chunkIndex);
+                    chunkIx = typeof chunkIx === 'undefined' ? 0 : chunkIx;
+                    chunkSize = typeof chunkSize === 'undefined' ? lineViewList.length - chunkIx : Math.min(chunkSize, lineViewList.length - chunkIx);
 
-                    var lineIndex, lineItemMMap;
+                    var lineIx, lineItemMMap;
 
                     for (var i = 0; i < chunkSize && i < OVERFLOW_CHUNK_SIZE; i++) {
-                        lineIndex = lineViewList[chunkIndex + i].lineIndex;
-                        lineItemMMap = lineViewList[chunkIndex + i].lineItemMMap;
+                        lineIx = lineViewList[chunkIx + i].lineIx;
+                        lineItemMMap = lineViewList[chunkIx + i].lineItemMMap;
 
                         contentView.lineListEl.removeChild(lineItemMMap.get('view').el);
                     }
@@ -875,7 +875,7 @@ define(
                     if (chunkSize > OVERFLOW_CHUNK_SIZE) {
                         setTimeout(
                             function ArmadillogContent_lineViewListDelete_overflowChunk() {
-                                lineViewListDelete(lineViewList, chunkIndex + OVERFLOW_CHUNK_SIZE);
+                                lineViewListDelete(lineViewList, chunkIx + OVERFLOW_CHUNK_SIZE);
                             },
                             OVERFLOW_DELAY);
                     }
