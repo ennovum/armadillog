@@ -1,14 +1,14 @@
 <div class="filter-list hidden"></div>
 <div class="filter-button-box">
-    <a href="#filter-add" class="button filter-button-create">
+    <a class="button filter-button-create">
         <span class="button-icon"></span>
         <span class="button-label">Create</span>
     </a>
-    <a href="#filter-submit" class="button filter-button-submit hidden">
+    <a class="button filter-button-submit hidden">
         <span class="button-icon"></span>
         <span class="button-label">Submit</span>
     </a>
-    <a href="#filter-clear" class="button filter-button-clear hidden">
+    <a class="button filter-button-clear hidden">
         <span class="button-icon"></span>
         <span class="button-label">Clear</span>
     </a>

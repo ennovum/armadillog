@@ -91,7 +91,7 @@ define(
             var valueTypes;
             var highlightTypes;
 
-            var armadillogView;
+            var view;
             var boxEl;
             var filterView;
 
@@ -265,7 +265,7 @@ define(
              * Initializes view
              */
             var viewInit = function ArmadillogFilter_viewInit() {
-                armadillogView = new ArmadillogFilterView();
+                view = new ArmadillogFilterView();
 
                 boxEl = config.boxEl;
                 if (!boxEl) {
@@ -273,7 +273,7 @@ define(
                     return false;
                 };
 
-                filterView = armadillogView.filterViewGet();
+                filterView = view.filterViewGet();
                 boxEl.appendChild(filterView.listEl);
                 boxEl.appendChild(filterView.buttonBoxEl);
 
@@ -499,8 +499,7 @@ define(
                     data = {};
                 }
 
-                var filterItemMMap = new ModelMap();
-                filterItemMMap.set(
+                var filterItemMMap = new ModelMap(
                     'id',
                     filterIdSeq++,
                     'mute',
@@ -527,7 +526,7 @@ define(
             var filterItemViewCreate = function ArmadillogFilter_filterItemViewCreate(filterItemMMap) {
                 filterItemMMap.set(
                     'view',
-                    armadillogView.filterItemViewGet({
+                    view.filterItemViewGet({
                         'id': filterItemMMap.get('id'),
                         'filterAffectTypes': affectTypes,
                         'filterValueTypes': valueTypes,

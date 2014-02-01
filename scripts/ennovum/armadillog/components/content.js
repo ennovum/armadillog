@@ -604,16 +604,7 @@ define(
                     null,
                     function ArmadillogContent_textSet_workerTextLineSplitterSuccess(data, additional) {
                         if ('text' in data) {
-                            var lineItemMMap = new ModelMap(
-                                'textRaw',
-                                data.text,
-                                'textFiltered',
-                                null,
-                                'hidden',
-                                true,
-                                'view',
-                                null);
-
+                            var lineItemMMap = new ModelMap('textRaw', data.text, 'textFiltered', null, 'hidden', true, 'view', null);
                             lineMList.setAt(data.ix, lineItemMMap);
                         }
 
@@ -648,25 +639,12 @@ define(
                             var lineItemMMap = lineMList.getAt(data.ix);
 
                             if (lineItemMMap) {
-                                if (lineItemMMap.get('textRaw') !== data.text) {
-                                    lineItemMMap.set(
-                                        'textRaw',
-                                        data.text);
-                                }
+                                lineItemMMap.set('textRaw', data.text);
                             }
                             else {
-                                lineItemMMap = new ModelMap(
-                                    'textRaw',
-                                    data.text,
-                                    'textFiltered',
-                                    null,
-                                    'hidden',
-                                    true,
-                                    'view',
-                                    null);
+                                lineItemMMap = new ModelMap('textRaw', data.text, 'textFiltered', null, 'hidden', true, 'view', null);
+                                lineMList.setAt(data.ix, lineItemMMap);
                             }
-
-                            lineMList.setAt(data.ix, lineItemMMap);
                         }
 
                         if ('count' in data) {
