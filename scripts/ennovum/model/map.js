@@ -26,7 +26,6 @@ define(
             var map;
 
             var eventGroupList;
-            var flushQueued;
             var valueListenerMap;
 
             /**
@@ -39,7 +38,6 @@ define(
                 map = {};
 
                 eventGroupList = [];
-                flushQueued = false;
                 valueListenerMap = {};
 
                 arguments.length && set.apply(this, arguments);
@@ -222,16 +220,7 @@ define(
 
                 eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
 
-                if (!flushQueued) {
-                    flushQueued = true;
-
-                    queue.queue(function ModelMap_eventAdd_eventFlush() {
-                        flushQueued = false;
-                        eventFlush();
-
-                        queue.dequeue();
-                    });
-                }
+                queue.queued(eventFlush) || queue.queue(eventFlush, true, this);
 
                 return true;
             };

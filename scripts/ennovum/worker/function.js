@@ -157,27 +157,27 @@ define(
 
                 workMap[wid] = work;
 
-                queue.queue(function () {
-                    if (!worker || config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
-                        fn(
-                            data,
-                            function (data) {
-                                messageHandler(wid, true, data);
-                            },
-                            function (data) {
-                                messageHandler(wid, false, data);
-                            });
-                    }
-                    else {
-                        worker.postMessage(
-                            {
-                                'wid': wid,
-                                'data': data
-                            });
-                    }
-                });
-
-                queue.dequeue();
+                queue.queue(
+                    function () {
+                        if (!worker || config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
+                            fn(
+                                data,
+                                function (data) {
+                                    messageHandler(wid, true, data);
+                                },
+                                function (data) {
+                                    messageHandler(wid, false, data);
+                                });
+                        }
+                        else {
+                            worker.postMessage(
+                                {
+                                    'wid': wid,
+                                    'data': data
+                                });
+                        }
+                    },
+                    true, this);
 
                 return true;
             };

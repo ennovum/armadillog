@@ -13,13 +13,13 @@ define(
          * Queue constructor
          */
         var Queue = function Queue() {
-            var thingList;
+            var list;
 
             /**
              * Initializes instance
              */
             var init = function Queue_init() {
-                thingList = [];
+                list = [];
 
                 return true;
             };
@@ -27,8 +27,14 @@ define(
             /**
              * Puts a thing to the queue
              */
-            var queue = this.queue = function Queue_queue(thing) {
-                if (thingList.push(thing) === 1) {
+            var queue = this.queue = function Queue_queue(thing, dequeue, ctx) {
+                var item = {
+                    thing: thing,
+                    dequeue: dequeue,
+                    ctx: ctx
+                };
+
+                if (list.push(item) === 1) {
                     run();
                 }
 
@@ -38,25 +44,25 @@ define(
             /**
              * Removes certain thing from the queue
              */
-            var dequeue = this.dequeue =function Queue_dequeue(thing) {
+            var dequeue = this.dequeue = function Queue_dequeue(thing) {
                 if (typeof thing === 'undefined') {
-                    if (thingList.length === 0) {
+                    if (list.length === 0) {
                         return false;
                     }
 
-                    thingList.shift();
+                    list.shift();
 
                     utils.func.async(run);
                 }
                 else {
-                    var thingIx = thingList.indexOf(thing);
-                    if (!~thingIx) {
+                    var ix = indexOf(thing);
+                    if (!~ix) {
                         return false;
                     }
 
-                    thingList.splice(thingIx, 1);
+                    list.splice(ix, 1);
 
-                    if (thingIx === 0) {
+                    if (ix === 0) {
                         utils.func.async(run);
                     }
                 }
@@ -68,15 +74,18 @@ define(
              * Runs the queue
              */
             var run = function Queue_run() {
-                var thingIx = 0;
-                var thing = thingList[thingIx];
-
-                if (thing === undefined) {
+                if (list.length === 0) {
                     return false;
                 }
 
-                if (typeof thing === 'function') {
-                    thing();
+                var item = list[0];
+
+                if (typeof item.thing === 'function') {
+                    item.thing.call(item.ctx);
+                }
+
+                if (item.dequeue === true) {
+                    dequeue();
                 }
 
                 return true;
@@ -87,18 +96,31 @@ define(
              */
             var queued = this.queued = function Queue_queued(thing) {
                 if (typeof thing === 'undefined') {
-                    return thingList.length;
+                    return list.length;
                 }
                 else {
                     var ix = -1;
                     var count = 0;
 
-                    while (~(ix = thingList.indexOf(thing, ix + 1))) {
+                    while (~(ix = indexOf(thing, ix + 1))) {
                         count++;
                     }
 
                     return count;
                 }
+            };
+
+            /**
+             *
+             */
+            var indexOf = function Queue_indexOf(thing, ixFrom) {
+                for (var i = ixFrom || 0, l = list.length; i < l; i++) {
+                    if (list[i].thing === thing) {
+                        return i;
+                    }
+                }
+
+                return -1;
             };
 
             /**

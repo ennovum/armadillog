@@ -26,7 +26,6 @@ define(
             var list;
 
             var eventGroupList;
-            var flushQueued;
             var valueListenerList;
 
             /**
@@ -39,7 +38,6 @@ define(
                 list = [];
 
                 eventGroupList = [];
-                flushQueued = false;
                 valueListenerList = [];
 
                 arguments.length && this.set.apply(this, arguments);
@@ -367,16 +365,7 @@ define(
 
                 eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
 
-                if (!flushQueued) {
-                    flushQueued = true;
-
-                    queue.queue(function ModelList_eventAdd_eventFlush() {
-                        flushQueued = false;
-                        eventFlush();
-
-                        queue.dequeue();
-                    });
-                }
+                queue.queued(eventFlush) || queue.queue(eventFlush, true, this);
 
                 return true;
             };

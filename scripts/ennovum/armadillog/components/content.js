@@ -895,11 +895,7 @@ define(
                         }.bind(this, lineItemMMap));
                 }
 
-                lineMList.queue(function () {
-                    application.busy.set(false, 'lineListFilter');
-
-                    lineMList.dequeue();
-                });
+                lineMList.queue(application.busy.set.bind(this, false, 'lineListFilter'), true, this);
 
                 return true;
             };

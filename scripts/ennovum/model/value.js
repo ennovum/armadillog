@@ -26,7 +26,6 @@ define(
             var value;
 
             var eventGroupList;
-            var flushQueued;
             var valueListener;
 
             /**
@@ -37,7 +36,6 @@ define(
                 queue = utils.obj.mixin(this, new Queue());
 
                 eventGroupList = [];
-                flushQueued = false;
                 valueListener = null;
 
                 arguments.length && this.set.apply(this, arguments);
@@ -145,16 +143,7 @@ define(
 
                 eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
 
-                if (!flushQueued) {
-                    flushQueued = true;
-
-                    queue.queue(function ModelValue_eventAdd_eventFlush() {
-                        flushQueued = false;
-                        eventFlush();
-
-                        queue.dequeue();
-                    });
-                }
+                queue.queued(eventFlush) || queue.queue(eventFlush, true, this);
 
                 return true;
             };
