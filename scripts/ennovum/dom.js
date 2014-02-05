@@ -38,31 +38,77 @@ define(
                 return el;
             };
 
+            //
+            var classSplitRegex = /[ ]+/;
+
             /**
              *
              */
-            var classContains = this.classContains = function Dom_classContains(el) {
-                if (!el) {
-                    return;
+            var classListSplit = function Dom_classListGet(classValue) {
+                return classValue.split(classSplitRegex);
+            };
+
+            /**
+             *
+             */
+            var classListGet = function Dom_classListGet(el) {
+                return classListSplit(el.className);
+            };
+
+            /**
+             *
+             */
+            var classContains = this.classContains = function Dom_classContains(el, classValue) {
+                switch (false) {
+                    case !!el:
+                    case !!classValue:
+                        return false;
+                        break;
                 }
 
-                var classList = [];
-                for (var i = 1, l = arguments.length; i < l; i++) {
-                    classList.push.apply(classList, arguments[i].split(/[ ]+/));
+                var contains = true;
+
+                classListSplit(classValue).forEach(function (className) {
+                    contains = classNameContains(el, className) && contains;
+                });
+
+                return contains;
+            };
+
+            /**
+             *
+             */
+            var classNameContains = function Dom_classNameContains(el, className) {
+                if (el.classList) {
+                    return el.classList.contains(className);
                 }
 
-                var elClassList = el.className.split(/[ ]+/);
-                var className;
-                var elClassIdx;
+                var classList = classListGet(el);
 
-                for (var i = 0, l = classList.length; i < l; i++) {
-                    className = classList[i];
+                return classListContains(classList, className);
+            };
 
-                    elClassIdx = elClassList.indexOf(className);
-                    if (elClassIdx === -1) {
-                        return false
-                    }
+            /**
+             *
+             */
+            var classListContains = function Dom_classListContains(classList, className) {
+                return classList.indexOf(className) !== -1;
+            };
+
+            /**
+             *
+             */
+            var classAdd = this.classAdd = function Dom_classAdd(el, classValue) {
+                switch (false) {
+                    case !!el:
+                    case !!classValue:
+                        return false;
+                        break;
                 }
+
+                classListSplit(classValue).forEach(function (className) {
+                    classNameAdd(el, className);
+                });
 
                 return true;
             };
@@ -70,33 +116,27 @@ define(
             /**
              *
              */
-            var classAdd = this.classAdd = function Dom_classAdd(el) {
-                if (!el) {
-                    return;
+            var classNameAdd = function Dom_classNameAdd(el, className) {
+                if (el.classList) {
+                    return el.classList.add(className);
                 }
 
-                var classList = [];
-                for (var i = 1, l = arguments.length; i < l; i++) {
-                    classList.push.apply(classList, arguments[i].split(/[ ]+/));
+                var classList = classListGet(el);
+
+                return classListAdd(classList, className);
+            };
+
+            /**
+             *
+             */
+            var classListAdd = function Dom_classListAdd(classList, className) {
+                var classIdx = classList.indexOf(className);
+
+                if (classIdx === -1) {
+                    classList.push(className);
                 }
 
-                var elClassList = el.className.split(/[ ]+/);
-                var className;
-                var elClassIdx;
-
-                for (var i = 0, l = classList.length; i < l; i++) {
-                    className = classList[i];
-
-                    elClassIdx = elClassList.indexOf(className);
-                    if (elClassIdx === -1) {
-                        elClassList.push(className);
-                    }
-                }
-
-                className = elClassList.join(' ');
-                if (el.className !== className) {
-                    el.className = className;
-                }
+                el.className = classList.join(' ');
 
                 return true;
             };
@@ -104,33 +144,17 @@ define(
             /**
              *
              */
-            var classRemove = this.classRemove = function Dom_classRemove(el) {
-                if (!el) {
-                    return;
+            var classRemove = this.classRemove = function Dom_classRemove(el, classValue) {
+                switch (false) {
+                    case !!el:
+                    case !!classValue:
+                        return false;
+                        break;
                 }
 
-                var classList = [];
-                for (var i = 1, l = arguments.length; i < l; i++) {
-                    classList.push.apply(classList, arguments[i].split(/[ ]+/));
-                }
-
-                var elClassList = el.className.split(/[ ]+/);
-                var className;
-                var elClassIdx;
-
-                for (var i = 0, l = classList.length; i < l; i++) {
-                    className = classList[i];
-
-                    elClassIdx = elClassList.indexOf(className);
-                    if (elClassIdx !== -1) {
-                        elClassList.splice(elClassIdx, 1);
-                    }
-                }
-
-                className = elClassList.join(' ');
-                if (el.className !== className) {
-                    el.className = className;
-                }
+                classListSplit(classValue).forEach(function (className) {
+                    classNameRemove(el, className);
+                });
 
                 return true;
             };
@@ -138,31 +162,27 @@ define(
             /**
              *
              */
-            var classToggle = this.classToggle = function Dom_classToggle(el, className) {
-                if (!el) {
-                    return;
+            var classNameRemove = function Dom_classNameRemove(el, className) {
+                if (el.classList) {
+                    return el.classList.remove(className);
                 }
 
-                var classList = [];
-                for (var i = 1, l = arguments.length; i < l; i++) {
-                    classList.push.apply(classList, arguments[i].split(/[ ]+/));
+                var classList = classListGet(el);
+
+                return classListRemove(classList, className);
+            };
+
+            /**
+             *
+             */
+            var classListRemove = function Dom_classListRemove(classList, className) {
+                var classIdx = classList.indexOf(className);
+
+                if (classIdx !== -1) {
+                    classList.splice(classIdx, 1);
                 }
 
-                var elClassList = el.className.split(/[ ]+/);
-                var className = true;
-                var elClassIdx;
-
-                for (var i = 0, l = classList.length; i < l; i++) {
-                    className = classList[i];
-
-                    elClassIdx = elClassList.indexOf(className);
-                    if (elClassIdx === -1) {
-                        classAdd(el, className);
-                    }
-                    else {
-                        classRemove(el, className);
-                    }
-                }
+                el.className = classList.join(' ');
 
                 return true;
             };
@@ -170,19 +190,67 @@ define(
             /**
              *
              */
-            var classDepend = this.classDepend = function Dom_classToggle(el, className, condition) {
-                if (!el) {
-                    return;
+            var classToggle = this.classToggle = function Dom_classToggle(el, classValue) {
+                switch (false) {
+                    case !!el:
+                    case !!classValue:
+                        return false;
+                        break;
                 }
 
-                if (condition) {
-                    classAdd(el, className);
+                classListSplit(classValue).forEach(function (className) {
+                    classNameToggle(el, className);
+                });
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var classNameToggle = function Dom_classNameToggle(el, className) {
+                if (el.classList) {
+                    return el.classList.toggle(className);
+                }
+
+                var classList = classListGet(el);
+
+                if (classListContains(classList, className)) {
+                    return classListRemove(classList, className);
                 }
                 else {
-                    classRemove(el, className);
+                    return classListAdd(classList, className);
+                }
+            };
+
+            /**
+             *
+             */
+            var classDepend = this.classDepend = function Dom_classDepend(el, classValue, condition) {
+                switch (false) {
+                    case !!el:
+                    case !!classValue:
+                        return false;
+                        break;
                 }
 
+                classListSplit(classValue).forEach(function (className) {
+                    classNameDepend(el, className, condition);
+                });
+
                 return true;
+            };
+
+            /**
+             *
+             */
+            var classNameDepend = function Dom_classNameDepend(el, className, condition) {
+                if (condition) {
+                    return classAdd(el, className);
+                }
+                else {
+                    return classRemove(el, className);
+                }
             };
 
             /**
