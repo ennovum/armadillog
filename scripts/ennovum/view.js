@@ -5,13 +5,13 @@ define(
         'ennovum.environment',
         'ennovum.dom',
         'ennovum.utils',
-        'Handlebars'
+        'handlebars'
     ],
     function (
         environment,
         dom,
         utils,
-        Handlebars
+        handlebars
     ) {
         /**
          * View constructor
@@ -23,7 +23,7 @@ define(
              * Initializes instance
              */
             var init = function View_init(template) {
-                make = Handlebars.compile(template);
+                make = handlebars.compile(template);
 
                 return true;
             };

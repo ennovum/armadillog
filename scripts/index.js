@@ -4,7 +4,7 @@ require.config({
     'baseUrl': 'scripts',
     'packages': [
         {
-            'name': 'Handlebars',
+            'name': 'handlebars',
             'location': 'vendor',
             'main': 'handlebars-1.0.rc.1.js'
         },
@@ -93,7 +93,7 @@ require.config({
         'text': 'vendor/text-2.0.5'
     },
     'shim': {
-        'Handlebars': {
+        'handlebars': {
             'exports': 'Handlebars'
         }
     }
