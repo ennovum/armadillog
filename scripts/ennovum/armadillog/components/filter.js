@@ -682,13 +682,13 @@ define(
              * @param {object} filterItemMMap filter item data
              */
             var clear = function ArmadillogFilter_clear() {
-                filterMList.queue('filter-clear');
+                filterMList.pause();
 
                 while (filterMList.length()) {
                     filterItemRemove(filterMList.getAt(0));
                 }
 
-                filterMList.dequeue('filter-clear');
+                filterMList.unpause();
 
                 return true;
             };
@@ -700,36 +700,24 @@ define(
                 var filterItemMMap;
                 var filterItemView;
 
-                filterMList.queue('filter-submit');
+                filterMList.pause();
 
                 for (var i = 0, l = filterMList.length(); i < l; i++) {
                     filterItemMMap = filterMList.getAt(i);
                     filterItemView = filterItemMMap.get('els');
 
-                    filterItemMMap.queue('filter-submit');
-
-                    filterItemMMap.set('affectType', dom.selectValue(filterItemView.affectTypeListSelectEl));
-
-                    if (filterItemMMap.get('affectType') === null) {
-                        alert('You have to choose a filter affect type!');
-                        return false;
-                    }
-
-                    filterItemMMap.set('value', filterItemView.valueInputEl.value || '');
-
-                    filterItemMMap.set('valueType', dom.selectValue(filterItemView.valueTypeListSelectEl));
-
-                    if (filterItemMMap.get('valueType') === null) {
-                        alert('You have to choose a filter value type!');
-                        return false;
-                    }
-
-                    filterItemMMap.set('highlightType', dom.selectValue(filterItemView.highlightTypeListSelectEl));
-
-                    filterItemMMap.dequeue('filter-submit');
+                    filterItemMMap.set(
+                        'affectType',
+                        dom.selectValue(filterItemView.affectTypeListSelectEl),
+                        'value',
+                        filterItemView.valueInputEl.value || '',
+                        'valueType',
+                        dom.selectValue(filterItemView.valueTypeListSelectEl),
+                        'highlightType',
+                        dom.selectValue(filterItemView.highlightTypeListSelectEl));
                 }
 
-                filterMList.dequeue('filter-submit');
+                filterMList.unpause();
 
                 return true;
             };
@@ -838,14 +826,14 @@ define(
                     // nothing
                 }
 
-                filterMList.queue('filter-storage-load');
+                filterMList.pause();
 
                 for (var i = 0, l = storageFilterList.length; i < l; i++) {
                     filterItemMMap = filterItemCreate(storageFilterList[i]);
                     filterMList.push(filterItemMMap);
                 }
 
-                filterMList.dequeue('filter-storage-load');
+                filterMList.unpause();
 
                 return true;
             };

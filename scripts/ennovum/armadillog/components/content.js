@@ -594,7 +594,7 @@ define(
              * @param {string} label content's label
              */
             var textSet = this.textSet = function ArmadillogContent_textSet(text, label) {
-                lineMList.queue('text-set');
+                lineMList.pause();
 
                 workerTextLineSplitter.run(
                     {
@@ -609,7 +609,7 @@ define(
                         }
 
                         if ('count' in data) {
-                            lineMList.dequeue('text-set');
+                            lineMList.unpause();
                         }
                     },
                     null,
@@ -626,7 +626,7 @@ define(
              * @param {string} text a piece of content
              */
             var textUpdate = function ArmadillogContent_textUpdate(text) {
-                lineMList.queue('text-update');
+                lineMList.pause();
 
                 workerTextLineSplitter.run(
                     {
@@ -652,7 +652,7 @@ define(
                                 lineMList.splice(data.count);
                             }
 
-                            lineMList.dequeue('text-update');
+                            lineMList.unpause();
                         }
                     },
                     null,
@@ -880,7 +880,7 @@ define(
                 for (var i = 0, l = lineList.length; i < l; i++) {
                     lineItemMMap = lineList[i];
 
-                    lineMList.queue('line-list-filter');
+                    lineMList.pause();
 
                     application.filter.filterText(
                         lineItemMMap.get('textRaw'),
@@ -891,11 +891,11 @@ define(
                                 'hidden',
                                 result.hidden);
 
-                            lineMList.dequeue('line-list-filter');
+                            lineMList.unpause();
                         }.bind(this, lineItemMMap));
                 }
 
-                lineMList.queue(application.busy.set.bind(this, false, 'lineListFilter'), true, this);
+                lineMList.queue(application.busy.set, true, this, [false, 'lineListFilter']);
 
                 return true;
             };

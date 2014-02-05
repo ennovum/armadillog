@@ -14,12 +14,14 @@ define(
          */
         var Queue = function Queue() {
             var list;
+            var pauses;
 
             /**
              * Initializes instance
              */
             var init = function Queue_init() {
                 list = [];
+                pauses = 0;
 
                 return true;
             };
@@ -27,11 +29,13 @@ define(
             /**
              * Puts a thing to the queue
              */
-            var queue = this.queue = function Queue_queue(thing, dequeue, ctx) {
+            var queue = this.queue = function Queue_queue(thing, dequeue, ctx, args) {
                 var item = {
                     thing: thing,
                     dequeue: dequeue,
-                    ctx: ctx
+                    ctx: ctx,
+                    args: args,
+                    run: false
                 };
 
                 if (list.push(item) === 1) {
@@ -74,14 +78,19 @@ define(
              * Runs the queue
              */
             var run = function Queue_run() {
-                if (list.length === 0) {
+                if (paused() || list.length === 0) {
                     return false;
                 }
 
                 var item = list[0];
 
+                if (item.run) {
+                    return false;
+                }
+                item.run = true;
+
                 if (typeof item.thing === 'function') {
-                    item.thing.call(item.ctx);
+                    item.thing.apply(item.ctx, item.args);
                 }
 
                 if (item.dequeue === true) {
@@ -121,6 +130,33 @@ define(
                 }
 
                 return -1;
+            };
+
+            /**
+             *
+             */
+            var pause = this.pause = function Queue_pause() {
+                pauses += 1;
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var unpause = this.unpause = function Queue_unpause() {
+                pauses -= 1;
+
+                run();
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var paused = this.paused = function Queue_paused() {
+                return pauses > 0;
             };
 
             /**
