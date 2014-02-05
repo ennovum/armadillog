@@ -4,32 +4,30 @@ define(
     [
         'ennovum.environment',
         'ennovum.dom',
-        'ennovum.utils',
-        'Handlebars',
-        'text!./../templates/content.html-template',
-        'text!./../templates/content-line-item.html-template'
+        'ennovum.View',
+        'text!./../templates/content.tpl',
+        'text!./../templates/content-line-item.tpl'
     ],
     function (
         environment,
         dom,
-        utils,
-        Handlebars,
-        templateContent,
-        templateContentLineItem
+        View,
+        contentTpl,
+        contentLineItemTpl
     ) {
         /**
          * ArmadillogContentView constructor
          */
         var ArmadillogContentView = function ArmadillogContentView() {
-            var contentViewTemplate;
-            var contentLineItemViewTemplate;
+            var contentView;
+            var contentLineItemView;
 
             /**
              * Initializes instance
              */
             var init = function ArmadillogContentView_init() {
-                contentViewTemplate = Handlebars.compile(templateContent);
-                contentLineItemViewTemplate = Handlebars.compile(templateContentLineItem);
+                contentView = new View(contentTpl);
+                contentLineItemView = new View(contentLineItemTpl);
 
                 return true;
             };
@@ -39,14 +37,8 @@ define(
              *
              * @param {object} context context object
              */
-            var contentViewGet = this.contentViewGet = function ArmadillogContentView_contentViewGet(context) {
-                var containerEl = dom.createElement('div');
-                containerEl.innerHTML = contentViewTemplate(context);
-
-                return {
-                    'frameEl': containerEl.querySelector('.content-frame'),
-                    'lineListEl': containerEl.querySelector('.content-line-list')
-                };
+            var contentCreate = this.contentCreate = function ArmadillogContentView_contentCreate(context) {
+                return contentView.create(context);
             };
 
             /**
@@ -54,13 +46,8 @@ define(
              *
              * @param {object} context context object
              */
-            var contentLineItemViewGet = this.contentLineItemViewGet = function ArmadillogContentView_contentLineItemViewGet(context) {
-                var containerEl = dom.createElement('div');
-                containerEl.innerHTML = contentLineItemViewTemplate(context);
-
-                return {
-                    'el': containerEl.querySelector('.content-line-item')
-                };
+            var contentLineItemCreate = this.contentLineItemCreate = function ArmadillogContentView_contentLineItemCreate(context) {
+                return contentLineItemView.create(context);
             };
 
             /**

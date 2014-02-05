@@ -22,10 +22,10 @@ define(
             var config;
             var application;
 
-            var view;
             var bodyEl;
             var boxEl;
-            var inputView;
+            var view;
+            var inputEls;
 
             /**
              * Initializes instance
@@ -78,8 +78,6 @@ define(
              * Initializes view
              */
             var viewInit = function ArmadillogInput_viewInit() {
-                view = new ArmadillogInputView();
-
                 bodyEl = config.bodyEl;
 
                 boxEl = config.boxEl;
@@ -88,11 +86,13 @@ define(
                     return false;
                 };
 
-                inputView = view.inputViewGet();
-                boxEl.appendChild(inputView.clearBoxEl);
-                boxEl.appendChild(inputView.fileBoxEl);
-                boxEl.appendChild(inputView.pasteBoxEl);
-                boxEl.appendChild(inputView.urlBoxEl);
+                view = new ArmadillogInputView();
+
+                inputEls = view.inputCreate();
+                boxEl.appendChild(inputEls.clearBoxEl);
+                boxEl.appendChild(inputEls.fileBoxEl);
+                boxEl.appendChild(inputEls.pasteBoxEl);
+                boxEl.appendChild(inputEls.urlBoxEl);
 
                 return true;
             };
@@ -102,7 +102,7 @@ define(
              */
             var uiInit = function ArmadillogInput_uiInit() {
                 dom.handle(
-                    inputView.clearButtonEl, 'click',
+                    inputEls.clearButtonEl, 'click',
                     function ArmadillogInput_uiInit_clearButtonElClickHandler(evt) {
                         if (!application.busy.check() && confirm('Are you sure?')) {
                             application.content.clear();
@@ -111,7 +111,7 @@ define(
                     false, true, true, this);
 
                 dom.handle(
-                    inputView.fileInputEl, 'change',
+                    inputEls.fileInputEl, 'change',
                     function ArmadillogInput_uiInit_fileInputElChangeHandler(evt) {
                         if (!application.busy.check()) {
                             var files = evt.target.files;
@@ -124,30 +124,30 @@ define(
                     false, true, true, this);
 
                 dom.handle(
-                    inputView.fileButtonEl, 'click',
+                    inputEls.fileButtonEl, 'click',
                     function ArmadillogInput_uiInit_fileButtonElClickHandler(evt) {
                         if (!application.busy.check()) {
-                            inputView.fileInputEl.click();
+                            inputEls.fileInputEl.click();
                         }
                     },
                     false, true, true, this);
 
                 dom.handle(
-                    inputView.pasteButtonEl, 'click',
+                    inputEls.pasteButtonEl, 'click',
                     function ArmadillogInput_uiInit_pasteButtonElClickHandler(evt) {
-                        if (!application.busy.check() && inputView.pasteInputEl.value) {
+                        if (!application.busy.check() && inputEls.pasteInputEl.value) {
                             application.content.clear();
-                            application.content.textSet(inputView.pasteInputEl.value, '(pasted text)');
-                            inputView.pasteInputEl.value = '';
+                            application.content.textSet(inputEls.pasteInputEl.value, '(pasted text)');
+                            inputEls.pasteInputEl.value = '';
                         }
                     },
                     false, true, true, this);
 
                 dom.handle(
-                    inputView.urlInputEl, 'keypress',
+                    inputEls.urlInputEl, 'keypress',
                     function ArmadillogInput_uiInit_urlInputElKeypressHandler(evt) {
                         if (evt.keyCode === 13) {
-                            inputView.urlButtonEl.click();
+                            inputEls.urlButtonEl.click();
 
                             evt.preventDefault();
                             evt.stopPropagation();
@@ -156,12 +156,12 @@ define(
                     false, false, false, this);
 
                 dom.handle(
-                    inputView.urlButtonEl, 'click',
+                    inputEls.urlButtonEl, 'click',
                     function ArmadillogInput_uiInit_urlButtonElClickHandler(evt) {
-                        if (!application.busy.check() && inputView.urlInputEl.value) {
+                        if (!application.busy.check() && inputEls.urlInputEl.value) {
                             application.content.clear();
-                            application.content.urlSet(inputView.urlInputEl.value, inputView.urlInputEl.value);
-                            inputView.urlInputEl.value = '';
+                            application.content.urlSet(inputEls.urlInputEl.value, inputEls.urlInputEl.value);
+                            inputEls.urlInputEl.value = '';
                         }
                     },
                     false, true, true, this);
@@ -179,8 +179,8 @@ define(
              *
              */
             var clearLabelSet = function ArmadillogInput_clearLabelSet(value) {
-                inputView.clearLabelEl.innerHTML = utils.string.escapeXML(value || '');
-                dom.classDepend(inputView.clearBoxEl, HIDDEN_CLASS, value === null);
+                inputEls.clearLabelEl.innerHTML = utils.string.escapeXML(value || '');
+                dom.classDepend(inputEls.clearBoxEl, HIDDEN_CLASS, value === null);
 
                 return true;
             };

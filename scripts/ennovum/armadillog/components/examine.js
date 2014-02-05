@@ -20,10 +20,10 @@ define(
             var config;
             var application;
 
-            var view;
             var bodyEl;
             var boxEl;
-            var examineView;
+            var view;
+            var examineEls;
 
             /**
              * Initializes instance
@@ -76,8 +76,6 @@ define(
              * Initializes view
              */
             var viewInit = function ArmadillogExamine_viewInit() {
-                view = new ArmadillogExamineView();
-
                 bodyEl = config.bodyEl;
 
                 boxEl = config.boxEl;
@@ -86,9 +84,11 @@ define(
                     return false;
                 };
 
-                examineView = view.examineViewGet();
-                boxEl.appendChild(examineView.rawBoxEl);
-                boxEl.appendChild(examineView.filteredBoxEl);
+                view = new ArmadillogExamineView();
+
+                examineEls = view.examineCreate();
+                boxEl.appendChild(examineEls.rawBoxEl);
+                boxEl.appendChild(examineEls.filteredBoxEl);
 
                 return true;
             };
@@ -98,7 +98,7 @@ define(
              */
             var uiInit = function ArmadillogExamine_uiInit() {
                 dom.handle(
-                    examineView.rawContentEl, 'keyup',
+                    examineEls.rawContentEl, 'keyup',
                     function (evt) {
                         if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
                             evt.stopPropagation();
@@ -107,7 +107,7 @@ define(
                     false, false, false, this);
 
                 dom.handle(
-                    examineView.filteredContentEl, 'keyup',
+                    examineEls.filteredContentEl, 'keyup',
                     function (evt) {
                         if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
                             evt.stopPropagation();
@@ -124,8 +124,8 @@ define(
              * @param {object} contentLineItemMMap content line model object
              */
             var set = this.set = function ArmadillogExamine_set(contentLineItemMMap) {
-                examineView.rawContentEl.innerHTML = utils.string.escapeXML(contentLineItemMMap.get('textRaw'));
-                examineView.filteredContentEl.innerHTML = contentLineItemMMap.get('view').el.innerHTML;
+                examineEls.rawContentEl.innerHTML = utils.string.escapeXML(contentLineItemMMap.get('textRaw'));
+                examineEls.filteredContentEl.innerHTML = contentLineItemMMap.get('els').el.innerHTML;
 
                 return true;
             };
@@ -134,8 +134,8 @@ define(
              * Clears examine content
              */
             var clear = this.clear = function ArmadillogExamine_clear() {
-                examineView.rawContentEl.innerHTML = '';
-                examineView.filteredContentEl.innerHTML = '';
+                examineEls.rawContentEl.innerHTML = '';
+                examineEls.filteredContentEl.innerHTML = '';
 
                 return true;
             };

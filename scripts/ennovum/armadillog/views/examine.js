@@ -4,28 +4,26 @@ define(
     [
         'ennovum.environment',
         'ennovum.dom',
-        'ennovum.utils',
-        'Handlebars',
-        'text!./../templates/examine.html-template'
+        'ennovum.View',
+        'text!./../templates/examine.tpl'
     ],
     function (
         environment,
         dom,
-        utils,
-        Handlebars,
-        templateExamine
+        View,
+        examineTpl
     ) {
         /**
          * ArmadillogView constructor
          */
         var ArmadillogExamineView = function ArmadillogExamineView() {
-            var examineViewTemplate;
+            var examineView;
 
             /**
              * Initializes instance
              */
             var init = function ArmadillogView_init() {
-                examineViewTemplate = Handlebars.compile(templateExamine);
+                examineView = new View(examineTpl);
 
                 return true;
             };
@@ -35,16 +33,8 @@ define(
              *
              * @param {object} context context object
              */
-            var examineViewGet = this.examineViewGet = function ArmadillogView_examineViewGet(context) {
-                var containerEl = dom.createElement('div');
-                containerEl.innerHTML = examineViewTemplate(context);
-
-                return {
-                    'rawBoxEl': containerEl.querySelector('.examine-raw-box'),
-                    'rawContentEl': containerEl.querySelector('.examine-raw-content'),
-                    'filteredBoxEl': containerEl.querySelector('.examine-filtered-box'),
-                    'filteredContentEl': containerEl.querySelector('.examine-filtered-content')
-                };
+            var examineCreate = this.examineCreate = function ArmadillogView_examineCreate(context) {
+                return examineView.create(context);
             };
 
             /**

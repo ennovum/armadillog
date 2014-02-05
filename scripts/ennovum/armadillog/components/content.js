@@ -57,10 +57,10 @@ define(
             var workerFileReader;
             var workerTextLineSplitter;
 
-            var view;
             var boxEl;
             var dropEl;
-            var contentView;
+            var view;
+            var contentEls;
 
             /**
              * Initializes instance
@@ -191,8 +191,6 @@ define(
              * Initializes view
              */
             var viewInit = function ArmadillogContent_viewInit() {
-                view = new ArmadillogContentView();
-
                 boxEl = config.contentBoxEl;
                 if (!boxEl) {
                     console.error('ArmadillogContent', 'viewInit', 'invalid contentBoxEl');
@@ -201,8 +199,10 @@ define(
 
                 dropEl = config.contentDropEl;
 
-                contentView = view.contentViewGet();
-                boxEl.appendChild(contentView.frameEl);
+                view = new ArmadillogContentView();
+
+                contentEls = view.contentCreate();
+                boxEl.appendChild(contentEls.frameEl);
 
                 return true;
             };
@@ -254,12 +254,12 @@ define(
                     false, true, true, this);
 
                 dom.handle(
-                    contentView.lineListEl, 'click',
+                    contentEls.lineListEl, 'click',
                     function ArmadillogContent_uiInit_lineListElClickHandler(evt) {
                         var lineEl;
 
                         lineEl = evt.target;
-                        while (lineEl && lineEl.parentNode !== contentView.lineListEl) {
+                        while (lineEl && lineEl.parentNode !== contentEls.lineListEl) {
                             lineEl = lineEl.parentNode;
                         }
                         if (lineEl) {
@@ -269,7 +269,7 @@ define(
                                 application.examine.clear();
                             }
                             else {
-                                dom.classRemove(contentView.lineListEl.querySelector('.selected'), 'selected');
+                                dom.classRemove(contentEls.lineListEl.querySelector('.selected'), 'selected');
                                 dom.classAdd(lineEl, 'selected');
 
                                 var lineItemMMap = lineMList.getAt(~~lineEl.getAttribute('data-ix'));
@@ -280,12 +280,12 @@ define(
                     false, true, true, this);
 
                 dom.handle(
-                    contentView.lineListEl, 'dblclick',
+                    contentEls.lineListEl, 'dblclick',
                     function ArmadillogContent_uiInit_lineListElDblclickHandler(evt) {
                         var lineEl;
 
                         lineEl = evt.target
-                        while (lineEl && lineEl.parentNode !== contentView.lineListEl) {
+                        while (lineEl && lineEl.parentNode !== contentEls.lineListEl) {
                             lineEl = lineEl.parentNode;
                         }
                         if (lineEl) {
@@ -604,7 +604,7 @@ define(
                     null,
                     function ArmadillogContent_textSet_workerTextLineSplitterSuccess(data, additional) {
                         if ('text' in data) {
-                            var lineItemMMap = new ModelMap('textRaw', data.text, 'textFiltered', null, 'hidden', true, 'view', null);
+                            var lineItemMMap = new ModelMap('textRaw', data.text, 'textFiltered', null, 'hidden', true, 'els', null);
                             lineMList.setAt(data.ix, lineItemMMap);
                         }
 
@@ -642,7 +642,7 @@ define(
                                 lineItemMMap.set('textRaw', data.text);
                             }
                             else {
-                                lineItemMMap = new ModelMap('textRaw', data.text, 'textFiltered', null, 'hidden', true, 'view', null);
+                                lineItemMMap = new ModelMap('textRaw', data.text, 'textFiltered', null, 'hidden', true, 'els', null);
                                 lineMList.setAt(data.ix, lineItemMMap);
                             }
                         }
@@ -678,8 +678,8 @@ define(
              */
             var lineItemViewCreate = function ArmadillogContent_lineItemViewCreate(lineIx, lineItemMMap) {
                 lineItemMMap.set(
-                    'view',
-                    view.contentLineItemViewGet({
+                    'els',
+                    view.contentLineItemCreate({
                         'number': lineIx + 1
                     }));
 
@@ -693,7 +693,7 @@ define(
              * @param {object} lineItemMMap content line model object
              */
             var lineItemViewUpdate = function ArmadillogContent_lineItemViewUpdate(lineIx, lineItemMMap) {
-                var lineEl = lineItemMMap.get('view').el;
+                var lineEl = lineItemMMap.get('els').el;
                 var textFiltered = lineItemMMap.get('textFiltered');
 
                 if (textFiltered !== null) {
@@ -757,7 +757,7 @@ define(
                         lineItemMMap = lineViewList[chunkIx + i].lineItemMMap;
 
                         lineItemViewCreate(lineIx, lineItemMMap);
-                        lineItemView = lineItemMMap.get('view');
+                        lineItemView = lineItemMMap.get('els');
 
                         lineItemView.el.setAttribute('data-ix', lineIx);
 
@@ -766,9 +766,9 @@ define(
                         documentFragment.appendChild(lineItemView.el);
                     }
 
-                    contentView.lineListEl.insertBefore(
+                    contentEls.lineListEl.insertBefore(
                         documentFragment,
-                        contentView.lineListEl.childNodes[lineViewList[chunkIx].lineIx] || null);
+                        contentEls.lineListEl.childNodes[lineViewList[chunkIx].lineIx] || null);
 
                     if (chunkSize > OVERFLOW_CHUNK_SIZE) {
                         setTimeout(
@@ -847,7 +847,7 @@ define(
                         lineIx = lineViewList[chunkIx + i].lineIx;
                         lineItemMMap = lineViewList[chunkIx + i].lineItemMMap;
 
-                        contentView.lineListEl.removeChild(lineItemMMap.get('view').el);
+                        contentEls.lineListEl.removeChild(lineItemMMap.get('els').el);
                     }
 
                     if (chunkSize > OVERFLOW_CHUNK_SIZE) {

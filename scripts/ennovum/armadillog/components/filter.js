@@ -91,9 +91,9 @@ define(
             var valueTypes;
             var highlightTypes;
 
-            var view;
             var boxEl;
-            var filterView;
+            var view;
+            var filterEls;
 
             var workerFilter;
 
@@ -265,17 +265,17 @@ define(
              * Initializes view
              */
             var viewInit = function ArmadillogFilter_viewInit() {
-                view = new ArmadillogFilterView();
-
                 boxEl = config.boxEl;
                 if (!boxEl) {
                     console.error('ArmadillogFilter', 'viewCreate', 'invalid boxEl');
                     return false;
                 };
 
-                filterView = view.filterViewGet();
-                boxEl.appendChild(filterView.listEl);
-                boxEl.appendChild(filterView.buttonBoxEl);
+                view = new ArmadillogFilterView();
+
+                filterEls = view.filterCreate();
+                boxEl.appendChild(filterEls.listEl);
+                boxEl.appendChild(filterEls.buttonBoxEl);
 
                 return true;
             };
@@ -285,7 +285,7 @@ define(
              */
             var uiInit = function ArmadillogFilter_uiInit() {
                 dom.handle(
-                    filterView.clearButtonEl, 'click',
+                    filterEls.clearButtonEl, 'click',
                     function ArmadillogFilter_inputUiInit_clearButtonElClickHandler(evt) {
                         if (!application.busy.check() && confirm('Are you sure?')) {
                             clear();
@@ -294,19 +294,19 @@ define(
                     false, true, true, this);
 
                 dom.handle(
-                    filterView.createButtonEl, 'click',
+                    filterEls.createButtonEl, 'click',
                     function ArmadillogFilter_inputUiInit_filterCreateButtonElClickHandler(evt) {
                         if (!application.busy.check()) {
                             var filterItemMMap = filterItemCreate();
                             filterMList.push(filterItemMMap);
 
-                            filterView.listEl.scrollTop = filterView.listEl.scrollHeight;
-                            filterItemMMap.get('view').valueInputEl.focus();
+                            filterEls.listEl.scrollTop = filterEls.listEl.scrollHeight;
+                            filterItemMMap.get('els').valueInputEl.focus();
                         }
                     });
 
                 dom.handle(
-                    filterView.submitButtonEl, 'click',
+                    filterEls.submitButtonEl, 'click',
                     function ArmadillogFilter_inputUiInit_submitButtonElClickHandler(evt) {
                         if (!application.busy.check()) {
                             submit();
@@ -390,9 +390,9 @@ define(
                 observable.on(
                     ['list-insert', 'list-delete'],
                     function ArmadillogFilter_inputUiInit_handlerListToggle() {
-                        dom.classDepend(filterView.listEl, HIDDEN_CLASS, filterMList.length() === 0);
-                        dom.classDepend(filterView.submitButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
-                        dom.classDepend(filterView.clearButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        dom.classDepend(filterEls.listEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        dom.classDepend(filterEls.submitButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
+                        dom.classDepend(filterEls.clearButtonEl, HIDDEN_CLASS, filterMList.length() === 0);
                     });
 
                 return true;
@@ -525,8 +525,8 @@ define(
              */
             var filterItemViewCreate = function ArmadillogFilter_filterItemViewCreate(filterItemMMap) {
                 filterItemMMap.set(
-                    'view',
-                    view.filterItemViewGet({
+                    'els',
+                    view.filterItemCreate({
                         'id': filterItemMMap.get('id'),
                         'filterAffectTypes': affectTypes,
                         'filterValueTypes': valueTypes,
@@ -542,7 +542,7 @@ define(
              * @param {object} filterItemMMap filter item data
              */
             var filterItemViewUpdate = function ArmadillogFilter_filterItemViewUpdate(filterItemMMap) {
-                var filterItemView = filterItemMMap.get('view');
+                var filterItemView = filterItemMMap.get('els');
 
                 dom.classDepend(filterItemView.muteEl, HIDDEN_CLASS, filterItemMMap.get('mute'));
                 dom.classDepend(filterItemView.unmuteEl, HIDDEN_CLASS, !filterItemMMap.get('mute'));
@@ -564,7 +564,7 @@ define(
              * @param {object} filterItemMMap filter item data
              */
             var filterItemUiInit = function ArmadillogFilter_filterItemUiInit(filterItemMMap) {
-                var filterItemView = filterItemMMap.get('view');
+                var filterItemView = filterItemMMap.get('els');
 
                 dom.handle(filterItemView.muteEl, 'click', filterMute.bind(this, filterItemMMap), false, true, true, this);
                 dom.handle(filterItemView.unmuteEl, 'click', filterUnmute.bind(this, filterItemMMap), false, true, true, this);
@@ -603,7 +603,7 @@ define(
             var filterMute = function ArmadillogFilter_filterMute(filterItemMMap) {
                 filterItemMMap.set('mute', true);
 
-                var filterItemView = filterItemMMap.get('view');
+                var filterItemView = filterItemMMap.get('els');
                 dom.classAdd(filterItemView.muteEl, HIDDEN_CLASS);
                 dom.classRemove(filterItemView.unmuteEl, HIDDEN_CLASS);
 
@@ -618,7 +618,7 @@ define(
             var filterUnmute = function ArmadillogFilter_filterUnmute(filterItemMMap) {
                 filterItemMMap.set('mute', false);
 
-                var filterItemView = filterItemMMap.get('view');
+                var filterItemView = filterItemMMap.get('els');
                 dom.classRemove(filterItemView.muteEl, HIDDEN_CLASS);
                 dom.classAdd(filterItemView.unmuteEl, HIDDEN_CLASS);
 
@@ -704,7 +704,7 @@ define(
 
                 for (var i = 0, l = filterMList.length(); i < l; i++) {
                     filterItemMMap = filterMList.getAt(i);
-                    filterItemView = filterItemMMap.get('view');
+                    filterItemView = filterItemMMap.get('els');
 
                     filterItemMMap.queue('filter-submit');
 
@@ -749,9 +749,9 @@ define(
                     filterItemUiInit(filterItemMMap);
                     filterItemViewUpdate(filterItemMMap);
 
-                    filterView.listEl.insertBefore(
-                        filterItemMMap.get('view').el,
-                        filterView.listEl.childNodes[filterIx] || null);
+                    filterEls.listEl.insertBefore(
+                        filterItemMMap.get('els').el,
+                        filterEls.listEl.childNodes[filterIx] || null);
                 }
 
                 filterViewOrderApply();
@@ -774,9 +774,9 @@ define(
 
                     filterItemViewUpdate(filterItemMMap);
 
-                    filterView.listEl.insertBefore(
-                        filterItemMMap.get('view').el,
-                        filterView.listEl.childNodes[filterIx] || null);
+                    filterEls.listEl.insertBefore(
+                        filterItemMMap.get('els').el,
+                        filterEls.listEl.childNodes[filterIx] || null);
                 }
 
                 filterViewOrderApply();
@@ -797,7 +797,7 @@ define(
                     filterIx = filterDataList[i].filterIx;
                     filterItemMMap = filterDataList[i].filterItemMMap;
 
-                    filterView.listEl.removeChild(filterItemMMap.get('view').el);
+                    filterEls.listEl.removeChild(filterItemMMap.get('els').el);
                 }
 
                 filterViewOrderApply();
@@ -815,7 +815,7 @@ define(
 
                 for (var i = 0, l = filterMList.length(); i < l; i++) {
                     filterItemMMap = filterMList.getAt(i);
-                    filterItemView = filterItemMMap.get('view');
+                    filterItemView = filterItemMMap.get('els');
 
                     dom.classDepend(filterItemView.moveUpEl, HIDDEN_CLASS, i === 0);
                     dom.classDepend(filterItemView.moveDownEl, HIDDEN_CLASS, i === l - 1);

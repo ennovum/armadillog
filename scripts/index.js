@@ -54,6 +54,11 @@ require.config({
             'main': 'value.js'
         },
         {
+            'name': 'ennovum.View',
+            'location': 'ennovum',
+            'main': 'view.js'
+        },
+        {
             'name': 'ennovum.worker',
             'location': 'ennovum/worker',
             'main': 'worker.js'
