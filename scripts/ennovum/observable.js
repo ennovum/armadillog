@@ -13,13 +13,13 @@ define(
          * Observable constructor
          */
         var Observable = function Observable() {
-            var eventsMap;
+            var eventHandlerMap;
 
             /**
              * Initializes instance
              */
             var init = function Observable_init() {
-                eventsMap = {};
+                eventHandlerMap = {};
 
                 return true;
             };
@@ -27,95 +27,150 @@ define(
             /**
              * Binds events with a function
              *
-             * @param {mixed} eventList list of or a single event name
-             * @param {function} fn function to bind with events
+             * @param {mixed} eventNames list of or a single event name
+             * @param {function} fn handler function
+             * @param {mixed} ctx handler function context
              */
-            var on = this.on = function Observable_on(eventList, fn) {
-                if (!Array.isArray(eventList)) {
-                    eventList = [eventList];
-                }
-
-                var event;
-
-                for (var i = 0, l = eventList.length; i < l; i++) {
-                    event = eventList[i];
-
-                    if (!(event in eventsMap)) {
-                        eventsMap[event] = [];
-                    }
-
-                    eventsMap[event].push(fn);
-                }
-
-                return true;
+            var on = this.on = function Observable_on(eventNames, fn, ctx, args) {
+                return handlerAddAll(eventNames, fn, ctx, args);
             };
 
             /**
              * Unbinds events from a function
              *
-             * @param {mixed} eventList list of or a single event name
-             * @param {function} fn function to unbind from events
+             * @param {mixed} eventNames list of or a single event name
+             * @param {function} fn handler function
+             * @param {mixed} ctx handler function context
              */
-            var off = this.off = function Observable_off(eventList, fn) {
-                if (!Array.isArray(eventList)) {
-                    eventList = [eventList];
-                }
+            var off = this.off = function Observable_off(eventNames, fn, ctx, args) {
+                return handlerRemoveAll(eventNames, fn, ctx, args);
+            };
 
-                var event;
+            /**
+             * Triggers events
+             *
+             * @param {mixed} eventNames list of or a single event name
+             * @param {mixed} data event data
+             */
+            var trigger = this.trigger = function Observable_trigger(eventNames, data) {
+                return handlersTriggerAll(eventNames, data);
+            };
 
-                for (var i = 0, l = eventList.length; i < l; i++) {
-                    event = eventList[i];
+            /**
+             *
+             */
+            var handlerAddAll = function Observable_handlerAddAll(eventNames, fn, ctx, args) {
+                eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
 
-                    if (!(event in eventsMap) || eventsMap[event].length === 0) {
-                        console.error('Observable', 'off', 'list of event handlers is empty', event);
-                        return false;
-                    }
-
-                    var fnIdx = eventsMap[event].indexOf(fn);
-                    if (fnIdx === -1) {
-                        console.error('Observable', 'off', 'no such event handler', event, fn);
-                        return false;
-                    }
-
-                    eventsMap[event].splice(fnIdx, 1);
+                for (var i = 0, l = eventNames.length; i < l; i++) {
+                    handlerAdd(eventNames[i], fn, ctx, args);
                 }
 
                 return true;
             };
 
             /**
-             * Triggers events
              *
-             * @param {mixed} eventList list of or a single event name
              */
-            var trigger = this.trigger = function Observable_trigger(eventList, data) {
-                if (!Array.isArray(eventList)) {
-                    eventList = [eventList];
+            var handlerAdd = function Observable_handlerAdd(eventName, fn, ctx, args) {
+                var handler = {
+                    fn: fn,
+                    ctx: ctx,
+                    args: args
+                };
+
+                if (!(eventName in eventHandlerMap)) {
+                    eventHandlerMap[eventName] = [];
                 }
 
-                var event;
-                var handler;
+                eventHandlerMap[eventName].push(handler);
 
-                for (var i = 0, l = eventList.length; i < l; i++) {
-                    event = eventList[i];
+                return true;
+            };
 
-                    if (!(event in eventsMap) || eventsMap[event].length === 0) {
-                        continue;
-                    }
+            /**
+             *
+             */
+            var handlerRemoveAll = function Observable_handlerRemoveAll(eventNames, fn, ctx, args) {
+                eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
 
-                    for (var i = 0, l = eventsMap[event].length; i < l; i++) {
-                        handler = eventsMap[event][i];
-
-                        try {
-                            handler.apply(handler, [event, data]);
-                        }
-                        catch (err) {
-                            console.error('Observable', 'trigger', 'event handler run error', err);
-                        }
-                    }
+                for (var i = 0, l = eventNames.length; i < l; i++) {
+                    handlerRemove(eventNames[i], fn, ctx, args);
                 }
 
                 return true;
+            };
+
+            /**
+             *
+             */
+            var handlerRemove = function Observable_handlerRemove(eventName, fn, ctx, args) {
+                var handlerIx = handlerIndexOf(eventName, fn, ctx, args);
+
+                if (!~handlerIx) {
+                    console.error('Observable', 'handlerRemove', 'no such event handler', eventName, fn, ctx, args);
+                    return false;
+                }
+
+                eventHandlerMap[eventName].splice(handlerIx, 1);
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var handlerIndexOf = function Observable_handlerIndexOf(eventName, fn, ctx, args) {
+                var handlers = eventHandlerMap[eventName] || [];
+                var handler;
+
+                for (var i = 0, l = handlers.length; i < l; i++) {
+                    handler = handlers[i];
+
+                    if (handler.fn === fn && handler.ctx === ctx) {
+                        return i;
+                    }
+                }
+
+                return -1;
+            };
+
+            /**
+             *
+             */
+            var handlersTriggerAll = function Observable_handlersTriggerAll(eventNames, data) {
+                eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
+
+                for (var i = 0, l = eventNames.length; i < l; i++) {
+                    handlersTrigger(eventNames[i], data);
+                }
+
+                return true;
+            };
+
+            /**
+             *
+             */
+            var handlersTrigger = function Observable_handlersTrigger(eventName, data) {
+                if (!(eventName in eventHandlerMap) || eventHandlerMap[eventName].length === 0) {
+                    return false;
+                }
+
+                for (var i = 0, l = eventHandlerMap[eventName].length; i < l; i++) {
+                    handlerTrigger(eventName, eventHandlerMap[eventName][i], data);
+                }
+            };
+
+            /**
+             *
+             */
+            var handlerTrigger = function Observable_handlerTrigger(eventName, handler, data) {
+                try {
+                    handler.fn.apply(handler.ctx, [eventName, data].concat(handler.args));
+                }
+                catch (err) {
+                    console.error('Observable', 'handlerTrigger', 'event handler run error', err);
+                }
             };
 
             /**
