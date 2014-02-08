@@ -17,35 +17,31 @@ define(
          * ArmadillogInputView constructor
          */
         var ArmadillogInputView = function ArmadillogInputView() {
-            var inputView;
-
-            /**
-             * Initializes instance
-             */
-            var init =function ArmadillogInputView_init() {
-                inputView = new View(inputTpl);
-
-                return true;
+            var itc = {
+                inputView: new View(inputTpl)
             };
 
-            /**
-             * Returns input view
-             *
-             * @param {object} context context object
-             */
-            var inputCreate = this.inputCreate = function ArmadillogInputView_inputCreate(context) {
-                return inputView.create(context);
-            };
+            this.inputCreate = inputCreate.bind(this, itc);
 
-            /**
-             *
-             */
-            var toString = this.toString = function ArmadillogInputView_toString() {
-                return 'ennovum.ArmadillogInputView';
-            };
+            this.toString = toString.bind(this, itc);
 
-            //
-            init.apply(this, arguments);
+            return this;
+        };
+
+        /**
+         * Returns input view
+         *
+         * @param {object} context context object
+         */
+        var inputCreate = function ArmadillogInputView_inputCreate(itc, context) {
+            return itc.inputView.create(context);
+        };
+
+        /**
+         *
+         */
+        var toString = function ArmadillogInputView_toString(itc) {
+            return 'ennovum.ArmadillogInputView';
         };
 
         //

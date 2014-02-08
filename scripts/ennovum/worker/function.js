@@ -14,221 +14,225 @@ define(
         /**
          * WorkerFunction constructor
          */
-        var WorkerFunction = function WorkerFunction() {
-            var SOURCE = [
-                '"use strict"',
-                'var ready = function (wid) {',
-                '    return function (data) {',
-                '        postMessage(',
-                '            {',
-                '                "wid": wid,',
-                '                "success": true,',
-                '                "data": data',
-                '            },',
-                '            undefined);',
-                '    };',
-                '};',
-                'var error = function (wid) {',
-                '    return function (data) {',
-                '        postMessage(',
-                '            {',
-                '                "wid": wid,',
-                '                "success": false,',
-                '                "data": data',
-                '            },',
-                '            undefined);',
-                '    };',
-                '};',
-                'this.onmessage = function(event){',
-                '    ({{function}}).call(this, event.data.data, ready(event.data.wid), error(event.data.wid));',
-                '};',
-            ].join('\n');
+        var WorkerFunction = function WorkerFunction(fn, config) {
+            switch (false) {
+                case fn && typeof fn === 'function':
+                case !config || typeof config === 'object':
+                    console.error('WorkerFunction', 'invalid input');
+                    return false;
+                    break;
+            }
 
-            var DISABLE_NATIVE_WORKER_STORAGE_NAME = 'disableNativeWorker';
+            var itc = {
+                queue: undefined,
 
-            var queue;
+                config: {},
+                fn: fn,
 
-            var config;
-            var fn;
+                widSeq: 0,
+                workMap: {},
 
-            var widSeq;
-            var workMap;
+                sourceURL: undefined,
 
-            var source;
-            var sourceURL;
-
-            var worker;
-
-            /**
-             * Initializes instance
-             *
-             * @param {mixed} func Worker body function
-             */
-            var init = function WorkerFunction_init(argFn, argConfig) {
-                queue = utils.obj.mixin(this, new Queue());
-
-                switch (false) {
-                    case argFn && typeof argFn === 'function':
-                    case !argConfig || typeof argConfig === 'object':
-                        console.error('WorkerFunction', 'init', 'invalid input');
-                        return false;
-                        break;
-                }
-
-                config = {};
-                configure(argConfig || {});
-
-                fn = argFn;
-
-                widSeq = 0;
-                workMap = {};
-
-                source = SOURCE.replace('{{function}}', fn.toString());
-                sourceURL = URL.createObjectURL(new Blob([source], {'type': 'text/javascript'}));
-
-                try {
-                    worker = new Worker(sourceURL);
-
-                    worker.onmessage = function WorkerFunction_workerInit_onmessage(event) {
-                        messageHandler(event.data.wid, event.data.success, event.data.data);
-                    };
-
-                    worker.onerror = function WorkerFunction_workerInit_onmessage(event) {
-                        errorHandler(event.data.wid, event.message, event.filename, event.lineno);
-                    };
-                }
-                catch (err) {
-                    worker = null;
-                }
-
-                return true;
+                worker: undefined
             };
 
-            /**
-             *
-             */
-            var configure = this.configure = function WorkerFunction_configure(argConfig) {
-                switch (false) {
-                    case typeof argConfig === 'object':
-                        console.error('WorkerFunction', 'configure', 'invalid input');
-                        return false;
-                        break;
-                }
+            this.configure = configure.bind(this, itc);
+            this.destroy = destroy.bind(this, itc);
+            this.run = run.bind(this, itc);
 
-                if (argConfig && 'disableNativeWorker' in argConfig) {
-                    config['disableNativeWorker'] = !!argConfig['disableNativeWorker'];
-                }
+            this.toString = toString.bind(this, itc);
 
-                return true;
-            };
+            init.call(this, itc, config);
 
-            /**
-             * Destroys instance
-             */
-            var destroy = this.destroy = function WorkerFunction_destroy() {
-                URL.revokeObjectURL(sourceURL);
+            return this;
+        };
 
-                worker.terminate();
+        //
+        var SOURCE = [
+            '"use strict"',
+            'var ready = function (wid) {',
+            '    return function (data) {',
+            '        postMessage(',
+            '            {',
+            '                "wid": wid,',
+            '                "success": true,',
+            '                "data": data',
+            '            },',
+            '            undefined);',
+            '    };',
+            '};',
+            'var error = function (wid) {',
+            '    return function (data) {',
+            '        postMessage(',
+            '            {',
+            '                "wid": wid,',
+            '                "success": false,',
+            '                "data": data',
+            '            },',
+            '            undefined);',
+            '    };',
+            '};',
+            'this.onmessage = function(event){',
+            '    ({{function}}).call(this, event.data.data, ready(event.data.wid), error(event.data.wid));',
+            '};',
+        ].join('\n');
 
-                return true;
-            };
+        //
+        var DISABLE_NATIVE_WORKER_STORAGE_NAME = 'disableNativeWorker';
 
-            /**
-             * Runs the worker
-             *
-             * @param {mixed} data Message data
-             */
-            var run = this.run = function WorkerFunction_run(data, additional, ready, error, ctx) {
-                switch (false) {
-                    case !ready || typeof ready === 'function':
-                    case !error || typeof error === 'function':
-                        console.error('WorkerFunction', 'run', 'invalid input');
-                        return false;
-                        break;
-                }
+        /**
+         *
+         */
+        var init = function WorkerFunction_init(itc, config) {
+            itc.queue = utils.obj.mixin(this, new Queue());
 
-                var wid = '' + (widSeq++);
-                var work = {
-                    'ctx': ctx || null,
-                    'additional': additional || null,
-                    'ready': ready || null,
-                    'error': error || null
+            configure(itc, config || {});
+
+            itc.sourceURL = URL.createObjectURL(
+                new Blob([SOURCE.replace('{{function}}', itc.fn.toString())],
+                {'type': 'text/javascript'}));
+
+            try {
+                itc.worker = new Worker(itc.sourceURL);
+
+                itc.worker.onmessage = function WorkerFunction_workerInit_onmessage(event) {
+                    messageHandler(itc, event.data.wid, event.data.success, event.data.data);
                 };
 
-                workMap[wid] = work;
+                itc.worker.onerror = function WorkerFunction_workerInit_onmessage(event) {
+                    errorHandler(itc, event.data.wid, event.message, event.filename, event.lineno);
+                };
+            }
+            catch (err) {
+                itc.worker = null;
+            }
 
-                queue.queue(
-                    function () {
-                        if (!worker || config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
-                            fn(
-                                data,
-                                function (data) {
-                                    messageHandler(wid, true, data);
-                                },
-                                function (data) {
-                                    messageHandler(wid, false, data);
-                                });
-                        }
-                        else {
-                            worker.postMessage(
-                                {
-                                    'wid': wid,
-                                    'data': data
-                                });
-                        }
-                    },
-                    true, this);
+            return true;
+        };
 
-                return true;
+        /**
+         *
+         */
+        var configure = function WorkerFunction_configure(itc, config) {
+            switch (false) {
+                case typeof config === 'object':
+                    console.error('WorkerFunction', 'configure', 'invalid input');
+                    return false;
+                    break;
+            }
+
+            if (config && 'disableNativeWorker' in config) {
+                itc.config['disableNativeWorker'] = !!config['disableNativeWorker'];
+            }
+
+            return true;
+        };
+
+        /**
+         * Destroys instance
+         */
+        var destroy = function WorkerFunction_destroy(itc) {
+            URL.revokeObjectURL(itc.sourceURL);
+
+            itc.worker.terminate();
+
+            return true;
+        };
+
+        /**
+         * Runs the worker
+         *
+         * @param {mixed} data Message data
+         */
+        var run = function WorkerFunction_run(itc, data, additional, ready, error, ctx) {
+            switch (false) {
+                case !ready || typeof ready === 'function':
+                case !error || typeof error === 'function':
+                    console.error('WorkerFunction', 'run', 'invalid input');
+                    return false;
+                    break;
+            }
+
+            var wid = '' + (itc.widSeq++);
+            var work = {
+                'ctx': ctx || null,
+                'additional': additional || null,
+                'ready': ready || null,
+                'error': error || null
             };
 
-            /**
-             * Handles worker message
-             *
-             * @param {mixed} data Message data
-             */
-            var messageHandler = function WorkerFunction_messageHandler(wid, success, data) {
-                var work = workMap[wid];
+            itc.workMap[wid] = work;
 
-                if (success) {
-                    if (work.ready) {
-                        work.ready.call(work.ctx, data, work.additional);
+            itc.queue.queue(
+                function () {
+                    if (!itc.worker || itc.config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
+                        itc.fn(
+                            data,
+                            function (data) {
+                                messageHandler(itc, wid, true, data);
+                            },
+                            function (data) {
+                                messageHandler(itc, wid, false, data);
+                            });
                     }
-                }
-                else {
-                    if (work.error) {
-                        work.error.call(work.ctx, data, work.additional);
+                    else {
+                        itc.worker.postMessage(
+                            {
+                                'wid': wid,
+                                'data': data
+                            });
                     }
+                },
+                true);
+
+            return true;
+        };
+
+        /**
+         * Handles worker message
+         *
+         * @param {mixed} data Message data
+         */
+        var messageHandler = function WorkerFunction_messageHandler(itc, wid, success, data) {
+            var work = itc.workMap[wid];
+
+            if (success) {
+                if (work.ready) {
+                    work.ready.call(work.ctx, data, work.additional);
                 }
-
-                return true;
-            };
-
-            /**
-             * Handles worker error
-             *
-             * @param {mixed} data Error data
-             */
-            var errorHandler = function WorkerFunction_errorHandler(wid, message, filename, lineno) {
-                console.error(message, filename, lineno);
-
-                var work = workMap[wid];
-
+            }
+            else {
                 if (work.error) {
-                    work.error.call(work.error, {'error': message});
+                    work.error.call(work.ctx, data, work.additional);
                 }
+            }
 
-                return true;
-            };
+            return true;
+        };
 
-            /**
-             *
-             */
-            var toString =function WorkerFunction_toString() {
-                return 'ennovum.workerFunction';
-            };
+        /**
+         * Handles worker error
+         *
+         * @param {mixed} data Error data
+         */
+        var errorHandler = function WorkerFunction_errorHandler(itc, wid, message, filename, lineno) {
+            console.error(message, filename, lineno);
 
-            init.apply(this, arguments);
+            var work = itc.workMap[wid];
+
+            if (work.error) {
+                work.error.call(work.error, {'error': message});
+            }
+
+            return true;
+        };
+
+        /**
+         *
+         */
+        var toString = function WorkerFunction_toString(itc) {
+            return 'ennovum.workerFunction';
         };
 
         //

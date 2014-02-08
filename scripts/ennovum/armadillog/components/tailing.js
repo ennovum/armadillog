@@ -14,123 +14,126 @@ define(
         /**
          * ArmadillogTailing constructor
          */
-        var ArmadillogTailing = function ArmadillogTailing() {
-            var config;
-            var application;
+        var ArmadillogTailing = function ArmadillogTailing(argConfig, argApplication) {
+            var itc = {
+                config: undefined,
+                application: undefined,
 
-            var tailing;
+                tailing: undefined,
 
-            var scrollEl;
-
-            /**
-             * Initializes instance
-             *
-             * @param {object} argConfig configuration object
-             */
-            var init = function ArmadillogTailing_init(argConfig, argApplication) {
-                switch (true) {
-                    case !configSet(argConfig):
-                    case !dataInit(argApplication):
-                    case !viewInit():
-                    case !uiInit():
-                        return false;
-                        break;
-                }
-
-                return true;
+                scrollEl: undefined
             };
 
-            /**
-             * Initializes config
-             *
-             * @param {object} argConfig configuration object
-             */
-            var configSet = function ArmadillogTailing_configSet(argConfig) {
-                switch (false) {
-                    case !!argConfig:
-                    case typeof argConfig === 'object':
-                        console.error('ArmadillogTailing', 'configSet', 'invalid input');
-                        return false;
-                };
+            this.toString = toString.bind(this, itc);
 
-                config = {
-                    scrollEl: argConfig.contentScrollEl || null
-                };
+            init.call(this, itc, argConfig, argApplication);
+        };
 
-                return true;
+        /**
+         * Initializes instance
+         *
+         * @param {object} argConfig configuration object
+         */
+        var init = function ArmadillogTailing_init(itc, argConfig, argApplication) {
+            switch (true) {
+                case !configSet(itc, argConfig):
+                case !dataInit(itc, argApplication):
+                case !viewInit(itc):
+                case !uiInit(itc):
+                    return false;
+                    break;
+            }
+
+            return true;
+        };
+
+        /**
+         * Initializes config
+         *
+         * @param {object} argConfig configuration object
+         */
+        var configSet = function ArmadillogTailing_configSet(itc, argConfig) {
+            switch (false) {
+                case !!argConfig:
+                case typeof argConfig === 'object':
+                    console.error('ArmadillogTailing', 'configSet', 'invalid input');
+                    return false;
             };
 
-            /**
-             * Initializes data
-             */
-            var dataInit = function ArmadillogTailing_dataInit(argApplication) {
-                application = argApplication;
-
-                tailing = false;
-
-                return true;
+            itc.config = {
+                scrollEl: argConfig.contentScrollEl || null
             };
 
-            /**
-             * Initializes view
-             */
-            var viewInit = function ArmadillogTailing_viewInit() {
-                scrollEl = config.scrollEl;
+            return true;
+        };
 
-                return true;
-            };
+        /**
+         * Initializes data
+         */
+        var dataInit = function ArmadillogTailing_dataInit(itc, argApplication) {
+            itc.application = argApplication;
 
-            /**
-             * Initializes UI
-             */
-            var uiInit = function ArmadillogTailing_uiInit() {
-                dom.handle(window, 'load', check, false, false, false, this);
-                dom.handle(scrollEl, 'scroll', check, false, true, true, this);
+            itc.tailing = false;
 
-                application.content.on('view-change', execute);
+            return true;
+        };
 
-                return true;
-            };
+        /**
+         * Initializes view
+         */
+        var viewInit = function ArmadillogTailing_viewInit(itc) {
+            itc.scrollEl = itc.config.scrollEl;
 
-            /**
-             * Checks whether to do tailing
-             */
-            var check = function ArmadillogTailing_check() {
-                if (scrollEl === window) {
-                    tailing = window.scrollY >= window.scrollMaxY
+            return true;
+        };
+
+        /**
+         * Initializes UI
+         */
+        var uiInit = function ArmadillogTailing_uiInit(itc) {
+            dom.handle(window, 'load', check, false, false, false, this, [itc]);
+            dom.handle(itc.scrollEl, 'scroll', check, false, true, true, this, [itc]);
+
+            itc.application.content.on('view-change', execute, this, [itc]);
+
+            return true;
+        };
+
+        /**
+         * Checks whether to do tailing
+         */
+        var check = function ArmadillogTailing_check(itc) {
+            if (itc.scrollEl === window) {
+                itc.tailing = window.scrollY >= window.scrollMaxY
+            }
+            else {
+                itc.tailing = itc.scrollEl.scrollTop > 0 && itc.scrollEl.scrollTop + itc.scrollEl.offsetHeight >= itc.scrollEl.scrollHeight;
+            }
+
+            return true;
+        };
+
+        /**
+         * Executes tailing
+         */
+        var execute = function ArmadillogTailing_execute(itc) {
+            if (itc.tailing) {
+                if (itc.scrollEl === window) {
+                    window.scrollTo(window.scrollX, window.scrollMaxY);
                 }
                 else {
-                    tailing = scrollEl.scrollTop > 0 && scrollEl.scrollTop + scrollEl.offsetHeight >= scrollEl.scrollHeight;
+                    itc.scrollEl.scrollTop = itc.scrollEl.scrollHeight - itc.scrollEl.offsetHeight;
                 }
+            }
 
-                return true;
-            };
+            return true;
+        };
 
-            /**
-             * Executes tailing
-             */
-            var execute = function ArmadillogTailing_execute() {
-                if (tailing) {
-                    if (scrollEl === window) {
-                        window.scrollTo(window.scrollX, window.scrollMaxY);
-                    }
-                    else {
-                        scrollEl.scrollTop = scrollEl.scrollHeight - scrollEl.offsetHeight;
-                    }
-                }
-
-                return true;
-            };
-
-            /**
-             *
-             */
-            var toString = this.toString = function ArmadillogTailing_toString() {
-                return 'ennovum.ArmadillogTailing';
-            };
-
-            //
-            init.apply(this, arguments);
+        /**
+         *
+         */
+        var toString = function ArmadillogTailing_toString(itc) {
+            return 'ennovum.ArmadillogTailing';
         };
 
         //

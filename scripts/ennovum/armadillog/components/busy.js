@@ -14,121 +14,129 @@ define(
         /**
          * ArmadillogBusy constructor
          */
-        var ArmadillogBusy = function ArmadillogBusy() {
-            var config;
-            var application;
+        var ArmadillogBusy = function ArmadillogBusy(config, application) {
+            var itc = {
+                config: undefined,
+                application: undefined,
 
-            var busy;
-            var busyTaskList;
+                busy: undefined,
+                busyTaskList: undefined,
 
-            var bodyEl;
+                bodyEl: undefined
+            };
 
-            /**
-             * Initializes instance
-             *
-             * @param {object} argConfig configuration object
-             */
-            var init = function ArmadillogBusy_init(argConfig, argApplication) {
-                switch (true) {
-                    case !configSet(argConfig):
-                    case !dataInit(argApplication):
-                    case !viewInit():
-                        return false;
-                        break;
+            this.set = set.bind(this, itc);
+            this.check = check.bind(this, itc);
+
+            this.toString = toString.bind(this, itc);
+
+            init.call(this, itc, config, application);
+
+            return this;
+        };
+
+        /**
+         * Initializes instance
+         *
+         * @param {object} config configuration object
+         */
+        var init = function ArmadillogBusy_init(itc, config, application) {
+            switch (true) {
+                case !configSet(itc, config):
+                case !dataInit(itc, application):
+                case !viewInit(itc):
+                    return false;
+                    break;
+            }
+
+            return true;
+        };
+
+        /**
+         * Initializes config
+         *
+         * @param {object} config configuration object
+         */
+        var configSet = function ArmadillogBusy_configSet(itc, config) {
+            switch (false) {
+                case !!config:
+                case typeof config === 'object':
+                    console.error('ArmadillogBusy', 'configSet', 'invalid input');
+                    return false;
+            };
+
+            itc.config = {
+                bodyEl: config.bodyEl || null
+            };
+
+            return true;
+        };
+
+        /**
+         * Initializes data
+         */
+        var dataInit = function ArmadillogBusy_dataInit(itc, application) {
+            itc.application = application;
+
+            itc.busy = false;
+            itc.busyTaskList = [];
+
+            return true;
+        };
+
+        /**
+         * Initializes view
+         */
+        var viewInit = function ArmadillogBusy_viewInit(itc) {
+            itc.bodyEl = itc.config.bodyEl;
+
+            return true;
+        };
+
+        /**
+         * Sets app busy mode
+         *
+         * @param {boolean} busy busy flag value
+         */
+        var set = function ArmadillogBusy_set(itc, busy, task) {
+            var taskIx = itc.busyTaskList.indexOf(task);
+
+            if (busy) {
+                if (!~taskIx) {
+                    itc.busyTaskList.push(task);
                 }
 
-                return true;
-            };
-
-            /**
-             * Initializes config
-             *
-             * @param {object} argConfig configuration object
-             */
-            var configSet = function ArmadillogBusy_configSet(argConfig) {
-                switch (false) {
-                    case !!argConfig:
-                    case typeof argConfig === 'object':
-                        console.error('ArmadillogBusy', 'configSet', 'invalid input');
-                        return false;
-                };
-
-                config = {
-                    bodyEl: argConfig.bodyEl || null
-                };
-
-                return true;
-            };
-
-            /**
-             * Initializes data
-             */
-            var dataInit = function ArmadillogBusy_dataInit(argApplication) {
-                application = argApplication;
-
-                busy = false;
-                busyTaskList = [];
-
-                return true;
-            };
-
-            /**
-             * Initializes view
-             */
-            var viewInit = function ArmadillogBusy_viewInit() {
-                bodyEl = config.bodyEl;
-
-                return true;
-            };
-
-            /**
-             * Sets app busy mode
-             *
-             * @param {boolean} busy busy flag value
-             */
-            var set = this.set = function ArmadillogBusy_set(argBusy, task) {
-                var taskIx = busyTaskList.indexOf(task);
-
-                if (argBusy) {
-                    if (!~taskIx) {
-                        busyTaskList.push(task);
-                    }
-
-                    if (!busy) {
-                        busy = true;
-                        dom.classAdd(bodyEl, 'busy');
-                    }
+                if (!itc.busy) {
+                    itc.busy = true;
+                    dom.classAdd(itc.bodyEl, 'busy');
                 }
-                else {
-                    if (~taskIx) {
-                        busyTaskList.splice(taskIx, 1);
-                    }
-
-                    if (busyTaskList.length === 0) {
-                        busy = false;
-                        dom.classRemove(bodyEl, 'busy');
-                    }
+            }
+            else {
+                if (~taskIx) {
+                    itc.busyTaskList.splice(taskIx, 1);
                 }
 
-                return true;
-            };
+                if (itc.busyTaskList.length === 0) {
+                    itc.busy = false;
+                    dom.classRemove(itc.bodyEl, 'busy');
+                }
+            }
 
-            /**
-             * Checks busy state
-             */
-            var check = this.check = function ArmadillogBusy_check() {
-                return busy;
-            };
+            return true;
+        };
 
-            /**
-             *
-             */
-            var toString = this.toString = function ArmadillogBusy_toString() {
-                return 'ennovum.ArmadillogBusy';
-            };
+        /**
+         * Checks busy state
+         */
+        var check = function ArmadillogBusy_check(itc) {
+            return itc.busy;
+        };
 
-            //
-            init.apply(this, arguments);
+        /**
+         *
+         */
+        var toString = function ArmadillogBusy_toString(itc) {
+            return 'ennovum.ArmadillogBusy';
         };
 
         //

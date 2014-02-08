@@ -19,46 +19,42 @@ define(
          * ArmadillogContentView constructor
          */
         var ArmadillogContentView = function ArmadillogContentView() {
-            var contentView;
-            var contentLineItemView;
-
-            /**
-             * Initializes instance
-             */
-            var init = function ArmadillogContentView_init() {
-                contentView = new View(contentTpl);
-                contentLineItemView = new View(contentLineItemTpl);
-
-                return true;
+            var itc = {
+                contentView: new View(contentTpl),
+                contentLineItemView: new View(contentLineItemTpl)
             };
 
-            /**
-             * Returns content view
-             *
-             * @param {object} context context object
-             */
-            var contentCreate = this.contentCreate = function ArmadillogContentView_contentCreate(context) {
-                return contentView.create(context);
-            };
+            this.contentCreate = contentCreate.bind(this, itc);
+            this.contentLineItemCreate = contentLineItemCreate.bind(this, itc);
 
-            /**
-             * Returns content line view
-             *
-             * @param {object} context context object
-             */
-            var contentLineItemCreate = this.contentLineItemCreate = function ArmadillogContentView_contentLineItemCreate(context) {
-                return contentLineItemView.create(context);
-            };
+            this.toString = toString.bind(this, itc);
 
-            /**
-             *
-             */
-            var toString = this.toString = function ArmadillogContentView_toString() {
-                return 'ennovum.ArmadillogContentView';
-            };
+            return this;
+        };
 
-            //
-            init.apply(this, arguments);
+        /**
+         * Returns content view
+         *
+         * @param {object} context context object
+         */
+        var contentCreate = function ArmadillogContentView_contentCreate(itc, context) {
+            return itc.contentView.create(context);
+        };
+
+        /**
+         * Returns content line view
+         *
+         * @param {object} context context object
+         */
+        var contentLineItemCreate = function ArmadillogContentView_contentLineItemCreate(itc, context) {
+            return itc.contentLineItemView.create(context);
+        };
+
+        /**
+         *
+         */
+        var toString = function ArmadillogContentView_toString(itc) {
+            return 'ennovum.ArmadillogContentView';
         };
 
         //

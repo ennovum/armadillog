@@ -24,93 +24,99 @@ define(
         /**
          * Armadillog constructor
          */
-        var Armadillog = function Armadillog() {
-            var application;
-
-            /**
-             * Initializes instance
-             *
-             * @param {object} config configuration object
-             */
-            var init = function Armadillog_init(config) {
-                switch (true) {
-                    case !browserCheck():
-                    case !applicationInit(config):
-                        return false;
-                        break;
-                }
-
-                return true;
+        var Armadillog = function Armadillog(config) {
+            var itc = {
+                application: undefined
             };
 
-            /**
-             *
-             */
-            var browserCheck = function Armadillog_browserCheck() {
-                switch (true) {
-                    case !document.querySelector:
-                    case !File:
-                    case !FileReader:
-                    case !FileList:
-                    case !Blob:
-                    case !Array.prototype.some:
-                    case !Worker:
-                    case !URL || !URL.createObjectURL:
-                    case !localStorage:
-                        console.error('Armadillog', 'browserCheck', 'unsupported browser');
-                        alert('You are using an uncompatible browser!');
-                        return false;
-                        break;
-                }
+            this.contentClear = contentClear.bind(this, itc);
+            this.contentTextSet = contentTextSet.bind(this, itc);
 
-                return true;
-            };
+            this.toString = toString.bind(this, itc);
 
-            /**
-             * Initializes data
-             */
-            var applicationInit = function Armadillog_applicationInit(config) {
-                application = {};
+            init.call(this, itc, config)
+        };
 
-                application.filter = new ArmadillogFilter(config, application);
-                application.content = new ArmadillogContent(config, application);
-                application.input = new ArmadillogInput(config, application);
-                application.tailing = new ArmadillogTailing(config, application);
-                application.examine = new ArmadillogExamine(config, application);
-                application.busy = new ArmadillogBusy(config, application);
+        /**
+         * Initializes instance
+         *
+         * @param {object} config configuration object
+         */
+        var init = function Armadillog_init(itc, config) {
+            switch (true) {
+                case !browserCheck(itc):
+                case !applicationInit(itc, config):
+                    return false;
+                    break;
+            }
 
-                return true;
-            };
+            return true;
+        };
 
-            /**
-             * Clears content
-             */
-            var contentClear = this.contentClear = function Armadillog_contentClear() {
-                application.content.clear();
+        /**
+         *
+         */
+        var browserCheck = function Armadillog_browserCheck(itc) {
+            switch (true) {
+                case !document.querySelector:
+                case !File:
+                case !FileReader:
+                case !FileList:
+                case !Blob:
+                case !Array.prototype.some:
+                case !Worker:
+                case !URL || !URL.createObjectURL:
+                case !localStorage:
+                    console.error('Armadillog', 'browserCheck', 'unsupported browser');
+                    alert('You are using an uncompatible browser!');
+                    return false;
+                    break;
+            }
 
-                return true;
-            };
+            return true;
+        };
 
-            /**
-             * Sets a piece of source
-             *
-             * @param {string} text a piece of source text
-             */
-            var contentTextSet = this.contentTextSet = function Armadillog_contentTextSet(text, label) {
-                application.content.textSet(text, label);
+        /**
+         * Initializes data
+         */
+        var applicationInit = function Armadillog_applicationInit(itc, config) {
+            itc.application = {};
 
-                return true;
-            };
+            itc.application.filter = new ArmadillogFilter(config, itc.application);
+            itc.application.content = new ArmadillogContent(config, itc.application);
+            itc.application.input = new ArmadillogInput(config, itc.application);
+            itc.application.tailing = new ArmadillogTailing(config, itc.application);
+            itc.application.examine = new ArmadillogExamine(config, itc.application);
+            itc.application.busy = new ArmadillogBusy(config, itc.application);
 
-            /**
-             *
-             */
-            var toString = this.toString = function Armadillog_toString() {
-                return 'ennovum.Armadillog';
-            };
+            return true;
+        };
 
-            //
-            init.apply(this, arguments);
+        /**
+         * Clears content
+         */
+        var contentClear = function Armadillog_contentClear(itc) {
+            itc.application.content.clear();
+
+            return true;
+        };
+
+        /**
+         * Sets a piece of source
+         *
+         * @param {string} text a piece of source text
+         */
+        var contentTextSet = function Armadillog_contentTextSet(itc, text, label) {
+            itc.application.content.textSet(text, label);
+
+            return true;
+        };
+
+        /**
+         *
+         */
+        var toString = function Armadillog_toString(itc) {
+            return 'ennovum.Armadillog';
         };
 
         //

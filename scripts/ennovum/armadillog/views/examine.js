@@ -17,35 +17,31 @@ define(
          * ArmadillogView constructor
          */
         var ArmadillogExamineView = function ArmadillogExamineView() {
-            var examineView;
-
-            /**
-             * Initializes instance
-             */
-            var init = function ArmadillogView_init() {
-                examineView = new View(examineTpl);
-
-                return true;
+            var itc = {
+                examineView: new View(examineTpl)
             };
 
-            /**
-             * Returns examine view
-             *
-             * @param {object} context context object
-             */
-            var examineCreate = this.examineCreate = function ArmadillogView_examineCreate(context) {
-                return examineView.create(context);
-            };
+            this.examineCreate = examineCreate.bind(this, itc);
 
-            /**
-             *
-             */
-            var toString = this.toString = function ArmadillogView_toString() {
-                return 'ennovum.ArmadillogView';
-            };
+            this.toString = toString.bind(this, itc);
 
-            //
-            init.apply(this, arguments);
+            return this;
+        };
+
+        /**
+         * Returns examine view
+         *
+         * @param {object} context context object
+         */
+        var examineCreate = function ArmadillogView_examineCreate(itc, context) {
+            return itc.examineView.create(context);
+        };
+
+        /**
+         *
+         */
+        var toString = function ArmadillogView_toString(itc) {
+            return 'ennovum.ArmadillogView';
         };
 
         //

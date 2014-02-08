@@ -20,158 +20,162 @@ define(
          * ModelValue constructor
          */
         var ModelValue = function ModelValue() {
-            var observable;
-            var queue;
+            var itc = {
+                observable: utils.obj.mixin(this, new Observable()),
+                queue: utils.obj.mixin(this, new Queue()),
 
-            var value;
+                value: undefined,
 
-            var eventGroupList;
-            var valueListener;
-
-            /**
-             * Initializes instance
-             */
-            var init = function ModelValue_init() {
-                observable = utils.obj.mixin(this, new Observable());
-                queue = utils.obj.mixin(this, new Queue());
-
-                eventGroupList = [];
-                valueListener = null;
-
-                arguments.length && this.set.apply(this, arguments);
-
-                return true;
+                eventGroupList: [],
+                valueListener: null,
+                eventFlushScheduled: false
             };
 
-            /**
-             * Returns the value
-             */
-            var get = this.get = function ModelValue_get() {
-                return value;
-            };
+            this.get = get.bind(this, itc);
+            this.set = set.bind(this, itc);
 
-            /**
-             * Sets the value
-             *
-             * @param {mixed} value item's value
-             */
-            var set = this.set = function ModelValue_set(valueTmp) {
-                var valueOld = value;
+            this.toString = toString.bind(this, itc);
 
-                if (valueTmp !== valueOld) {
-                    value = valueTmp;
+            arguments.length && this.set.apply(this, arguments);
 
-                    valueOff(valueOld);
-                    valueOn(value);
+            return this;
+        };
 
-                    eventAdd(
+        /**
+         * Returns the value
+         */
+        var get = function ModelValue_get(itc) {
+            return itc.value;
+        };
+
+        /**
+         * Sets the value
+         *
+         * @param {mixed} value item's value
+         */
+        var set = function ModelValue_set(itc, valueTmp) {
+            var valueOld = itc.value;
+
+            if (valueTmp !== valueOld) {
+                itc.value = valueTmp;
+
+                valueOff(itc, valueOld);
+                valueOn(itc, itc.value);
+
+                eventAdd(
+                    itc,
+                    'model-update',
+                    [{
+                        'valueNew': valueTmp,
+                        'valueOld': valueOld
+                    }]);
+            }
+
+            return true;
+        };
+
+        /**
+         * Attaches event forwarding
+         *
+         * @param {mixed} valueTmp value to attach
+         */
+        var valueOn = function ModelValue_valueOn(itc, valueTmp) {
+            if (valueTmp && typeof valueTmp === 'object' && 'on' in valueTmp && typeof valueTmp.on === 'function') {
+                valueTmp.on(
+                    [
+                        'model-insert',
                         'model-update',
-                        [{
-                            'valueNew': valueTmp,
-                            'valueOld': valueOld
-                        }]);
-                }
+                        'model-delete',
+                        'model-forward'
+                    ],
+                    itc.valueListener = function ModelValue_valueOn_valueListener(event, dataList) {
+                        eventAdd(
+                            itc,
+                            'model-forward',
+                            [{
+                                'valueNew': valueTmp,
+                                'event': event,
+                                'dataList': dataList
+                            }]);
+                    });
+            }
 
-                return true;
-            };
+            return true;
+        };
 
-            /**
-             * Attaches event forwarding
-             *
-             * @param {mixed} valueTmp value to attach
-             */
-            var valueOn = function ModelValue_valueOn(valueTmp) {
-                if (valueTmp && typeof valueTmp === 'object' && 'on' in valueTmp && typeof valueTmp.on === 'function') {
-                    valueTmp.on(
-                        [
-                            'model-insert',
-                            'model-update',
-                            'model-delete',
-                            'model-forward'
-                        ],
-                        valueListener = function ModelValue_valueOn_valueListener(event, dataList) {
-                            eventAdd(
-                                'model-forward',
-                                [{
-                                    'valueNew': valueTmp,
-                                    'event': event,
-                                    'dataList': dataList
-                                }]);
-                        });
-                }
+        /**
+         * Detaches event forwarding
+         *
+         * @param {mixed} valueTmp value to detach
+         */
+        var valueOff = function ModelValue_valueOff(itc, valueTmp) {
+            if (itc.valueListener) {
+                valueTmp.off(
+                    [
+                        'model-insert',
+                        'model-update',
+                        'model-delete',
+                        'model-forward'
+                    ],
+                    itc.valueListener);
 
-                return true;
-            };
+                itc.valueListener = null;
+            }
 
-            /**
-             * Detaches event forwarding
-             *
-             * @param {mixed} valueTmp value to detach
-             */
-            var valueOff = function ModelValue_valueOff(valueTmp) {
-                if (valueListener) {
-                    valueTmp.off(
-                        [
-                            'model-insert',
-                            'model-update',
-                            'model-delete',
-                            'model-forward'
-                        ],
-                        valueListener);
+            return true;
+        };
 
-                    valueListener = null;
-                }
+        /**
+         * Adds the event to the event group list and queues event flush
+         *
+         * @param {string} event event name
+         * @param {dataList} event data list
+         */
+        var eventAdd = function ModelValue_eventAdd(itc, event, dataList) {
+            var eventGroup = itc.eventGroupList[itc.eventGroupList.length - 1] || null;
+            if (!eventGroup || eventGroup.event !== event) {
+                eventGroup = {
+                    'event': event,
+                    'dataList': []
+                };
+                itc.eventGroupList.push(eventGroup);
+            }
 
-                return true;
-            };
+            eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
 
-            /**
-             * Adds the event to the event group list and queues event flush
-             *
-             * @param {string} event event name
-             * @param {dataList} event data list
-             */
-            var eventAdd = function ModelValue_eventAdd(event, dataList) {
-                var eventGroup = eventGroupList[eventGroupList.length - 1] || null;
-                if (!eventGroup || eventGroup.event !== event) {
-                    eventGroup = {
-                        'event': event,
-                        'dataList': []
-                    };
-                    eventGroupList.push(eventGroup);
-                }
+            if (!itc.eventFlushScheduled) {
+                itc.eventFlushScheduled = true;
+                itc.queue.queue(
+                    function () {
+                        itc.eventFlushScheduled = false;
+                        eventFlush(itc);
+                    }, true);
+            }
 
-                eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
+            return true;
+        };
 
-                queue.queued(eventFlush) || queue.queue(eventFlush, true, this);
+        /**
+         * Flushes events
+         */
+        var eventFlush = function ModelValue_eventFlush(itc) {
+            var eventGroup;
 
-                return true;
-            };
+            for (var i = 0, l = itc.eventGroupList.length; i < l; i++) {
+                eventGroup = itc.eventGroupList[i];
+                eventGroup.dataList.length && itc.observable.trigger(eventGroup.event, eventGroup.dataList);
+            }
 
-            /**
-             * Flushes events
-             */
-            var eventFlush = function ModelValue_eventFlush() {
-                for (var i = 0, l = eventGroupList.length; i < l; i++) {
-                    if (eventGroupList[i].dataList.length) {
-                        observable.trigger(eventGroupList[i].event, eventGroupList[i].dataList);
-                    }
-                }
+            itc.eventGroupList = [];
 
-                eventGroupList = [];
+            return true;
+        };
 
-                return true;
-            };
-
-            /**
-             *
-             */
-            var toString = this.toString = function ModelValue_toString() {
-                return 'ennovum.model.ModelValue';
-            };
-
-            //
-            init.apply(this, arguments);
+        /**
+         *
+         */
+        var toString = function ModelValue_toString() {
+            return 'ennovum.model.ModelValue';
         };
 
         //

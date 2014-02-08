@@ -14,85 +14,90 @@ define(
         /**
          * WorkerDownloader constructor
          */
-        var WorkerDownloader = function WorkerDownloader() {
-            var workerFunction;
+        var WorkerDownloader = function WorkerDownloader(config) {
+            var itc = {
+                workerFunction: undefined,
+                fn: undefined
+            }
 
-            var fn;
+            this.toString = toString.bind(this, itc);
 
-            /**
-             * Initializes instance
-             */
-            var init = function WorkerDownloader_init(config) {
-                fn = function (data, success, failure) {
-                    try {
-                        var xhr = new XMLHttpRequest();
-                        xhr.open('GET', data.url, true);
+            init.call(this, itc, config);
 
-                        if (data.responseType) {
-                            xhr.responseType = data.responseType;
-                        }
+            return this;
+        };
 
-                        xhr.onreadystatechange = function (event) {
-                            if (xhr.readyState === 4) {
-                                if (xhr.status === 0 || xhr.status === 200) {
-                                    var result = xhr.response;
-                                    var length = xhr.response.length;
-                                    var lengthOriginal = length;
+        /**
+         * Initializes instance
+         */
+        var init = function WorkerDownloader_init(itc, config) {
+            itc.fn = function (data, success, failure) {
+                try {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', data.url, true);
 
-                                    if (data.limit && length > Math.abs(data.limit)) {
-                                        if (data.limit < 0) {
-                                            result = xhr.response.slice(data.limit);
-                                            length = 0 - data.limit;
-                                        }
-                                        else {
-                                            result = xhr.response.slice(0, data.limit);
-                                            length = data.limit;
-                                        }
+                    if (data.responseType) {
+                        xhr.responseType = data.responseType;
+                    }
+
+                    xhr.onreadystatechange = function (event) {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 0 || xhr.status === 200) {
+                                var result = xhr.response;
+                                var length = xhr.response.length;
+                                var lengthOriginal = length;
+
+                                if (data.limit && length > Math.abs(data.limit)) {
+                                    if (data.limit < 0) {
+                                        result = xhr.response.slice(data.limit);
+                                        length = 0 - data.limit;
                                     }
+                                    else {
+                                        result = xhr.response.slice(0, data.limit);
+                                        length = data.limit;
+                                    }
+                                }
 
-                                    success(
-                                        {
-                                            'url': data.url,
-                                            'result': result,
-                                            'length': length,
-                                            'lengthOriginal': lengthOriginal
-                                        },
-                                        null);
-                                }
-                                else {
-                                    failure(
-                                        {
-                                            'error': 'request failed'
-                                        },
-                                        null);
-                                }
+                                success(
+                                    {
+                                        'url': data.url,
+                                        'result': result,
+                                        'length': length,
+                                        'lengthOriginal': lengthOriginal
+                                    },
+                                    null);
                             }
-                        };
+                            else {
+                                failure(
+                                    {
+                                        'error': 'request failed'
+                                    },
+                                    null);
+                            }
+                        }
+                    };
 
-                        xhr.send();
-                    }
-                    catch (e) {
-                        failure(
-                            {
-                                'error': e.message
-                            },
-                            null);
-                    }
-                };
-
-                workerFunction = utils.obj.mixin(this, new WorkerFunction(fn, config));
-
-                return true;
+                    xhr.send();
+                }
+                catch (e) {
+                    failure(
+                        {
+                            'error': e.message
+                        },
+                        null);
+                }
             };
 
-            /**
-             *
-             */
-            var toString = this.toString = function WorkerDownloader_toString() {
-                return 'ennovum.workerDownloader';
-            };
+            itc.workerFunction = utils.obj.mixin(this, new WorkerFunction(itc.fn, config));
 
-            init.apply(this, arguments);
+            return true;
+        };
+
+        /**
+         *
+         */
+        var toString = function WorkerDownloader_toString() {
+            return 'ennovum.workerDownloader';
         };
 
         //

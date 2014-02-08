@@ -340,11 +340,11 @@ define(
             /**
              *
              */
-            var handle = this.handle = function Dom_handle(el, eventType, handler, useCapture, preventDefault, stopPropagation, ctx) {
+            var handle = this.handle = function Dom_handle(el, eventType, handler, useCapture, preventDefault, stopPropagation, ctx, args) {
                 el && el.addEventListener(
                     eventType,
                     function (event) {
-                        handler && handler.call(ctx, event);
+                        handler && handler.apply(ctx, (args || []).concat(event));
                         preventDefault && event.preventDefault();
                         stopPropagation && event.stopPropagation();
                     },

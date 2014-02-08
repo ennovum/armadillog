@@ -19,75 +19,71 @@ define(
          * ArmadillogFilterView constructor
          */
         var ArmadillogFilterView = function ArmadillogFilterView() {
-            var filterView;
-            var filterItemView;
-
-            /**
-             * Initializes instance
-             */
-            var init = function ArmadillogFilterView_init() {
-                filterView = new View(filterTpl);
-                filterItemView = new View(filterItemTpl);
-
-                return true;
+            var itc = {
+                filterView: new View(filterTpl),
+                filterItemView: new View(filterItemTpl)
             };
 
-            /**
-             * Returns filter view
-             *
-             * @param {object} context context object
-             */
-            var filterCreate = this.filterCreate = function ArmadillogFilterView_filterCreate(context) {
-                return filterView.create(context);
-            };
+            this.filterCreate = filterCreate.bind(this, itc);
+            this.filterItemCreate = filterItemCreate.bind(this, itc);
 
-            /**
-             * Returns filter item view
-             *
-             * @param {object} context context object
-             */
-            var filterItemCreate = this.filterItemCreate = function ArmadillogFilterView_filterItemCreate(context) {
-                var filterItemEls = filterItemView.create(context);
+            this.toString = toString.bind(this, itc);
 
-                highlightTypeChangeBind(filterItemEls.highlightTypeListSelectEl);
+            return this;
+        };
 
-                return filterItemEls;
-            };
+        /**
+         * Returns filter view
+         *
+         * @param {object} context context object
+         */
+        var filterCreate = function ArmadillogFilterView_filterCreate(itc, context) {
+            return itc.filterView.create(context);
+        };
 
-            /**
-             *
-             * @param {DOMElement} highlightTypeListSelectEl highlight type select element
-             */
-            var highlightTypeChangeBind = function ArmadillogFilterView_highlightTypeChangeBind(highlightTypeListSelectEl) {
-                dom.handle(highlightTypeListSelectEl, 'change', highlightTypeChangeHandle.bind(this, highlightTypeListSelectEl), false, false, false, this);
+        /**
+         * Returns filter item view
+         *
+         * @param {object} context context object
+         */
+        var filterItemCreate = function ArmadillogFilterView_filterItemCreate(itc, context) {
+            var filterItemEls = itc.filterItemView.create(context);
 
-                /* hack for select not triggering change event when it's synchronically created and updated
-                   TODO get rid of it in some civilised manner */
-                setTimeout(function () {dom.triggerEvent(highlightTypeListSelectEl, 'change');}, 0);
-            };
+            highlightTypeChangeBind(itc, filterItemEls.highlightTypeListSelectEl);
 
-            /**
-             *
-             * @param {DOMElement} highlightTypeListSelectEl highlight type select element
-             */
-            var highlightTypeChangeHandle = function ArmadillogFilterView_highlightTypeChangeHandle(highlightTypeListSelectEl) {
-                var selectedClass = highlightTypeListSelectEl.getAttribute('selected-class') || '';
-                dom.classRemove(highlightTypeListSelectEl, selectedClass);
+            return filterItemEls;
+        };
 
-                selectedClass = highlightTypeListSelectEl.options[highlightTypeListSelectEl.selectedIndex].getAttribute('selected-class') || '';
-                highlightTypeListSelectEl.setAttribute('selected-class', selectedClass);
-                dom.classAdd(highlightTypeListSelectEl, selectedClass);
-            };
+        /**
+         *
+         * @param {DOMElement} highlightTypeListSelectEl highlight type select element
+         */
+        var highlightTypeChangeBind = function ArmadillogFilterView_highlightTypeChangeBind(itc, highlightTypeListSelectEl) {
+            dom.handle(highlightTypeListSelectEl, 'change', highlightTypeChangeHandle, false, false, false, this, [itc, highlightTypeListSelectEl]);
 
-            /**
-             *
-             */
-            var toString = this.toString = function ArmadillogFilterView_toString() {
-                return 'ennovum.ArmadillogFilterView';
-            };
+            /* hack for select not triggering change event when it's synchronically created and updated
+               TODO get rid of it in some civilised manner */
+            setTimeout(function () {dom.triggerEvent(highlightTypeListSelectEl, 'change');}, 0);
+        };
 
-            //
-            init.apply(this, arguments);
+        /**
+         *
+         * @param {DOMElement} highlightTypeListSelectEl highlight type select element
+         */
+        var highlightTypeChangeHandle = function ArmadillogFilterView_highlightTypeChangeHandle(itc, highlightTypeListSelectEl) {
+            var selectedClass = highlightTypeListSelectEl.getAttribute('selected-class') || '';
+            dom.classRemove(highlightTypeListSelectEl, selectedClass);
+
+            selectedClass = highlightTypeListSelectEl.options[highlightTypeListSelectEl.selectedIndex].getAttribute('selected-class') || '';
+            highlightTypeListSelectEl.setAttribute('selected-class', selectedClass);
+            dom.classAdd(highlightTypeListSelectEl, selectedClass);
+        };
+
+        /**
+         *
+         */
+        var toString = function ArmadillogFilterView_toString() {
+            return 'ennovum.ArmadillogFilterView';
         };
 
         //

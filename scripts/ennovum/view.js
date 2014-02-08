@@ -16,50 +16,46 @@ define(
         /**
          * View constructor
          */
-        var View = function View() {
-            var make;
-
-            /**
-             * Initializes instance
-             */
-            var init = function View_init(template) {
-                make = handlebars.compile(template);
-
-                return true;
+        var View = function View(template) {
+            var itc = {
+                make: handlebars.compile(template)
             };
 
-            /**
-             * Returns view elements object
-             *
-             * @param {object} context context object
-             */
-            var create = this.create = function View_get(context) {
-                var wrapEl = dom.createElement('div');
-                wrapEl.innerHTML = make(context);
+            this.create = create.bind(this, itc);
 
-                var coll = wrapEl.querySelectorAll('[data-view-element], [view-element]');
-                var el;
-                var name;
-                var result = {};
+            this.toString = toString.bind(this, itc);
 
-                for (var i = 0, l = coll.length; i < l; i++) {
-                    el = coll[i];
-                    name = el.getAttribute('data-view-element') || el.getAttribute('view-element');
-                    result[name] = el;
-                }
+            return this;
+        };
 
-                return result;
-            };
+        /**
+         * Returns view elements object
+         *
+         * @param {object} context context object
+         */
+        var create = function View_create(itc, context) {
+            var wrapEl = dom.createElement('div');
+            wrapEl.innerHTML = itc.make(context);
 
-            /**
-             *
-             */
-            var toString = this.toString = function View_toString() {
-                return 'ennovum.View';
-            };
+            var coll = wrapEl.querySelectorAll('[data-view-element], [view-element]');
+            var el;
+            var name;
+            var result = {};
 
-            //
-            init.apply(this, arguments);
+            for (var i = 0, l = coll.length; i < l; i++) {
+                el = coll[i];
+                name = el.getAttribute('data-view-element') || el.getAttribute('view-element');
+                result[name] = el;
+            }
+
+            return result;
+        };
+
+        /**
+         *
+         */
+        var toString = function View_toString(itc) {
+            return 'ennovum.View';
         };
 
         //

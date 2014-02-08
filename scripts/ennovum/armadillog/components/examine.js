@@ -16,139 +16,145 @@ define(
         /**
          * ArmadillogExamine constructor
          */
-        var ArmadillogExamine = function ArmadillogExamine() {
-            var config;
-            var application;
+        var ArmadillogExamine = function ArmadillogExamine(config, application) {
+            var itc = {
+                config: undefined,
+                application: undefined,
 
-            var bodyEl;
-            var boxEl;
-            var view;
-            var examineEls;
-
-            /**
-             * Initializes instance
-             *
-             * @param {object} argConfig configuration object
-             */
-            var init = function ArmadillogExamine_init(argConfig, argApplication) {
-                switch (true) {
-                    case !configSet(argConfig):
-                    case !dataInit(argApplication):
-                    case !viewInit():
-                    case !uiInit():
-                        return false;
-                        break;
-                }
-
-                return true;
+                bodyEl: undefined,
+                boxEl: undefined,
+                view: undefined,
+                examineEls: undefined
             };
 
-            /**
-             * Initializes config
-             *
-             * @param {object} argConfig configuration object
-             */
-            var configSet = function ArmadillogExamine_configSet(argConfig) {
-                switch (false) {
-                    case !!argConfig:
-                    case typeof argConfig === 'object':
-                        console.error('ArmadillogExamine', 'configSet', 'invalid input');
-                        return false;
-                };
+            this.set = set.bind(this, itc);
+            this.clear = clear.bind(this, itc);
 
-                config = {
-                    boxEl: argConfig.examineBoxEl || null
-                };
+            this.toString = toString.bind(this, itc);
 
-                return true;
-            };
+            init.call(this, itc, config, application);
+        };
 
-            /**
-             * Initializes data
-             */
-            var dataInit = function ArmadillogExamine_dataInit(argApplication) {
-                application = argApplication;
-
-                return true;
-            };
-
-            /**
-             * Initializes view
-             */
-            var viewInit = function ArmadillogExamine_viewInit() {
-                bodyEl = config.bodyEl;
-
-                boxEl = config.boxEl;
-                if (!boxEl) {
-                    console.error('ArmadillogExamine', 'viewInit', 'invalid boxEl');
+        /**
+         * Initializes instance
+         *
+         * @param {object} config configuration object
+         */
+        var init = function ArmadillogExamine_init(itc, config, application) {
+            switch (true) {
+                case !configSet(itc, config):
+                case !dataInit(itc, application):
+                case !viewInit(itc):
+                case !uiInit(itc):
                     return false;
-                };
+                    break;
+            }
 
-                view = new ArmadillogExamineView();
+            return true;
+        };
 
-                examineEls = view.examineCreate();
-                boxEl.appendChild(examineEls.rawBoxEl);
-                boxEl.appendChild(examineEls.filteredBoxEl);
-
-                return true;
+        /**
+         * Initializes config
+         *
+         * @param {object} config configuration object
+         */
+        var configSet = function ArmadillogExamine_configSet(itc, config) {
+            switch (false) {
+                case !!config:
+                case typeof config === 'object':
+                    console.error('ArmadillogExamine', 'configSet', 'invalid input');
+                    return false;
             };
 
-            /**
-             * Initializes UI
-             */
-            var uiInit = function ArmadillogExamine_uiInit() {
-                dom.handle(
-                    examineEls.rawContentEl, 'keyup',
-                    function (evt) {
-                        if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
-                            evt.stopPropagation();
-                        }
-                    },
-                    false, false, false, this);
-
-                dom.handle(
-                    examineEls.filteredContentEl, 'keyup',
-                    function (evt) {
-                        if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
-                            evt.stopPropagation();
-                        }
-                    },
-                    false, false, false, this);
-
-                return true;
+            itc.config = {
+                boxEl: config.examineBoxEl || null
             };
 
-            /**
-             * Sets examine content
-             *
-             * @param {object} contentLineItemMMap content line model object
-             */
-            var set = this.set = function ArmadillogExamine_set(contentLineItemMMap) {
-                examineEls.rawContentEl.innerHTML = utils.string.escapeXML(contentLineItemMMap.get('textRaw'));
-                examineEls.filteredContentEl.innerHTML = contentLineItemMMap.get('els').el.innerHTML;
+            return true;
+        };
 
-                return true;
+        /**
+         * Initializes data
+         */
+        var dataInit = function ArmadillogExamine_dataInit(itc, application) {
+            itc.application = application;
+
+            return true;
+        };
+
+        /**
+         * Initializes view
+         */
+        var viewInit = function ArmadillogExamine_viewInit(itc) {
+            itc.bodyEl = itc.config.bodyEl;
+
+            itc.boxEl = itc.config.boxEl;
+            if (!itc.boxEl) {
+                console.error('ArmadillogExamine', 'viewInit', 'invalid boxEl');
+                return false;
             };
 
-            /**
-             * Clears examine content
-             */
-            var clear = this.clear = function ArmadillogExamine_clear() {
-                examineEls.rawContentEl.innerHTML = '';
-                examineEls.filteredContentEl.innerHTML = '';
+            itc.view = new ArmadillogExamineView();
 
-                return true;
-            };
+            itc.examineEls = itc.view.examineCreate();
+            itc.boxEl.appendChild(itc.examineEls.rawBoxEl);
+            itc.boxEl.appendChild(itc.examineEls.filteredBoxEl);
 
-            /**
-             *
-             */
-            var toString = this.toString = function ArmadillogExamine_toString() {
-                return 'ennovum.ArmadillogExamine';
-            };
+            return true;
+        };
 
-            //
-            init.apply(this, arguments);
+        /**
+         * Initializes UI
+         */
+        var uiInit = function ArmadillogExamine_uiInit(itc) {
+            dom.handle(
+                itc.examineEls.rawContentEl, 'keyup',
+                function (evt) {
+                    if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
+                        evt.stopPropagation();
+                    }
+                },
+                false, false, false, this);
+
+            dom.handle(
+                itc.examineEls.filteredContentEl, 'keyup',
+                function (evt) {
+                    if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
+                        evt.stopPropagation();
+                    }
+                },
+                false, false, false, this);
+
+            return true;
+        };
+
+        /**
+         * Sets examine content
+         *
+         * @param {object} contentLineItemMMap content line model object
+         */
+        var set = function ArmadillogExamine_set(itc, contentLineItemMMap) {
+            itc.examineEls.rawContentEl.innerHTML = utils.string.escapeXML(contentLineItemMMap.get('textRaw'));
+            itc.examineEls.filteredContentEl.innerHTML = contentLineItemMMap.get('els').el.innerHTML;
+
+            return true;
+        };
+
+        /**
+         * Clears examine content
+         */
+        var clear = function ArmadillogExamine_clear(itc) {
+            itc.examineEls.rawContentEl.innerHTML = '';
+            itc.examineEls.filteredContentEl.innerHTML = '';
+
+            return true;
+        };
+
+        /**
+         *
+         */
+        var toString = function ArmadillogExamine_toString(itc) {
+            return 'ennovum.ArmadillogExamine';
         };
 
         //

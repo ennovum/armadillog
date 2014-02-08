@@ -13,161 +13,166 @@ define(
          * Queue constructor
          */
         var Queue = function Queue() {
-            var list;
-            var pauses;
-
-            /**
-             * Initializes instance
-             */
-            var init = function Queue_init() {
-                list = [];
-                pauses = 0;
-
-                return true;
+            var itc = {
+                list: [],
+                pauses: 0
             };
 
-            /**
-             * Puts a thing to the queue
-             */
-            var queue = this.queue = function Queue_queue(thing, dequeue, ctx, args) {
-                var item = {
-                    thing: thing,
-                    dequeue: dequeue,
-                    ctx: ctx,
-                    args: args,
-                    run: false
-                };
+            this.queue = queue.bind(this, itc);
+            this.dequeue = dequeue.bind(this, itc);
+            this.queued = queued.bind(this, itc);
 
-                if (list.push(item) === 1) {
-                    run();
-                }
+            this.pause = pause.bind(this, itc);
+            this.unpause = unpause.bind(this, itc);
+            this.paused = paused.bind(this, itc);
 
-                return true;
+            this.toString = toString.bind(this, itc);
+
+            return this;
+        };
+
+        /**
+         * Puts a thing to the queue
+         */
+        var queue = function Queue_queue(itc, thing, dequeue, ctx, args) {
+            var item = {
+                thing: thing,
+                dequeue: dequeue,
+                ctx: ctx,
+                args: args,
+                run: false
             };
 
-            /**
-             * Removes certain thing from the queue
-             */
-            var dequeue = this.dequeue = function Queue_dequeue(thing) {
-                if (typeof thing === 'undefined') {
-                    if (list.length === 0) {
-                        return false;
-                    }
+            if (itc.list.push(item) === 1) {
+                run(itc);
+            }
 
-                    list.shift();
+            return true;
+        };
 
-                    utils.func.async(run);
-                }
-                else {
-                    var ix = indexOf(thing);
-                    if (!~ix) {
-                        return false;
-                    }
-
-                    list.splice(ix, 1);
-
-                    if (ix === 0) {
-                        utils.func.async(run);
-                    }
-                }
-
-                return true;
-            };
-
-            /**
-             * Runs the queue
-             */
-            var run = function Queue_run() {
-                if (paused() || list.length === 0) {
+        /**
+         * Removes certain thing from the queue
+         */
+        var dequeue = function Queue_dequeue(itc, thing) {
+            if (typeof thing === 'undefined') {
+                if (itc.list.length === 0) {
                     return false;
                 }
 
-                var item = list[0];
+                itc.list.shift();
 
-                if (item.run) {
+                utils.func.async(function () {
+                    run(itc);
+                });
+            }
+            else {
+                var ix = indexOf(itc, thing);
+                if (!~ix) {
                     return false;
                 }
-                item.run = true;
 
-                if (typeof item.thing === 'function') {
-                    item.thing.apply(item.ctx, item.args);
+                itc.list.splice(ix, 1);
+
+                if (ix === 0) {
+                    utils.func.async(function () {
+                        run(itc);
+                    });
+                }
+            }
+
+            return true;
+        };
+
+        /**
+         * Runs the queue
+         */
+        var run = function Queue_run(itc) {
+            if (paused(itc) || itc.list.length === 0) {
+                return false;
+            }
+
+            var item = itc.list[0];
+
+            if (item.run) {
+                return false;
+            }
+            item.run = true;
+
+            if (typeof item.thing === 'function') {
+                item.thing.apply(item.ctx, item.args);
+            }
+
+            if (item.dequeue === true) {
+                dequeue(itc);
+            }
+
+            return true;
+        };
+
+        /**
+         * Returns number of queued elements matching argument or any
+         */
+        var queued = function Queue_queued(itc, thing) {
+            if (typeof thing === 'undefined') {
+                return itc.list.length;
+            }
+            else {
+                var ix = -1;
+                var count = 0;
+
+                while (~(ix = indexOf(itc, thing, ix + 1))) {
+                    count++;
                 }
 
-                if (item.dequeue === true) {
-                    dequeue();
+                return count;
+            }
+        };
+
+        /**
+         *
+         */
+        var indexOf = function Queue_indexOf(itc, thing, ixFrom) {
+            for (var i = ixFrom || 0, l = itc.list.length; i < l; i++) {
+                if (itc.list[i].thing === thing) {
+                    return i;
                 }
+            }
 
-                return true;
-            };
+            return -1;
+        };
 
-            /**
-             * Returns number of queued elements matching argument or any
-             */
-            var queued = this.queued = function Queue_queued(thing) {
-                if (typeof thing === 'undefined') {
-                    return list.length;
-                }
-                else {
-                    var ix = -1;
-                    var count = 0;
+        /**
+         *
+         */
+        var pause = function Queue_pause(itc) {
+            itc.pauses += 1;
 
-                    while (~(ix = indexOf(thing, ix + 1))) {
-                        count++;
-                    }
+            return true;
+        };
 
-                    return count;
-                }
-            };
+        /**
+         *
+         */
+        var unpause = function Queue_unpause(itc) {
+            itc.pauses -= 1;
 
-            /**
-             *
-             */
-            var indexOf = function Queue_indexOf(thing, ixFrom) {
-                for (var i = ixFrom || 0, l = list.length; i < l; i++) {
-                    if (list[i].thing === thing) {
-                        return i;
-                    }
-                }
+            run(itc);
 
-                return -1;
-            };
+            return true;
+        };
 
-            /**
-             *
-             */
-            var pause = this.pause = function Queue_pause() {
-                pauses += 1;
+        /**
+         *
+         */
+        var paused = function Queue_paused(itc) {
+            return itc.pauses > 0;
+        };
 
-                return true;
-            };
-
-            /**
-             *
-             */
-            var unpause = this.unpause = function Queue_unpause() {
-                pauses -= 1;
-
-                run();
-
-                return true;
-            };
-
-            /**
-             *
-             */
-            var paused = this.paused = function Queue_paused() {
-                return pauses > 0;
-            };
-
-            /**
-             *
-             */
-            var toString = this.toString = function Queue_toString() {
-                return 'ennovum.Queue';
-            };
-
-            //
-            init.apply(this, arguments);
+        /**
+         *
+         */
+        var toString = function Queue_toString(itc) {
+            return 'ennovum.Queue';
         };
 
         //

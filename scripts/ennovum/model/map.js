@@ -20,242 +20,251 @@ define(
          * ModelMap constructor
          */
         var ModelMap = function ModelMap() {
-            var observable;
-            var queue;
+            var itc = {
+                observable: utils.obj.mixin(this, new Observable()),
+                queue: utils.obj.mixin(this, new Queue()),
 
-            var map;
+                map: {},
 
-            var eventGroupList;
-            var valueListenerMap;
-
-            /**
-             * Initializes instance
-             */
-            var init = function ModelMap_init() {
-                observable = utils.obj.mixin(this, new Observable());
-                queue = utils.obj.mixin(this, new Queue());
-
-                map = {};
-
-                eventGroupList = [];
-                valueListenerMap = {};
-
-                arguments.length && set.apply(this, arguments);
-
-                return true;
+                eventGroupList: [],
+                valueListenerMap: {},
+                eventFlushScheduled: false
             };
 
-            /**
-             * Returns a value at the given key
-             *
-             * @param {string} key key of the value to return
-             */
-            var get = this.get = function ModelMap_get(key) {
-                return map[key];
-            };
+            this.get = get.bind(this, itc);
+            this.set = set.bind(this, itc);
+            this.del = del.bind(this, itc);
+            this.has = has.bind(this, itc);
 
-            /**
-             * Sets the given values at the given keys
-             *
-             * @param {string} key key of the value to be set
-             * @param {mixed} value value to be set
-             */
-            var set = this.set = function ModelMap_set(key, value) {
-                var insertList = [];
-                var updateList = [];
+            this.toMap = toMap.bind(this, itc);
+            this.toString = toString.bind(this, itc);
 
-                for (var i = 0, l = arguments.length; i < l; i += 2) {
-                    key = '' + arguments[i];
-                    value = arguments[i + 1];
+            arguments.length && this.set.apply(this, arguments);
 
-                    if (key in map) {
-                        var valueOld = map[key];
+            return this;
+        };
 
-                        if (value !== valueOld) {
-                            map[key] = value;
+        /**
+         * Returns a value at the given key
+         *
+         * @param {string} key key of the value to return
+         */
+        var get = function ModelMap_get(itc, key) {
+            return itc.map[key];
+        };
 
-                            valueOff(key, valueOld);
-                            valueOn(key, value);
+        /**
+         * Sets the given values at the given keys
+         *
+         * @param {string} key key of the value to be set
+         * @param {mixed} value value to be set
+         */
+        var set = function ModelMap_set(itc, key, value) {
+            var keyValueList = Array.prototype.slice.call(arguments, 1);
+            var insertList = [];
+            var updateList = [];
 
-                            updateList.push({
-                                'key': key,
-                                'valueNew': value,
-                                'valueOld': valueOld
-                            });
-                        }
-                    }
-                    else {
-                        map[key] = value;
+            for (var i = 0, l = keyValueList.length; i < l; i += 2) {
+                key = '' + keyValueList[i];
+                value = keyValueList[i + 1];
 
-                        valueOn(key, value);
+                if (key in itc.map) {
+                    var valueOld = itc.map[key];
 
-                        insertList.push({
+                    if (value !== valueOld) {
+                        itc.map[key] = value;
+
+                        valueOff(itc, key, valueOld);
+                        valueOn(itc, key, value);
+
+                        updateList.push({
                             'key': key,
-                            'valueNew': value
-                        });
-                    }
-                }
-
-                insertList.length && eventAdd('model-insert', insertList);
-                updateList.length && eventAdd('model-update', updateList);
-
-                return true;
-            };
-
-            /**
-             * Removes a value at the given key
-             *
-             * @param {string} key key of the value to be deleted
-             */
-            var del = this.del = function ModelMap_del(key) {
-                var deleteList = [];
-
-                for (var i = 0, l = arguments.length; i < l; i++) {
-                    key = '' + arguments[i];
-
-                    if (key in map) {
-                        var valueOld = map[key];
-
-                        delete map[key];
-
-                        valueOff(key, valueOld);
-
-                        deleteList.push({
-                            'key': key,
+                            'valueNew': value,
                             'valueOld': valueOld
                         });
                     }
                 }
+                else {
+                    itc.map[key] = value;
 
-                deleteList.length && eventAdd('model-delete', deleteList);
+                    valueOn(itc, key, value);
 
-                return true;
-            };
-
-            /**
-             * Checks if the given key exists
-             *
-             * @param {string} key key to be checked
-             */
-            var has = this.has = function ModelMap_has(key) {
-                for (var i = 0, l = arguments.length; i < l; i++) {
-                    key = '' + arguments[i];
-
-                    if (key in map) {
-                        return true;
-                    }
+                    insertList.push({
+                        'key': key,
+                        'valueNew': value
+                    });
                 }
+            }
 
-                return false;
-            };
+            insertList.length && eventAdd(itc, 'model-insert', insertList);
+            updateList.length && eventAdd(itc, 'model-update', updateList);
 
-            /**
-             * Attaches event forwarding
-             *
-             * @param {number} key key of the value to attach
-             * @param {mixed} value value to attach
-             */
-            var valueOn = function ModelMap_valueOn(key, value) {
-                if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
-                    value.on(
-                        [
-                            'model-insert',
-                            'model-update',
-                            'model-delete',
-                            'model-forward'
-                        ],
-                        valueListenerMap[key] = function ModelMap_valueOn_valueListener(event, dataList) {
-                            eventAdd(
-                                'model-forward',
-                                [{
-                                    'key': key,
-                                    'valueNew': value,
-                                    'event': event,
-                                    'dataList': dataList
-                                }]);
-                        });
+            return true;
+        };
+
+        /**
+         * Removes a value at the given key
+         *
+         * @param {string} key key of the value to be deleted
+         */
+        var del = function ModelMap_del(itc, key) {
+            var keyList = Array.prototype.slice.call(arguments, 1);
+            var deleteList = [];
+
+            for (var i = 0, l = keyList.length; i < l; i++) {
+                key = '' + keyList[i];
+
+                if (key in itc.map) {
+                    var valueOld = itc.map[key];
+
+                    delete itc.map[key];
+
+                    valueOff(itc, key, valueOld);
+
+                    deleteList.push({
+                        'key': key,
+                        'valueOld': valueOld
+                    });
                 }
+            }
 
-                return true;
-            };
+            deleteList.length && eventAdd(itc, 'model-delete', deleteList);
 
-            /**
-             * Detaches event forwarding
-             *
-             * @param {number} key key of the value to detach
-             * @param {mixed} value value to detach
-             */
-            var valueOff = function ModelMap_valueOff(key, value) {
-                if (valueListenerMap[key]) {
-                    value.off(
-                        [
-                            'model-insert',
-                            'model-update',
-                            'model-delete',
-                            'model-forward'
-                        ],
-                        valueListenerMap[key]);
+            return true;
+        };
 
-                    valueListenerMap[key] = null;
+        /**
+         * Checks if the given key exists
+         *
+         * @param {string} key key to be checked
+         */
+        var has = function ModelMap_has(itc, key) {
+            var keyList = Array.prototype.slice.call(arguments, 1);
+
+            for (var i = 0, l = keyList.length; i < l; i++) {
+                key = '' + keyList[i];
+
+                if (key in itc.map) {
+                    return true;
                 }
+            }
 
-                return true;
-            };
+            return false;
+        };
 
-            /**
-             * Adds the event to the event group list and queues event flush
-             *
-             * @param {string} event event name
-             * @param {dataList} event data list
-             */
-            var eventAdd = function ModelMap_eventAdd(event, dataList) {
-                var eventGroup = eventGroupList[eventGroupList.length - 1] || null;
-                if (!eventGroup || eventGroup.event !== event) {
-                    eventGroup = {
-                        'event': event,
-                        'dataList': []
-                    };
-                    eventGroupList.push(eventGroup);
-                }
+        /**
+         * Attaches event forwarding
+         *
+         * @param {number} key key of the value to attach
+         * @param {mixed} value value to attach
+         */
+        var valueOn = function ModelMap_valueOn(itc, key, value) {
+            if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
+                value.on(
+                    [
+                        'model-insert',
+                        'model-update',
+                        'model-delete',
+                        'model-forward'
+                    ],
+                    itc.valueListenerMap[key] = function ModelMap_valueOn_valueListener(event, dataList) {
+                        eventAdd(
+                            itc,
+                            'model-forward',
+                            [{
+                                'key': key,
+                                'valueNew': value,
+                                'event': event,
+                                'dataList': dataList
+                            }]);
+                    });
+            }
 
-                eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
+            return true;
+        };
 
-                queue.queued(eventFlush) || queue.queue(eventFlush, true, this);
+        /**
+         * Detaches event forwarding
+         *
+         * @param {number} key key of the value to detach
+         * @param {mixed} value value to detach
+         */
+        var valueOff = function ModelMap_valueOff(itc, key, value) {
+            if (itc.valueListenerMap[key]) {
+                value.off(
+                    [
+                        'model-insert',
+                        'model-update',
+                        'model-delete',
+                        'model-forward'
+                    ],
+                    itc.valueListenerMap[key]);
 
-                return true;
-            };
+                itc.valueListenerMap[key] = null;
+            }
 
-            /**
-             * Flushes events
-             */
-            var eventFlush = function ModelMap_eventFlush() {
-                for (var i = 0, l = eventGroupList.length; i < l; i++) {
-                    if (eventGroupList[i].dataList.length) {
-                        observable.trigger(eventGroupList[i].event, eventGroupList[i].dataList);
-                    }
-                }
+            return true;
+        };
 
-                eventGroupList = [];
+        /**
+         * Adds the event to the event group list and queues event flush
+         *
+         * @param {string} event event name
+         * @param {dataList} event data list
+         */
+        var eventAdd = function ModelMap_eventAdd(itc, event, dataList) {
+            var eventGroup = itc.eventGroupList[itc.eventGroupList.length - 1] || null;
+            if (!eventGroup || eventGroup.event !== event) {
+                eventGroup = {
+                    'event': event,
+                    'dataList': []
+                };
+                itc.eventGroupList.push(eventGroup);
+            }
 
-                return true;
-            };
+            eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
 
-            /**
-             * Returns raw map
-             */
-            var toMap = this.toMap = function ModelList_toMap() {
-                return map;
-            };
+            if (!itc.eventFlushScheduled) {
+                itc.eventFlushScheduled = true;
+                itc.queue.queue(
+                    function () {
+                        itc.eventFlushScheduled = false;
+                        eventFlush(itc);
+                    },
+                    true);
+            }
 
-            /**
-             *
-             */
-            var toString = this.toString = function ModelMap_toString() {
-                return 'ennovum.model.ModelMap';
-            };
+            return true;
+        };
 
-            //
-            init.apply(this, arguments);
+        /**
+         * Flushes events
+         */
+        var eventFlush = function ModelMap_eventFlush(itc) {
+            var eventGroup;
+
+            for (var i = 0, l = itc.eventGroupList.length; i < l; i++) {
+                eventGroup = itc.eventGroupList[i];
+                eventGroup.dataList.length && itc.observable.trigger(eventGroup.event, eventGroup.dataList);
+            }
+
+            itc.eventGroupList = [];
+
+            return true;
+        };
+
+        /**
+         * Returns raw map
+         */
+        var toMap = function ModelList_toMap(itc) {
+            return itc.map;
+        };
+
+        /**
+         *
+         */
+        var toString = function ModelMap_toString(itc) {
+            return 'ennovum.model.ModelMap';
         };
 
         //
