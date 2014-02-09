@@ -57,7 +57,7 @@ define(
          * @param {DOMElement} highlightTypeListSelectEl highlight type select element
          */
         var highlightTypeChangeBind = function ArmadillogFilterView_highlightTypeChangeBind(itc, highlightTypeListSelectEl) {
-            dom.handle(highlightTypeListSelectEl, 'change', highlightTypeChangeHandle, false, false, false, this, [itc, highlightTypeListSelectEl]);
+            dom.handle(highlightTypeListSelectEl, 'change', false, false, false, highlightTypeChangeHandle, this, [itc, highlightTypeListSelectEl]);
 
             /* hack for select not triggering change event when it's synchronically created and updated
                TODO get rid of it in some civilised manner */

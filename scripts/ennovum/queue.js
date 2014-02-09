@@ -32,12 +32,12 @@ define(
         /**
          * Puts a thing to the queue
          */
-        var queue = function Queue_queue(itc, thing, dequeue, ctx, args) {
+        var queue = function Queue_queue(itc, thing, dequeue, fnCtx, fnArgs) {
             var item = {
                 thing: thing,
                 dequeue: dequeue,
-                ctx: ctx,
-                args: args,
+                fnCtx: fnCtx,
+                fnArgs: fnArgs,
                 run: false
             };
 
@@ -93,7 +93,7 @@ define(
             item.run = true;
 
             if (typeof item.thing === 'function') {
-                item.thing.apply(item.ctx, item.args);
+                item.thing.apply(item.fnCtx, item.fnArgs);
             }
 
             if (item.dequeue === true) {

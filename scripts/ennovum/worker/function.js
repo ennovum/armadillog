@@ -51,7 +51,7 @@ define(
         //
         var SOURCE = [
             '"use strict"',
-            'var ready = function (wid) {',
+            'var fnReady = function (wid) {',
             '    return function (data) {',
             '        postMessage(',
             '            {',
@@ -62,7 +62,7 @@ define(
             '            undefined);',
             '    };',
             '};',
-            'var error = function (wid) {',
+            'var fnError = function (wid) {',
             '    return function (data) {',
             '        postMessage(',
             '            {',
@@ -74,7 +74,7 @@ define(
             '    };',
             '};',
             'this.onmessage = function(event){',
-            '    ({{function}}).call(this, event.data.data, ready(event.data.wid), error(event.data.wid));',
+            '    ({{function}}).call(this, event.data.data, fnReady(event.data.wid), fnError(event.data.wid));',
             '};',
         ].join('\n');
 
@@ -145,10 +145,10 @@ define(
          *
          * @param {mixed} data Message data
          */
-        var run = function WorkerFunction_run(itc, data, additional, ready, error, ctx) {
+        var run = function WorkerFunction_run(itc, data, additional, fnReady, fnError, fnCtx, fnArgs) {
             switch (false) {
-                case !ready || typeof ready === 'function':
-                case !error || typeof error === 'function':
+                case !fnReady || typeof fnReady === 'function':
+                case !fnError || typeof fnError === 'function':
                     console.error('WorkerFunction', 'run', 'invalid input');
                     return false;
                     break;
@@ -156,10 +156,11 @@ define(
 
             var wid = '' + (itc.widSeq++);
             var work = {
-                'ctx': ctx || null,
                 'additional': additional || null,
-                'ready': ready || null,
-                'error': error || null
+                'fnReady': fnReady || null,
+                'fnError': fnError || null,
+                'fnCtx': fnCtx || null,
+                'fnArgs': fnArgs || null
             };
 
             itc.workMap[wid] = work;
@@ -198,13 +199,13 @@ define(
             var work = itc.workMap[wid];
 
             if (success) {
-                if (work.ready) {
-                    work.ready.call(work.ctx, data, work.additional);
+                if (work.fnReady) {
+                    work.fnReady.apply(work.fnCtx, (work.fnArgs || []).concat([data, work.additional]));
                 }
             }
             else {
-                if (work.error) {
-                    work.error.call(work.ctx, data, work.additional);
+                if (work.fnError) {
+                    work.fnError.apply(work.fnCtx, (work.fnArgs || []).concat([data, work.additional]));
                 }
             }
 
@@ -221,8 +222,8 @@ define(
 
             var work = itc.workMap[wid];
 
-            if (work.error) {
-                work.error.call(work.error, {'error': message});
+            if (work.fnError) {
+                work.fnError.call(work.fnCtx, (work.fnArgs || []).concat([{'error': message}]));
             }
 
             return true;

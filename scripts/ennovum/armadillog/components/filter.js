@@ -324,16 +324,16 @@ define(
          */
         var uiInit = function ArmadillogFilter_uiInit(itc) {
             dom.handle(
-                itc.filterEls.clearButtonEl, 'click',
+                itc.filterEls.clearButtonEl, 'click', false, true, true,
                 function ArmadillogFilter_inputUiInit_clearButtonElClickHandler(evt) {
                     if (!itc.application.busy.check() && confirm('Are you sure?')) {
                         clear(itc);
                     }
                 },
-                false, true, true, this);
+                this);
 
             dom.handle(
-                itc.filterEls.createButtonEl, 'click',
+                itc.filterEls.createButtonEl, 'click', false, true, true,
                 function ArmadillogFilter_inputUiInit_filterCreateButtonElClickHandler(evt) {
                     if (!itc.application.busy.check()) {
                         var filterItemMMap = filterItemCreate(itc);
@@ -343,16 +343,16 @@ define(
                         filterItemMMap.get('els').valueInputEl.focus();
                     }
                 },
-                false, true, true, this);
+                this);
 
             dom.handle(
-                itc.filterEls.submitButtonEl, 'click',
+                itc.filterEls.submitButtonEl, 'click', false, true, true,
                 function ArmadillogFilter_inputUiInit_submitButtonElClickHandler(evt) {
                     if (!itc.application.busy.check()) {
                         submit(itc);
                     }
                 },
-                false, true, true, this);
+                this);
 
             itc.filterMList.on(
                 'model-insert',
@@ -606,21 +606,22 @@ define(
         var filterItemUiInit = function ArmadillogFilter_filterItemUiInit(itc, filterItemMMap) {
             var filterItemView = filterItemMMap.get('els');
 
-            dom.handle(filterItemView.muteEl, 'click', filterMute, false, true, true, this, [itc, filterItemMMap]);
-            dom.handle(filterItemView.unmuteEl, 'click', filterUnmute, false, true, true, this, [itc, filterItemMMap]);
-            dom.handle(filterItemView.moveUpEl, 'click', filterItemMoveUp, false, true, true, this, [itc, filterItemMMap]);
-            dom.handle(filterItemView.moveDownEl, 'click', filterItemMoveDown, false, true, true, this, [itc, filterItemMMap]);
+            dom.handle(filterItemView.muteEl, 'click', false, true, true, filterMute, this, [itc, filterItemMMap]);
+            dom.handle(filterItemView.unmuteEl, 'click', false, true, true, filterUnmute, this, [itc, filterItemMMap]);
+            dom.handle(filterItemView.moveUpEl, 'click', false, true, true, filterItemMoveUp, this, [itc, filterItemMMap]);
+            dom.handle(filterItemView.moveDownEl, 'click', false, true, true, filterItemMoveDown, this, [itc, filterItemMMap]);
 
             dom.handle(
-                filterItemView.removeEl, 'click',
+                filterItemView.removeEl, 'click', false, true, true,
                 function ArmadillogFilter_filterItemUiInit_filterItemViewRemoveElClickHandler(evt) {
                     if (confirm('Are you sure?')) {
                         filterItemRemove(itc, filterItemMMap);
                     }
-                }, false, true, true, this);
+                },
+                this);
 
             dom.handle(
-                filterItemView.valueInputEl, 'keypress',
+                filterItemView.valueInputEl, 'keypress', false, false, false,
                 function ArmadillogFilter_filterItemUiInit_filterItemViewValueInputElKeypressHandler(evt) {
                     if (evt.keyCode === 13) {
                         submit(itc);
@@ -630,7 +631,7 @@ define(
                         evt.stopPropagation();
                     }
                 },
-                false, false, false, this);
+                this);
 
             return true;
         };

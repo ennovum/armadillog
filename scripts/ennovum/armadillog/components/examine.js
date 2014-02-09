@@ -106,22 +106,22 @@ define(
          */
         var uiInit = function ArmadillogExamine_uiInit(itc) {
             dom.handle(
-                itc.examineEls.rawContentEl, 'keyup',
+                itc.examineEls.rawContentEl, 'keyup', false, false, false,
                 function (evt) {
                     if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
                         evt.stopPropagation();
                     }
                 },
-                false, false, false, this);
+                this);
 
             dom.handle(
-                itc.examineEls.filteredContentEl, 'keyup',
+                itc.examineEls.filteredContentEl, 'keyup', false, false, false,
                 function (evt) {
                     if (!(evt.keyCode === 27 && !evt.ctrlKey && !evt.altKey && !evt.shiftKey)) { // esc
                         evt.stopPropagation();
                     }
                 },
-                false, false, false, this);
+                this);
 
             return true;
         };

@@ -313,11 +313,11 @@ define(
         /**
          *
          */
-        var handle = function Dom_handle(el, eventType, handler, useCapture, preventDefault, stopPropagation, ctx, args) {
+        var handle = function Dom_handle(el, eventType, useCapture, preventDefault, stopPropagation, fn, fnCtx, fnArgs) {
             el && el.addEventListener(
                 eventType,
                 function (event) {
-                    handler && handler.apply(ctx, (args || []).concat(event));
+                    fn && fn.apply(fnCtx, (fnArgs || []).concat(event));
                     preventDefault && event.preventDefault();
                     stopPropagation && event.stopPropagation();
                 },

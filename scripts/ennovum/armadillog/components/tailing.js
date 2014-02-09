@@ -89,8 +89,8 @@ define(
          * Initializes UI
          */
         var uiInit = function ArmadillogTailing_uiInit(itc) {
-            dom.handle(window, 'load', check, false, false, false, this, [itc]);
-            dom.handle(itc.scrollEl, 'scroll', check, false, true, true, this, [itc]);
+            dom.handle(window, 'load', false, false, false, check, this, [itc]);
+            dom.handle(itc.scrollEl, 'scroll', false, true, true, check, this, [itc]);
 
             itc.application.content.on('view-change', execute, this, [itc]);
 

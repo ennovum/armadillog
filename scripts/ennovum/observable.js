@@ -29,10 +29,10 @@ define(
          *
          * @param {mixed} eventNames list of or a single event name
          * @param {function} fn handler function
-         * @param {mixed} ctx handler function context
+         * @param {mixed} fnCtx handler function context
          */
-        var on = function Observable_on(itc, eventNames, fn, ctx, args) {
-            return handlerAddAll(itc, eventNames, fn, ctx, args);
+        var on = function Observable_on(itc, eventNames, fn, fnCtx, fnArgs) {
+            return handlerAddAll(itc, eventNames, fn, fnCtx, fnArgs);
         };
 
         /**
@@ -40,10 +40,10 @@ define(
          *
          * @param {mixed} eventNames list of or a single event name
          * @param {function} fn handler function
-         * @param {mixed} ctx handler function context
+         * @param {mixed} fnCtx handler function context
          */
-        var off = function Observable_off(itc, eventNames, fn, ctx, args) {
-            return handlerRemoveAll(itc, eventNames, fn, ctx, args);
+        var off = function Observable_off(itc, eventNames, fn, fnCtx, fnArgs) {
+            return handlerRemoveAll(itc, eventNames, fn, fnCtx, fnArgs);
         };
 
         /**
@@ -59,11 +59,11 @@ define(
         /**
          *
          */
-        var handlerAddAll = function Observable_handlerAddAll(itc, eventNames, fn, ctx, args) {
+        var handlerAddAll = function Observable_handlerAddAll(itc, eventNames, fn, fnCtx, fnArgs) {
             eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
 
             for (var i = 0, l = eventNames.length; i < l; i++) {
-                handlerAdd(itc, eventNames[i], fn, ctx, args);
+                handlerAdd(itc, eventNames[i], fn, fnCtx, fnArgs);
             }
 
             return true;
@@ -72,11 +72,11 @@ define(
         /**
          *
          */
-        var handlerAdd = function Observable_handlerAdd(itc, eventName, fn, ctx, args) {
+        var handlerAdd = function Observable_handlerAdd(itc, eventName, fn, fnCtx, fnArgs) {
             var handler = {
                 fn: fn,
-                ctx: ctx,
-                args: args
+                fnCtx: fnCtx,
+                fnArgs: fnArgs
             };
 
             if (!(eventName in itc.eventHandlerMap)) {
@@ -91,11 +91,11 @@ define(
         /**
          *
          */
-        var handlerRemoveAll = function Observable_handlerRemoveAll(itc, eventNames, fn, ctx, args) {
+        var handlerRemoveAll = function Observable_handlerRemoveAll(itc, eventNames, fn, fnCtx, fnArgs) {
             eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
 
             for (var i = 0, l = eventNames.length; i < l; i++) {
-                handlerRemove(itc, eventNames[i], fn, ctx, args);
+                handlerRemove(itc, eventNames[i], fn, fnCtx, fnArgs);
             }
 
             return true;
@@ -104,11 +104,11 @@ define(
         /**
          *
          */
-        var handlerRemove = function Observable_handlerRemove(itc, eventName, fn, ctx, args) {
-            var handlerIx = handlerIndexOf(itc, eventName, fn, ctx, args);
+        var handlerRemove = function Observable_handlerRemove(itc, eventName, fn, fnCtx, fnArgs) {
+            var handlerIx = handlerIndexOf(itc, eventName, fn, fnCtx, fnArgs);
 
             if (!~handlerIx) {
-                console.error('Observable', 'handlerRemove', 'no such event handler', eventName, fn, ctx, args);
+                console.error('Observable', 'handlerRemove', 'no such event handler', eventName, fn, fnCtx, fnArgs);
                 return false;
             }
 
@@ -120,14 +120,14 @@ define(
         /**
          *
          */
-        var handlerIndexOf = function Observable_handlerIndexOf(itc, eventName, fn, ctx, args) {
+        var handlerIndexOf = function Observable_handlerIndexOf(itc, eventName, fn, fnCtx, fnArgs) {
             var handlers = itc.eventHandlerMap[eventName] || [];
             var handler;
 
             for (var i = 0, l = handlers.length; i < l; i++) {
                 handler = handlers[i];
 
-                if (handler.fn === fn && handler.ctx === ctx) {
+                if (handler.fn === fn && handler.fnCtx === fnCtx) {
                     return i;
                 }
             }
@@ -166,7 +166,7 @@ define(
          */
         var handlerTrigger = function Observable_handlerTrigger(itc, eventName, handler, data) {
             try {
-                handler.fn.apply(handler.ctx, [eventName, data].concat(handler.args));
+                handler.fn.apply(handler.fnCtx, (handler.fnArgs || []).concat([eventName, data]));
             }
             catch (err) {
                 console.error('Observable', 'handlerTrigger', 'event handler run error', err);

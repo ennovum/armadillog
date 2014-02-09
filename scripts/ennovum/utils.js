@@ -53,11 +53,11 @@ define(
         /**
          *
          */
-        var async = function utils_async(fn, ctx, args) {
+        var async = function utils_async(fn, fnCtx, fnArgs) {
             asyncList.push({
                 fn: fn,
-                ctx: ctx,
-                args: args
+                fnCtx: fnCtx,
+                fnArgs: fnArgs
             });
 
             if (!asyncTimeout) {
@@ -75,7 +75,7 @@ define(
 
             for (var i = 0, l = asyncList.length; i < l; i++) {
                 asyncData = asyncList[i];
-                asyncData.fn.apply(asyncData.ctx, asyncData.args);
+                asyncData.fn.apply(asyncData.fnCtx, asyncData.fnArgs);
             }
 
             asyncList = [];

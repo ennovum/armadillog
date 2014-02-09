@@ -108,16 +108,16 @@ define(
          */
         var uiInit = function ArmadillogInput_uiInit(itc) {
             dom.handle(
-                itc.inputEls.clearButtonEl, 'click',
+                itc.inputEls.clearButtonEl, 'click', false, true, true,
                 function ArmadillogInput_uiInit_clearButtonElClickHandler(evt) {
                     if (!itc.application.busy.check() && confirm('Are you sure?')) {
                         itc.application.content.clear();
                     }
                 },
-                false, true, true, this);
+                this);
 
             dom.handle(
-                itc.inputEls.fileInputEl, 'change',
+                itc.inputEls.fileInputEl, 'change', false, true, true,
                 function ArmadillogInput_uiInit_fileInputElChangeHandler(evt) {
                     if (!itc.application.busy.check()) {
                         var files = evt.target.files;
@@ -127,19 +127,19 @@ define(
                         }
                     }
                 },
-                false, true, true, this);
+                this);
 
             dom.handle(
-                itc.inputEls.fileButtonEl, 'click',
+                itc.inputEls.fileButtonEl, 'click', false, true, true,
                 function ArmadillogInput_uiInit_fileButtonElClickHandler(evt) {
                     if (!itc.application.busy.check()) {
                         itc.inputEls.fileInputEl.click();
                     }
                 },
-                false, true, true, this);
+                this);
 
             dom.handle(
-                itc.inputEls.pasteButtonEl, 'click',
+                itc.inputEls.pasteButtonEl, 'click', false, true, true,
                 function ArmadillogInput_uiInit_pasteButtonElClickHandler(evt) {
                     if (!itc.application.busy.check() && itc.inputEls.pasteInputEl.value) {
                         itc.application.content.clear();
@@ -147,10 +147,10 @@ define(
                         itc.inputEls.pasteInputEl.value = '';
                     }
                 },
-                false, true, true, this);
+                this);
 
             dom.handle(
-                itc.inputEls.urlInputEl, 'keypress',
+                itc.inputEls.urlInputEl, 'keypress', false, false, false,
                 function ArmadillogInput_uiInit_urlInputElKeypressHandler(evt) {
                     if (evt.keyCode === 13) {
                         itc.inputEls.urlButtonEl.click();
@@ -159,10 +159,10 @@ define(
                         evt.stopPropagation();
                     }
                 },
-                false, false, false, this);
+                this);
 
             dom.handle(
-                itc.inputEls.urlButtonEl, 'click',
+                itc.inputEls.urlButtonEl, 'click', false, true, true,
                 function ArmadillogInput_uiInit_urlButtonElClickHandler(evt) {
                     if (!itc.application.busy.check() && itc.inputEls.urlInputEl.value) {
                         itc.application.content.clear();
@@ -170,7 +170,7 @@ define(
                         itc.inputEls.urlInputEl.value = '';
                     }
                 },
-                false, true, true, this);
+                this);
 
             itc.application.content.on(
                 'source-change',

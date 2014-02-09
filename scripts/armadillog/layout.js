@@ -85,14 +85,14 @@ define(
          * Initializes UI
          */
         var uiInit = function Layout_uiInit(itc) {
-            dom.handle(itc.config.mainmenuInputEl, 'click', inputToggle, false, true, false, this, [itc]);
-            dom.handle(itc.config.inputFoldEl, 'click', inputToggle, false, true, false, this, [itc]);
-            dom.handle(itc.config.mainmenuFilterEl, 'click', filterToggle, false, true, false, this, [itc]);
-            dom.handle(itc.config.filterFoldEl, 'click', filterToggle, false, true, false, this, [itc]);
-            dom.handle(itc.config.mainmenuExamineEl, 'click', examineToggle, false, true, false, this, [itc]);
-            dom.handle(itc.config.examineFoldEl, 'click', examineToggle, false, true, false, this, [itc]);
-            dom.handle(itc.config.mainmenuManualEl, 'click', manualToggle, false, true, false, this, [itc]);
-            dom.handle(itc.config.manualFoldEl, 'click', manualToggle, false, true, false, this, [itc]);
+            dom.handle(itc.config.mainmenuInputEl, 'click', false, true, false, inputToggle, this, [itc]);
+            dom.handle(itc.config.inputFoldEl, 'click', false, true, false, inputToggle, this, [itc]);
+            dom.handle(itc.config.mainmenuFilterEl, 'click', false, true, false, filterToggle, this, [itc]);
+            dom.handle(itc.config.filterFoldEl, 'click', false, true, false, filterToggle, this, [itc]);
+            dom.handle(itc.config.mainmenuExamineEl, 'click', false, true, false, examineToggle, this, [itc]);
+            dom.handle(itc.config.examineFoldEl, 'click', false, true, false, examineToggle, this, [itc]);
+            dom.handle(itc.config.mainmenuManualEl, 'click', false, true, false, manualToggle, this, [itc]);
+            dom.handle(itc.config.manualFoldEl, 'click', false, true, false, manualToggle, this, [itc]);
 
             return true;
         };
@@ -102,7 +102,7 @@ define(
          */
         var keyboardInit = function Layout_keyboardInit(itc) {
             dom.handle(
-                document, 'keyup',
+                document, 'keyup', false, false, false,
                 function (evt) {
                     switch (evt.target.tagName.toLowerCase()) {
                         case 'input':
@@ -140,7 +140,7 @@ define(
                             break;
                     }
                 },
-                false, false, false, this);
+                this);
 
             return true;
         };
