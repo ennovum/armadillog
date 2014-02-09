@@ -29,8 +29,7 @@ define(
                 list: [],
 
                 eventGroupList: [],
-                valueListenerList: [],
-                eventFlushScheduled: false
+                valueListenerList: []
             };
 
             this.getAt = getAt.bind(this, itc);
@@ -377,6 +376,7 @@ define(
          */
         var eventAdd = function ModelList_eventAdd(itc, event, dataList) {
             var eventGroup = itc.eventGroupList[itc.eventGroupList.length - 1] || null;
+
             if (!eventGroup || eventGroup.event !== event) {
                 eventGroup = {
                     'event': event,
@@ -387,14 +387,7 @@ define(
 
             eventGroup.dataList.push.apply(eventGroup.dataList, dataList);
 
-            if (!itc.eventFlushScheduled) {
-                itc.eventFlushScheduled = true;
-                itc.queue.queue(
-                    function () {
-                        itc.eventFlushScheduled = false;
-                        eventFlush(itc);
-                    }, true);
-            }
+            itc.queue.queued(eventFlush) || itc.queue.queueUp(eventFlush, true, this, [itc]);
 
             return true;
         };

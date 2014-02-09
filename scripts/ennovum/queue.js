@@ -18,8 +18,8 @@ define(
                 pauses: 0
             };
 
-            this.queue = queue.bind(this, itc);
-            this.dequeue = dequeue.bind(this, itc);
+            this.queueUp = queueUp.bind(this, itc);
+            this.queueOut = queueOut.bind(this, itc);
             this.queued = queued.bind(this, itc);
 
             this.pause = pause.bind(this, itc);
@@ -32,10 +32,10 @@ define(
         /**
          * Puts a thing to the queue
          */
-        var queue = function Queue_queue(itc, thing, dequeue, fnCtx, fnArgs) {
+        var queueUp = function Queue_queueUp(itc, thing, out, fnCtx, fnArgs) {
             var item = {
                 thing: thing,
-                dequeue: dequeue,
+                out: out,
                 fnCtx: fnCtx,
                 fnArgs: fnArgs,
                 run: false
@@ -51,7 +51,7 @@ define(
         /**
          * Removes certain thing from the queue
          */
-        var dequeue = function Queue_dequeue(itc, thing) {
+        var queueOut = function Queue_queueOut(itc, thing) {
             if (typeof thing === 'undefined') {
                 if (itc.list.length === 0) {
                     return false;
@@ -96,8 +96,8 @@ define(
                 item.thing.apply(item.fnCtx, item.fnArgs);
             }
 
-            if (item.dequeue === true) {
-                dequeue(itc);
+            if (item.out === true) {
+                queueOut(itc);
             }
 
             return true;

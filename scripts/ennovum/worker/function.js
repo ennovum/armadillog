@@ -165,7 +165,7 @@ define(
 
             itc.workMap[wid] = work;
 
-            itc.queue.queue(
+            itc.queue.queueUp(
                 function () {
                     if (!itc.worker || itc.config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
                         itc.fn(

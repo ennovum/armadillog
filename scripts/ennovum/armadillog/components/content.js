@@ -911,7 +911,7 @@ define(
                     }.bind(this, lineItemMMap));
             }
 
-            itc.lineMList.queue(itc.application.busy.set, true, this, [false, 'lineListFilter']);
+            itc.lineMList.queueUp(itc.application.busy.set, true, this, [false, 'lineListFilter']);
 
             return true;
         };
