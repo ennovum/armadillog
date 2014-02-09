@@ -61,9 +61,7 @@ define(
 
                 itc.list.shift();
 
-                utils.func.async(function () {
-                    run(itc);
-                });
+                utils.async(run, this, [itc]);
             }
             else {
                 var ix = indexOf(itc, thing);
@@ -74,9 +72,7 @@ define(
                 itc.list.splice(ix, 1);
 
                 if (ix === 0) {
-                    utils.func.async(function () {
-                        run(itc);
-                    });
+                    utils.async(run, this, [itc]);
                 }
             }
 

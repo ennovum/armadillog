@@ -63,7 +63,7 @@ define(
 
             /* hack for select not triggering change event when it's synchronically created and updated
                TODO get rid of it in some civilised manner */
-            setTimeout(function () {dom.triggerEvent(highlightTypeListSelectEl, 'change');}, 0);
+            setTimeout(function () {dom.trigger(highlightTypeListSelectEl, 'change');}, 0);
         };
 
         /**

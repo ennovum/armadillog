@@ -134,7 +134,7 @@ define(
          * @param {object} contentLineItemMMap content line model object
          */
         var set = function ArmadillogExamine_set(itc, contentLineItemMMap) {
-            itc.examineEls.rawContentEl.innerHTML = utils.string.escapeXML(contentLineItemMMap.get('textRaw'));
+            itc.examineEls.rawContentEl.innerHTML = utils.escapeXML(contentLineItemMMap.get('textRaw'));
             itc.examineEls.filteredContentEl.innerHTML = contentLineItemMMap.get('els').el.innerHTML;
 
             return true;

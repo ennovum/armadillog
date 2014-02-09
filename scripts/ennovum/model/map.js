@@ -6,12 +6,14 @@
 define(
     [
         'ennovum.environment',
+        'ennovum.composition',
         'ennovum.utils',
         'ennovum.Observable',
         'ennovum.Queue'
     ],
     function (
         environment,
+        composition,
         utils,
         Observable,
         Queue
@@ -21,8 +23,8 @@ define(
          */
         var ModelMap = function ModelMap() {
             var itc = {
-                observable: utils.obj.mixin(this, new Observable()),
-                queue: utils.obj.mixin(this, new Queue()),
+                observable: composition.mixin(this, new Observable()),
+                queue: composition.mixin(this, new Queue()),
 
                 map: {},
 

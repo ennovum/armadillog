@@ -4,6 +4,7 @@ define(
     [
         'ennovum.environment',
         'ennovum.dom',
+        'ennovum.composition',
         'ennovum.utils',
         'ennovum.Observable',
         'ennovum.model.ModelList',
@@ -14,6 +15,7 @@ define(
     function (
         environment,
         dom,
+        composition,
         utils,
         Observable,
         ModelList,
@@ -142,7 +144,7 @@ define(
          * @param {object} config configuration object
          */
         var init = function ArmadillogFilter_init(itc, config, application) {
-            itc.observable = utils.obj.mixin(this, new Observable());
+            itc.observable = composition.mixin(this, new Observable());
 
             switch (true) {
                 case !configSet(itc, config):
@@ -926,7 +928,7 @@ define(
                 switch (filterItemMMap.get('valueType')) {
                     case VALUE_TYPE_TEXT:
                         try {
-                            filterItem.value = utils.regexp.escape(filterItemMMap.get('value'));
+                            filterItem.value = utils.escapeRegexp(filterItemMMap.get('value'));
                         }
                         catch (err) {
                             // nothing

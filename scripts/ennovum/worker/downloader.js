@@ -3,11 +3,13 @@
 define(
     [
         'ennovum.environment',
+        'ennovum.composition',
         'ennovum.utils',
         'ennovum.worker.WorkerFunction'
     ],
     function (
         environment,
+        composition,
         utils,
         WorkerFunction
     ) {
@@ -88,7 +90,7 @@ define(
                 }
             };
 
-            itc.workerFunction = utils.obj.mixin(this, new WorkerFunction(itc.fn, config));
+            itc.workerFunction = composition.mixin(this, new WorkerFunction(itc.fn, config));
 
             return true;
         };

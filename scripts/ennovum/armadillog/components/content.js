@@ -4,6 +4,7 @@ define(
     [
         'ennovum.environment',
         'ennovum.dom',
+        'ennovum.composition',
         'ennovum.utils',
         'ennovum.Observable',
         'ennovum.model.ModelList',
@@ -15,6 +16,7 @@ define(
     function (
         environment,
         dom,
+        composition,
         utils,
         Observable,
         ModelList,
@@ -84,7 +86,7 @@ define(
          * @param {object} config configuration object
          */
         var init = function ArmadillogContent_init(itc, config, application) {
-            itc.observable = utils.obj.mixin(this, new Observable());
+            itc.observable = composition.mixin(this, new Observable());
 
             switch (true) {
                 case !configSet(itc, config):
@@ -519,7 +521,7 @@ define(
          * @param {string} label content's label
          */
         var urlSet = function ArmadillogContent_urlSet(itc, url, label) {
-            url = utils.url.validate(url);
+            url = utils.validateUrl(url);
             if (!url) {
                 alert('Invalid URL.');
                 return;
@@ -713,7 +715,7 @@ define(
             var textFiltered = lineItemMMap.get('textFiltered');
 
             if (textFiltered !== null) {
-                lineEl.innerHTML = utils.string.escapeXML(textFiltered).replace(
+                lineEl.innerHTML = utils.escapeXML(textFiltered).replace(
                     itc.lineEscapeRegexp,
                     function (match) {
                         switch (match) {

@@ -3,11 +3,13 @@
 define(
     [
         'ennovum.environment',
+        'ennovum.composition',
         'ennovum.utils',
         'ennovum.Queue'
     ],
     function (
         environment,
+        composition,
         utils,
         Queue
     ) {
@@ -85,7 +87,7 @@ define(
          *
          */
         var init = function WorkerFunction_init(itc, config) {
-            itc.queue = utils.obj.mixin(this, new Queue());
+            itc.queue = composition.mixin(this, new Queue());
 
             configure(itc, config || {});
 

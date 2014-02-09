@@ -7,234 +7,114 @@ define(
     function (
         environment
     ) {
+        //
+        var TRIM_REGEXP = /(^\s|\s$)/g;
+
         /**
-         * UtilsObj constructor
+         *
          */
-        var UtilsObj = function UtilsObj() {
-            /**
-             *
-             */
-            var implement = this.implement = function Utils_obj_implement(base, instance, interfaceList) {
-                switch (false) {
-                    case base && typeof base === 'object':
-                    case instance && typeof instance === 'object':
-                    case interfaceList && typeof interfaceList === 'object':
-                        console.error('oUtilsObj', 'implement', 'error: invalid input');
-                        return;
-                };
+        var trim = function utils_trim(subject) {
+            return subject.replace(TRIM_REGEXP, '');
+        };
 
-                if (!Array.isArray(interfaceList)) {
-                    interfaceList = [interfaceList];
-                }
-
-                for (var i = 0, l = interfaceList.length; i < l; i++) {
-                    for (var key in interfaceList[i]) {
-                        if (typeof instance[key] === 'function') {
-                            base[key] = instance[key].bind(instance);
-                        }
-                        else {
-                            base[key] = instance[key];
-                        }
-                    }
-                }
-
-                return base;
-            };
-
-            /**
-             *
-             */
-            var mixin = this.mixin = function Utils_obj_mixin(base, mixin) {
-                switch (false) {
-                    case base && typeof base === 'object':
-                    case mixin && typeof mixin === 'object':
-                        console.error('oUtilsObj', 'mixin', 'error: invalid input');
-                        return;
-                };
-
-                for (var key in mixin) {
-                    if (key in base) {
-                        continue;
-                    }
-
-                    if (typeof mixin[key] === 'function') {
-                        base[key] = mixin[key].bind(mixin);
-                    }
-                    else {
-                        base[key] = mixin[key];
-                    }
-                }
-
-                return mixin;
-            };
+        //
+        var ESCAPE_XML_REGEXP = /[<>"'&]{1}/g;
+        var ESCAPE_XML_ENTITIES = {
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&apos;',
+            '&': '&amp;'
         };
 
         /**
-         * UtilsString constructor
+         *
          */
-        var UtilsString = function UtilsString() {
-            /**
-             *
-             */
-            var trim = this.trim = function Utils_string_trim(subject) {
-                return subject.replace(/(^\s|\s$)/g, '');
-            };
+        var escapeXML = function utils_escapeXML(subject) {
+            return subject.replace(ESCAPE_XML_REGEXP, function utils_escapeXML_match(match) {
+                return ESCAPE_XML_ENTITIES[match];
+            });
+        };
 
-            var ESCAPE_XML_ENTITIES = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&apos;',
-            };
+        //
+        var ESCAPE_REGEXP_REGEXP = /[\[\]\{\}\?\+\*\.\\\|\(\)\^\$]/g;
 
-            /**
-             *
-             */
-            var escapeXML = this.escapeXML =function Utils_string_escapeXML(subject) {
-                return subject.replace(/[<>"'&]{1}/g, function Utils_string_escapeXML_match(match) {
-                    return ESCAPE_XML_ENTITIES[match];
-                });
-            };
+        /**
+         *
+         */
+        var escapeRegexp = function utils_escapeRegexp(subject) {
+            return subject.replace(ESCAPE_REGEXP_REGEXP, '\\$&');
+        };
+
+        //
+        var asyncList = [];
+        var asyncTimeout = null;
+
+        /**
+         *
+         */
+        var async = function utils_async(fn, ctx, args) {
+            asyncList.push({
+                fn: fn,
+                ctx: ctx,
+                args: args
+            });
+
+            if (!asyncTimeout) {
+                asyncTimeout = setTimeout(asyncCall, 0);
+            }
+
+            return true;
         };
 
         /**
-         * UtilsRegexp constructor
+         *
          */
-        var UtilsRegexp = function UtilsRegexp() {
-            /**
-             *
-             */
-            var escape = this.escape = function Utils_regexp_escape(subject) {
-                return subject.replace(/[\[\]\{\}\?\+\*\.\\\|\(\)\^\$]/g, '\\$&');
-            };
-        };
+        var asyncCall = function utils_asyncCall() {
+            var asyncData;
+
+            for (var i = 0, l = asyncList.length; i < l; i++) {
+                asyncData = asyncList[i];
+                asyncData.fn.apply(asyncData.ctx, asyncData.args);
+            }
+
+            asyncList = [];
+            asyncTimeout = null;
+        }
+
+        //
+        var URL_PARTS_REGEXP = /^([a-zA-Z]+:\/\/)?((?:www\.)?(?:[a-zA-Z0-9\-\_\.%]*[a-zA-Z]+\.[a-zA-Z]{1,4}))?(:[0-9]+)?(\/[a-zA-Z0-9\-\_\.%/]?)?(\?[a-zA-Z0-9\-\_\.%=&]*)?(#[a-zA-Z0-9\-\_]*)?$/;
 
         /**
-         * UtilsFunc constructor
+         *
          */
-        var UtilsFunc = function UtilsFunc() {
-            var asyncList = [];
-            var asyncTimeout = null;
+        var validateUrl = function utils_validateUrl(url) {
+            var match = url.match(URL_PARTS_REGEXP);
 
-            /**
-             *
-             */
-            var async = this.async =function Utils_func_async(fn) {
-                asyncList.push(fn);
+            if (!match || !match[2]) {
+                return null;
+            }
 
-                if (!asyncTimeout) {
-                    asyncTimeout = setTimeout(
-                        function Utils_func_async_fn() {
-                            for (var i = 0, l = asyncList.length; i < l; i++) {
-                                asyncList[i].call();
-                            }
+            var urlValid = '';
+            urlValid += match[1] ? match[1] : 'http://';
+            urlValid += match[2];
+            urlValid += match[3] || '';
+            urlValid += match[4] ? match[4] : '/';
+            urlValid += match[5] || '';
+            urlValid += match[6] || '';
 
-                            asyncList = [];
-                            asyncTimeout = null;
-                        },
-                        0);
-                }
-
-                return true;
-            };
-        };
-
-        /**
-         * UtilsUrl constructor
-         */
-        var UtilsUrl = function UtilsUrl() {
-            var URL_PARTS_REGEXP = /^([a-zA-Z]+:\/\/)?((?:www\.)?(?:[a-zA-Z0-9\-\_\.%]*[a-zA-Z]+\.[a-zA-Z]{1,4}))?(:[0-9]+)?(\/[a-zA-Z0-9\-\_\.%/]?)?(\?[a-zA-Z0-9\-\_\.%=&]*)?(#[a-zA-Z0-9\-\_]*)?$/;
-
-            /**
-             *
-             */
-            var validate = this.validate = function Utils_url_validate(url) {
-                var match = url.match(URL_PARTS_REGEXP);
-
-                if (!match || !match[2]) {
-                    return null;
-                }
-
-                var urlValid = '';
-                urlValid += match[1] ? match[1] : 'http://';
-                urlValid += match[2];
-                urlValid += match[3] || '';
-                urlValid += match[4] ? match[4] : '/';
-                urlValid += match[5] || '';
-                urlValid += match[6] || '';
-
-                return urlValid;
-            };
-        };
-
-        /**
-         * UtilsUrl constructor
-         */
-        var UtilsDebug = function UtilsDebug() {
-            var FUNCTION_NAME_REGEXP = /[a-z]+ ([^\(]*)/i;
-
-            var spySeq = 0;
-
-            /**
-             *
-             */
-            var spy = this.spy = function Utils_debug_spy(subject) {
-                switch (true) {
-                    case typeof subject === 'function':
-                        subject = spyItem(subject, subject);
-                        break;
-
-                    case Array.isArray(subject):
-                        for (var i = 0, l = subject.length; i < l; i++) {
-                            subject[i] = spyItem(subject, subject[i]);
-                        }
-                        break;
-
-                    case typeof subject === 'object':
-                        for (var k in subject) {
-                            subject[k] = spyItem(subject, subject[k]);
-                        }
-                        break;
-
-                    default:
-                        console.error('Debug', 'spy', 'unsupported subject type');
-                }
-
-                return subject;
-            };
-
-            /**
-             *
-             */
-            var spyItem = function Utils_debug_spyItem(subject, item) {
-                switch (true) {
-                    case typeof item === 'function':
-                        return function Debug_spyItem_spied() {
-                            var seqNumber = spySeq++;
-                            var name = item.toString().split('\n')[0].match(FUNCTION_NAME_REGEXP)[1] || 'anonymous';
-
-                            console.log('[' + seqNumber + '][C]', name, arguments);
-                            var result = item.apply(subject, arguments);
-                            console.log('[' + seqNumber + '][R]', name, result);
-
-                            return result;
-                        };
-                        break;
-
-                    default:
-                        return item;
-                }
-            };
+            return urlValid;
         };
 
         //
         return {
-            'obj': new UtilsObj(),
-            'string': new UtilsString(),
-            'regexp': new UtilsRegexp(),
-            'func': new UtilsFunc(),
-            'url': new UtilsUrl(),
-            'debug': new UtilsDebug()
+            trim: trim,
+            escapeXML: escapeXML,
+
+            escapeRegexp: escapeRegexp,
+
+            async: async,
+
+            validateUrl: validateUrl
         };
     });

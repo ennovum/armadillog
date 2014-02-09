@@ -19,9 +19,19 @@ require.config({
             'main': 'dom.js'
         },
         {
+            'name': 'ennovum.composition',
+            'location': 'ennovum',
+            'main': 'composition.js'
+        },
+        {
             'name': 'ennovum.utils',
             'location': 'ennovum',
             'main': 'utils.js'
+        },
+        {
+            'name': 'ennovum.debug',
+            'location': 'ennovum',
+            'main': 'debug.js'
         },
         {
             'name': 'ennovum.Observable',
@@ -144,6 +154,6 @@ require(
             armadillog.contentTextSet(readme, 'README.txt');
         }
         catch (err) {
-            console.error(err.message);
+            console.error(err.message, err.stack);
         }
     });

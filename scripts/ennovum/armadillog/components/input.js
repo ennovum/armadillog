@@ -187,7 +187,7 @@ define(
          *
          */
         var clearLabelSet = function ArmadillogInput_clearLabelSet(itc, value) {
-            itc.inputEls.clearLabelEl.innerHTML = utils.string.escapeXML(value || '');
+            itc.inputEls.clearLabelEl.innerHTML = utils.escapeXML(value || '');
             dom.classDepend(itc.inputEls.clearBoxEl, HIDDEN_CLASS, value === null);
 
             return true;
