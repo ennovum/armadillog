@@ -36,10 +36,6 @@ define(
                 filterIdSeq: undefined,
                 filterMList: undefined,
 
-                affectTypes: undefined,
-                valueTypes: undefined,
-                highlightTypes: undefined,
-
                 boxEl: undefined,
                 view: undefined,
                 filterEls: undefined,
@@ -88,9 +84,49 @@ define(
         var AFFECT_TYPE_HIGHLIGHT_LINE = '5';
         var AFFECT_TYPE_HIGHLIGHT = '6';
 
+        var AFFECT_TYPE_LIST = [
+            {
+                'value': AFFECT_TYPE_SHOW_LINE,
+                'label': 'Show only lines',
+                'default': true
+            },
+            {
+                'value': AFFECT_TYPE_SHOW,
+                'label': 'Show only fragments'
+            },
+            {
+                'value': AFFECT_TYPE_HIDE_LINE,
+                'label': 'Hide lines'
+            },
+            {
+                'value': AFFECT_TYPE_HIDE,
+                'label': 'Hide fragments'
+            },
+            {
+                'value': AFFECT_TYPE_HIGHLIGHT_LINE,
+                'label': 'Highlight line'
+            },
+            {
+                'value': AFFECT_TYPE_HIGHLIGHT,
+                'label': 'Highlight fragment'
+            }
+        ];
+
         //
         var VALUE_TYPE_TEXT = '1';
         var VALUE_TYPE_REGEXP = '2';
+
+        var VALUE_TYPE_LIST = [
+            {
+                'value': VALUE_TYPE_TEXT,
+                'label': 'Plain text',
+                'default': true
+            },
+            {
+                'value': VALUE_TYPE_REGEXP,
+                'label': 'Regular expression'
+            }
+        ];
 
         //
         var HIGHLIGHT_TYPE_0 = '';
@@ -106,6 +142,74 @@ define(
         var HIGHLIGHT_TYPE_10 = '10';
         var HIGHLIGHT_TYPE_11 = '11';
         var HIGHLIGHT_TYPE_12 = '12';
+
+        var HIGHLIGHT_TYPE_LIST = [
+            {
+                'value': HIGHLIGHT_TYPE_0,
+                'class': 'highlight-none',
+                'label': 'No highlight'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_1,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_1,
+                'label': 'Light blue'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_2,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_2,
+                'label': 'Dark blue'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_3,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_3,
+                'label': 'Light green'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_4,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_4,
+                'label': 'Dark green'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_5,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_5,
+                'label': 'Light red'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_6,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_6,
+                'label': 'Dark red'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_7,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_7,
+                'label': 'Light yellow'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_8,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_8,
+                'label': 'Dark yellow'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_9,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_9,
+                'label': 'Light magenta'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_10,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_10,
+                'label': 'Dark magenta'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_11,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_11,
+                'label': 'Light cyan'
+            },
+            {
+                'value': HIGHLIGHT_TYPE_12,
+                'class': 'highlight highlight-' + HIGHLIGHT_TYPE_12,
+                'label': 'Dark cyan'
+            }
+        ];
 
         //
         var TAG_HIGHLIGHT_1_BEGIN_SYMBOL = '\uff00\uff80';
@@ -186,114 +290,6 @@ define(
             itc.filterIdSeq = 1;
 
             itc.filterMList = new ModelList();
-
-            itc.affectTypes = [
-                {
-                    'value': AFFECT_TYPE_SHOW_LINE,
-                    'label': 'Show only lines',
-                    'default': true
-                },
-                {
-                    'value': AFFECT_TYPE_SHOW,
-                    'label': 'Show only fragments'
-                },
-                {
-                    'value': AFFECT_TYPE_HIDE_LINE,
-                    'label': 'Hide lines'
-                },
-                {
-                    'value': AFFECT_TYPE_HIDE,
-                    'label': 'Hide fragments'
-                },
-                {
-                    'value': AFFECT_TYPE_HIGHLIGHT_LINE,
-                    'label': 'Highlight line'
-                },
-                {
-                    'value': AFFECT_TYPE_HIGHLIGHT,
-                    'label': 'Highlight fragment'
-                }
-            ];
-
-            itc.valueTypes = [
-                {
-                    'value': VALUE_TYPE_TEXT,
-                    'label': 'Plain text',
-                    'default': true
-                },
-                {
-                    'value': VALUE_TYPE_REGEXP,
-                    'label': 'Regular expression'
-                }
-            ];
-
-            itc.highlightTypes = [
-                {
-                    'value': HIGHLIGHT_TYPE_0,
-                    'class': 'highlight-none',
-                    'label': 'No highlight'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_1,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_1,
-                    'label': 'Light blue'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_2,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_2,
-                    'label': 'Dark blue'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_3,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_3,
-                    'label': 'Light green'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_4,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_4,
-                    'label': 'Dark green'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_5,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_5,
-                    'label': 'Light red'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_6,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_6,
-                    'label': 'Dark red'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_7,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_7,
-                    'label': 'Light yellow'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_8,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_8,
-                    'label': 'Dark yellow'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_9,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_9,
-                    'label': 'Light magenta'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_10,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_10,
-                    'label': 'Dark magenta'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_11,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_11,
-                    'label': 'Light cyan'
-                },
-                {
-                    'value': HIGHLIGHT_TYPE_12,
-                    'class': 'highlight highlight-' + HIGHLIGHT_TYPE_12,
-                    'label': 'Dark cyan'
-                }
-            ];
 
             filterWorkerCreate(itc);
 
@@ -568,9 +564,9 @@ define(
                 'els',
                 itc.view.filterItemCreate({
                     'id': filterItemMMap.get('id'),
-                    'filterAffectTypes': itc.affectTypes,
-                    'filterValueTypes': itc.valueTypes,
-                    'filterHighlightTypes': itc.highlightTypes
+                    'filterAffectTypes': AFFECT_TYPE_LIST,
+                    'filterValueTypes': VALUE_TYPE_LIST,
+                    'filterHighlightTypes': HIGHLIGHT_TYPE_LIST
                 }));
 
             return true;
