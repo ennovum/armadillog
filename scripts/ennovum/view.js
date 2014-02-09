@@ -23,8 +23,6 @@ define(
 
             this.create = create.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             return this;
         };
 
@@ -49,13 +47,6 @@ define(
             }
 
             return result;
-        };
-
-        /**
-         *
-         */
-        var toString = function View_toString(itc) {
-            return 'ennovum.View';
         };
 
         //

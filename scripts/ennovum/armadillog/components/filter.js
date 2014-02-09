@@ -74,8 +74,6 @@ define(
 
             this.filterText = filterText.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, config, application);
         };
 
@@ -997,13 +995,6 @@ define(
 
             return true;
         };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogFilter_toString(itc) {
-            return 'ennovum.ArmadillogFilter';
-        }
 
         //
         return ArmadillogFilter;

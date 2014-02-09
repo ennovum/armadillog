@@ -23,8 +23,6 @@ define(
 
             this.inputCreate = inputCreate.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             return this;
         };
 
@@ -35,13 +33,6 @@ define(
          */
         var inputCreate = function ArmadillogInputView_inputCreate(itc, context) {
             return itc.inputView.create(context);
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogInputView_toString(itc) {
-            return 'ennovum.ArmadillogInputView';
         };
 
         //

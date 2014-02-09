@@ -27,8 +27,6 @@ define(
                 inputEls: undefined
             };
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, config, application);
         };
 
@@ -191,13 +189,6 @@ define(
             dom.classDepend(itc.inputEls.clearBoxEl, HIDDEN_CLASS, value === null);
 
             return true;
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogInput_toString(itc) {
-            return 'ennovum.ArmadillogInput';
         };
 
         //

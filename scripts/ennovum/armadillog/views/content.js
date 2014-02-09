@@ -27,8 +27,6 @@ define(
             this.contentCreate = contentCreate.bind(this, itc);
             this.contentLineItemCreate = contentLineItemCreate.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             return this;
         };
 
@@ -48,13 +46,6 @@ define(
          */
         var contentLineItemCreate = function ArmadillogContentView_contentLineItemCreate(itc, context) {
             return itc.contentLineItemView.create(context);
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogContentView_toString(itc) {
-            return 'ennovum.ArmadillogContentView';
         };
 
         //

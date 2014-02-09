@@ -31,8 +31,6 @@ define(
             this.indexOf = indexOf.bind(this, itc);
             this.lastIndexOf = lastIndexOf.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             return this;
         };
 
@@ -220,13 +218,6 @@ define(
          */
         var length = function Buffer_length(itc) {
             return itc.lastIx - itc.firstIx + 1;
-        };
-
-        /**
-         *
-         */
-        var toString = function Buffer_toString(itc) {
-            return 'ennovum.Buffer';
         };
 
         //

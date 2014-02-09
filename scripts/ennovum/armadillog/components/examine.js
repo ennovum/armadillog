@@ -30,8 +30,6 @@ define(
             this.set = set.bind(this, itc);
             this.clear = clear.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, config, application);
         };
 
@@ -148,13 +146,6 @@ define(
             itc.examineEls.filteredContentEl.innerHTML = '';
 
             return true;
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogExamine_toString(itc) {
-            return 'ennovum.ArmadillogExamine';
         };
 
         //

@@ -27,8 +27,6 @@ define(
             this.filterCreate = filterCreate.bind(this, itc);
             this.filterItemCreate = filterItemCreate.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             return this;
         };
 
@@ -77,13 +75,6 @@ define(
             selectedClass = highlightTypeListSelectEl.options[highlightTypeListSelectEl.selectedIndex].getAttribute('selected-class') || '';
             highlightTypeListSelectEl.setAttribute('selected-class', selectedClass);
             dom.classAdd(highlightTypeListSelectEl, selectedClass);
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogFilterView_toString() {
-            return 'ennovum.ArmadillogFilterView';
         };
 
         //

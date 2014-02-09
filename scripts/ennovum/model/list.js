@@ -46,7 +46,6 @@ define(
             this.indexOf = indexOf.bind(this, itc);
 
             this.toArray = toArray.bind(this, itc);
-            this.toString = toString.bind(this, itc);
 
             arguments.length && this.set.apply(this, arguments);
 
@@ -417,13 +416,6 @@ define(
          */
         var toArray = function ModelList_toArray(itc) {
             return itc.list;
-        };
-
-        /**
-         *
-         */
-        var toString = function ModelList_toString(itc) {
-            return 'ennovum.model.ModelList';
         };
 
         //

@@ -22,8 +22,6 @@ define(
                 fn: undefined
             }
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, config);
 
             return this;
@@ -93,13 +91,6 @@ define(
             itc.workerFunction = composition.mixin(this, new WorkerFunction(itc.fn, config));
 
             return true;
-        };
-
-        /**
-         *
-         */
-        var toString = function WorkerDownloader_toString() {
-            return 'ennovum.workerDownloader';
         };
 
         //

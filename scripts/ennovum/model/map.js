@@ -39,7 +39,6 @@ define(
             this.has = has.bind(this, itc);
 
             this.toMap = toMap.bind(this, itc);
-            this.toString = toString.bind(this, itc);
 
             arguments.length && this.set.apply(this, arguments);
 
@@ -260,13 +259,6 @@ define(
          */
         var toMap = function ModelList_toMap(itc) {
             return itc.map;
-        };
-
-        /**
-         *
-         */
-        var toString = function ModelMap_toString(itc) {
-            return 'ennovum.model.ModelMap';
         };
 
         //

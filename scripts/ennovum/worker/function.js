@@ -43,8 +43,6 @@ define(
             this.destroy = destroy.bind(this, itc);
             this.run = run.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, config);
 
             return this;
@@ -228,13 +226,6 @@ define(
             }
 
             return true;
-        };
-
-        /**
-         *
-         */
-        var toString = function WorkerFunction_toString(itc) {
-            return 'ennovum.workerFunction';
         };
 
         //

@@ -36,8 +36,6 @@ define(
             this.get = get.bind(this, itc);
             this.set = set.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             arguments.length && this.set.apply(this, arguments);
 
             return this;
@@ -171,13 +169,6 @@ define(
             itc.eventGroupList = [];
 
             return true;
-        };
-
-        /**
-         *
-         */
-        var toString = function ModelValue_toString() {
-            return 'ennovum.model.ModelValue';
         };
 
         //

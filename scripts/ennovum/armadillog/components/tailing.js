@@ -24,8 +24,6 @@ define(
                 scrollEl: undefined
             };
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, argConfig, argApplication);
         };
 
@@ -127,13 +125,6 @@ define(
             }
 
             return true;
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogTailing_toString(itc) {
-            return 'ennovum.ArmadillogTailing';
         };
 
         //

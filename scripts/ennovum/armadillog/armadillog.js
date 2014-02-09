@@ -32,8 +32,6 @@ define(
             this.contentClear = contentClear.bind(this, itc);
             this.contentTextSet = contentTextSet.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, config)
         };
 
@@ -110,13 +108,6 @@ define(
             itc.application.content.textSet(text, label);
 
             return true;
-        };
-
-        /**
-         *
-         */
-        var toString = function Armadillog_toString(itc) {
-            return 'ennovum.Armadillog';
         };
 
         //

@@ -23,8 +23,6 @@ define(
 
             this.examineCreate = examineCreate.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             return this;
         };
 
@@ -35,13 +33,6 @@ define(
          */
         var examineCreate = function ArmadillogView_examineCreate(itc, context) {
             return itc.examineView.create(context);
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogView_toString(itc) {
-            return 'ennovum.ArmadillogView';
         };
 
         //

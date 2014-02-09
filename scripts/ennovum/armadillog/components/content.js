@@ -60,8 +60,6 @@ define(
             this.urlSet = urlSet.bind(this, itc);
             this.textSet = textSet.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, config, application);
         };
 
@@ -916,13 +914,6 @@ define(
             itc.lineMList.queue(itc.application.busy.set, true, this, [false, 'lineListFilter']);
 
             return true;
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogContent_toString(itc) {
-            return 'ennovum.ArmadillogContent';
         };
 
         //

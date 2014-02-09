@@ -26,8 +26,6 @@ define(
             this.unpause = unpause.bind(this, itc);
             this.paused = paused.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             return this;
         };
 
@@ -162,13 +160,6 @@ define(
          */
         var paused = function Queue_paused(itc) {
             return itc.pauses > 0;
-        };
-
-        /**
-         *
-         */
-        var toString = function Queue_toString(itc) {
-            return 'ennovum.Queue';
         };
 
         //

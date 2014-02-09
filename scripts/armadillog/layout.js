@@ -257,13 +257,6 @@ define(
             return true;
         };
 
-        /**
-         *
-         */
-        var toString = function Layout_toString(itc) {
-            return 'ennovum.Layout';
-        };
-
         //
         return Layout;
     });

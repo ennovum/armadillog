@@ -28,8 +28,6 @@ define(
             this.set = set.bind(this, itc);
             this.check = check.bind(this, itc);
 
-            this.toString = toString.bind(this, itc);
-
             init.call(this, itc, config, application);
 
             return this;
@@ -130,13 +128,6 @@ define(
          */
         var check = function ArmadillogBusy_check(itc) {
             return itc.busy;
-        };
-
-        /**
-         *
-         */
-        var toString = function ArmadillogBusy_toString(itc) {
-            return 'ennovum.ArmadillogBusy';
         };
 
         //

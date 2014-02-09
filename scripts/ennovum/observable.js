@@ -173,13 +173,6 @@ define(
             }
         };
 
-        /**
-         *
-         */
-        var toString = function Observable_toString(itc) {
-            return 'ennovum.Observable';
-        };
-
         //
         return Observable;
     });
