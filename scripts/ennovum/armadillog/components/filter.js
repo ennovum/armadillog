@@ -354,7 +354,7 @@ define(
                 },
                 this);
 
-            itc.filterMList.on(
+            itc.filterMList.handle(
                 'model-insert',
                 function ArmadillogFilter_inputUiInit_filterMListInsertHandler(evt, dataList) {
                     var filterDataList = [];
@@ -370,7 +370,7 @@ define(
                     itc.observable.trigger('list-insert', {'count': dataList.length});
                 });
 
-            itc.filterMList.on(
+            itc.filterMList.handle(
                 'model-update',
                 function ArmadillogFilter_inputUiInit_filterMListUpdateHandler(evt, dataList) {
                     var filterDataList = [];
@@ -386,7 +386,7 @@ define(
                     itc.observable.trigger('list-update', {'count': dataList.length});
                 });
 
-            itc.filterMList.on(
+            itc.filterMList.handle(
                 'model-delete',
                 function ArmadillogFilter_inputUiInit_filterMListDeleteHandler(evt, dataList) {
                     var filterDataList = [];
@@ -402,7 +402,7 @@ define(
                     itc.observable.trigger('list-delete', {'count': dataList.length});
                 });
 
-            itc.filterMList.on(
+            itc.filterMList.handle(
                 'model-forward',
                 function ArmadillogFilter_inputUiInit_filterMListForwardHandler(evt, dataList) {
                     var filterDataList = [];
@@ -427,7 +427,7 @@ define(
                     }
                 });
 
-            itc.observable.on(
+            itc.observable.handle(
                 ['list-insert', 'list-delete'],
                 function ArmadillogFilter_inputUiInit_handlerListToggle() {
                     dom.classDepend(itc.filterEls.listEl, HIDDEN_CLASS, itc.filterMList.length() === 0);

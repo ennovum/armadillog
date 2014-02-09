@@ -172,7 +172,7 @@ define(
                 },
                 this);
 
-            itc.application.content.on(
+            itc.application.content.handle(
                 'source-change',
                 function ArmadillogInput_uiInit_applicationSourceChangeHandler(evt, data) {
                     clearLabelSet(itc, data.label);

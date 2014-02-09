@@ -75,8 +75,8 @@ define(
                     if (value !== valueOld) {
                         itc.map[key] = value;
 
-                        valueOff(itc, key, valueOld);
-                        valueOn(itc, key, value);
+                        valueUnhandle(itc, key, valueOld);
+                        valueHandle(itc, key, value);
 
                         updateList.push({
                             'key': key,
@@ -88,7 +88,7 @@ define(
                 else {
                     itc.map[key] = value;
 
-                    valueOn(itc, key, value);
+                    valueHandle(itc, key, value);
 
                     insertList.push({
                         'key': key,
@@ -120,7 +120,7 @@ define(
 
                     delete itc.map[key];
 
-                    valueOff(itc, key, valueOld);
+                    valueUnhandle(itc, key, valueOld);
 
                     deleteList.push({
                         'key': key,
@@ -159,27 +159,29 @@ define(
          * @param {number} key key of the value to attach
          * @param {mixed} value value to attach
          */
-        var valueOn = function ModelMap_valueOn(itc, key, value) {
-            if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
-                value.on(
-                    [
-                        'model-insert',
-                        'model-update',
-                        'model-delete',
-                        'model-forward'
-                    ],
-                    itc.valueListenerMap[key] = function ModelMap_valueOn_valueListener(event, dataList) {
-                        eventAdd(
-                            itc,
-                            'model-forward',
-                            [{
-                                'key': key,
-                                'valueNew': value,
-                                'event': event,
-                                'dataList': dataList
-                            }]);
-                    });
+        var valueHandle = function ModelMap_valueHandle(itc, key, value) {
+            if (!value || typeof value.handle !== 'function') {
+                return false;
             }
+
+            value.handle(
+                [
+                    'model-insert',
+                    'model-update',
+                    'model-delete',
+                    'model-forward'
+                ],
+                itc.valueListenerMap[key] = function ModelMap_valueHandle_valueListener(event, dataList) {
+                    eventAdd(
+                        itc,
+                        'model-forward',
+                        [{
+                            'key': key,
+                            'valueNew': value,
+                            'event': event,
+                            'dataList': dataList
+                        }]);
+                });
 
             return true;
         };
@@ -190,9 +192,13 @@ define(
          * @param {number} key key of the value to detach
          * @param {mixed} value value to detach
          */
-        var valueOff = function ModelMap_valueOff(itc, key, value) {
+        var valueUnhandle = function ModelMap_valueUnhandle(itc, key, value) {
+            if (!(key in itc.valueListenerMap)) {
+                return false;
+            }
+
             if (itc.valueListenerMap[key]) {
-                value.off(
+                value.unhandle(
                     [
                         'model-insert',
                         'model-update',

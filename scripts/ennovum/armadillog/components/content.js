@@ -310,7 +310,7 @@ define(
                 },
                 this);
 
-            itc.lineMList.on(
+            itc.lineMList.handle(
                 'model-insert',
                 function ArmadillogContent_uiInit_lineMListInsertHandler(evt, dataList) {
                     var lineViewList = [];
@@ -328,7 +328,7 @@ define(
                     lineListFilter(itc, lineList);
                 });
 
-            itc.lineMList.on(
+            itc.lineMList.handle(
                 'model-update',
                 function ArmadillogContent_uiInit_lineMListUpdateHandler(evt, dataList) {
                     var lineViewList = [];
@@ -346,7 +346,7 @@ define(
                     lineListFilter(itc, lineList);
                 });
 
-            itc.lineMList.on(
+            itc.lineMList.handle(
                 'model-delete',
                 function ArmadillogContent_uiInit_lineMListDeleteHandler(evt, dataList) {
                     var lineViewList = [];
@@ -361,7 +361,7 @@ define(
                     lineViewListDelete(itc, lineViewList);
                 });
 
-            itc.lineMList.on(
+            itc.lineMList.handle(
                 'model-forward',
                 function ArmadillogContent_uiInit_lineMListForwardHandler(evt, dataList) {
                     var lineViewList = [];
@@ -397,7 +397,7 @@ define(
                     }
                 });
 
-            itc.application.filter.on(
+            itc.application.filter.handle(
                 ['list-insert', 'list-update', 'list-delete'],
                 function ArmadillogContent_uiInit_handlerFilterApplier(evt) {
                     filterApply(itc);

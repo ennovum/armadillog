@@ -17,8 +17,8 @@ define(
                 eventHandlerMap: {}
             };
 
-            this.on = on.bind(this, itc);
-            this.off = off.bind(this, itc);
+            this.handle = handle.bind(this, itc);
+            this.unhandle = unhandle.bind(this, itc);
             this.trigger = trigger.bind(this, itc);
 
             return this;
@@ -31,7 +31,7 @@ define(
          * @param {function} fn handler function
          * @param {mixed} fnCtx handler function context
          */
-        var on = function Observable_on(itc, eventNames, fn, fnCtx, fnArgs) {
+        var handle = function Observable_handle(itc, eventNames, fn, fnCtx, fnArgs) {
             return handlerAddAll(itc, eventNames, fn, fnCtx, fnArgs);
         };
 
@@ -42,7 +42,7 @@ define(
          * @param {function} fn handler function
          * @param {mixed} fnCtx handler function context
          */
-        var off = function Observable_off(itc, eventNames, fn, fnCtx, fnArgs) {
+        var unhandle = function Observable_unhandle(itc, eventNames, fn, fnCtx, fnArgs) {
             return handlerRemoveAll(itc, eventNames, fn, fnCtx, fnArgs);
         };
 

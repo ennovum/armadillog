@@ -82,8 +82,8 @@ define(
                     if (value !== valueOld) {
                         itc.list[ix] = value;
 
-                        valueOff(itc, ix, valueOld);
-                        valueOn(itc, ix, value);
+                        valueUnhandle(itc, ix, valueOld);
+                        valueHandle(itc, ix, value);
 
                         updateList.push({
                             'ix': ix,
@@ -95,7 +95,7 @@ define(
                 else {
                     itc.list[ix] = value;
 
-                    valueOn(itc, ix, value);
+                    valueHandle(itc, ix, value);
 
                     insertList.push({
                         'ix': ix,
@@ -127,7 +127,7 @@ define(
 
                     itc.list[ix] = value;
 
-                    valueOff(itc, ix, valueOld);
+                    valueUnhandle(itc, ix, valueOld);
 
                     deleteList.push({
                         'ix': ix,
@@ -154,7 +154,7 @@ define(
             for (var i = 0, l = valueList.length; i < l; i++) {
                 value = valueList[i];
 
-                valueOn(itc, ix + i, value);
+                valueHandle(itc, ix + i, value);
 
                 insertList.push({
                     'ix': ix + i,
@@ -178,7 +178,7 @@ define(
             var ix = itc.list.length - 1;
             var valueOld = itc.list.pop();
 
-            valueOff(itc, ix, valueOld);
+            valueUnhandle(itc, ix, valueOld);
 
             eventAdd(
                 itc,
@@ -202,7 +202,7 @@ define(
             var ix = 0;
             var valueOld = itc.list.shift();
 
-            valueOff(itc, ix, valueOld);
+            valueUnhandle(itc, ix, valueOld);
 
             eventAdd(
                 itc,
@@ -228,7 +228,7 @@ define(
             for (var i = 0, l = valueList.length; i < l; i++) {
                 value = valueList[i];
 
-                valueOn(itc, ix + i, value);
+                valueHandle(itc, ix + i, value);
 
                 insertList.push({
                     'ix': ix + i,
@@ -267,7 +267,7 @@ define(
             for (var i = 0, l = valueList.length; i < l; i++) {
                 value = valueList[i];
 
-                valueOn(itc, ix + i, value);
+                valueHandle(itc, ix + i, value);
 
                 insertList.push({
                     'ix': ix + i,
@@ -280,7 +280,7 @@ define(
             for (var i = 0, l = valueDeleteList.length; i < l; i++) {
                 value = valueDeleteList[i];
 
-                valueOff(itc, ix + i, value);
+                valueUnhandle(itc, ix + i, value);
 
                 deleteList.push({
                     'ix': ix + i,
@@ -317,27 +317,29 @@ define(
          * @param {number} ix index of the value to attach
          * @param {mixed} value value to attach
          */
-        var valueOn = function ModelList_valueOn(itc, ix, value) {
-            if (value && typeof value === 'object' && 'on' in value && typeof value.on === 'function') {
-                value.on(
-                    [
-                        'model-insert',
-                        'model-update',
-                        'model-delete',
-                        'model-forward'
-                    ],
-                    itc.valueListenerList[ix] = function ModelList_valueOn_valueListener(event, dataList) {
-                        eventAdd(
-                            itc,
-                            'model-forward',
-                            [{
-                                'ix': ix,
-                                'valueNew': value,
-                                'event': event,
-                                'dataList': dataList
-                            }]);
-                    });
+        var valueHandle = function ModelList_valueHandle(itc, ix, value) {
+            if (!value || typeof value.handle !== 'function') {
+                return false;
             }
+
+            value.handle(
+                [
+                    'model-insert',
+                    'model-update',
+                    'model-delete',
+                    'model-forward'
+                ],
+                itc.valueListenerList[ix] = function ModelList_valueHandle_valueListener(event, dataList) {
+                    eventAdd(
+                        itc,
+                        'model-forward',
+                        [{
+                            'ix': ix,
+                            'valueNew': value,
+                            'event': event,
+                            'dataList': dataList
+                        }]);
+                });
 
             return true;
         };
@@ -348,19 +350,21 @@ define(
          * @param {number} ix index of the value to detach
          * @param {mixed} value value to detach
          */
-        var valueOff = function ModelList_valueOff(itc, ix, value) {
-            if (itc.valueListenerList[ix]) {
-                value.off(
-                    [
-                        'model-insert',
-                        'model-update',
-                        'model-delete',
-                        'model-forward'
-                    ],
-                    itc.valueListenerList[ix]);
-
-                itc.valueListenerList[ix] = null;
+        var valueUnhandle = function ModelList_valueUnhandle(itc, ix, value) {
+            if (ix < 0 || ix >= itc.valueListenerList.length) {
+                return false;
             }
+
+            value.unhandle(
+                [
+                    'model-insert',
+                    'model-update',
+                    'model-delete',
+                    'model-forward'
+                ],
+                itc.valueListenerList[ix]);
+
+            itc.valueListenerList[ix] = null;
 
             return true;
         };

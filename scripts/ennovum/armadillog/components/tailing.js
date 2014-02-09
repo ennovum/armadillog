@@ -92,7 +92,7 @@ define(
             dom.handle(window, 'load', false, false, false, check, this, [itc]);
             dom.handle(itc.scrollEl, 'scroll', false, true, true, check, this, [itc]);
 
-            itc.application.content.on('view-change', execute, this, [itc]);
+            itc.application.content.handle('view-change', execute, this, [itc]);
 
             return true;
         };

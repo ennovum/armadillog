@@ -53,20 +53,20 @@ define(
          *
          * @param {mixed} value item's value
          */
-        var set = function ModelValue_set(itc, valueTmp) {
+        var set = function ModelValue_set(itc, value) {
             var valueOld = itc.value;
 
-            if (valueTmp !== valueOld) {
-                itc.value = valueTmp;
+            if (value !== valueOld) {
+                itc.value = value;
 
-                valueOff(itc, valueOld);
-                valueOn(itc, itc.value);
+                valueUnhandle(itc, valueOld);
+                valueHandle(itc, itc.value);
 
                 eventAdd(
                     itc,
                     'model-update',
                     [{
-                        'valueNew': valueTmp,
+                        'valueNew': value,
                         'valueOld': valueOld
                     }]);
             }
@@ -77,28 +77,30 @@ define(
         /**
          * Attaches event forwarding
          *
-         * @param {mixed} valueTmp value to attach
+         * @param {mixed} value value to attach
          */
-        var valueOn = function ModelValue_valueOn(itc, valueTmp) {
-            if (valueTmp && typeof valueTmp === 'object' && 'on' in valueTmp && typeof valueTmp.on === 'function') {
-                valueTmp.on(
-                    [
-                        'model-insert',
-                        'model-update',
-                        'model-delete',
-                        'model-forward'
-                    ],
-                    itc.valueListener = function ModelValue_valueOn_valueListener(event, dataList) {
-                        eventAdd(
-                            itc,
-                            'model-forward',
-                            [{
-                                'valueNew': valueTmp,
-                                'event': event,
-                                'dataList': dataList
-                            }]);
-                    });
+        var valueHandle = function ModelValue_valueHandle(itc, value) {
+            if (!value || typeof value.handle !== 'function') {
+                return false;
             }
+
+            value.handle(
+                [
+                    'model-insert',
+                    'model-update',
+                    'model-delete',
+                    'model-forward'
+                ],
+                itc.valueListener = function ModelValue_valueHandle_valueListener(event, dataList) {
+                    eventAdd(
+                        itc,
+                        'model-forward',
+                        [{
+                            'valueNew': value,
+                            'event': event,
+                            'dataList': dataList
+                        }]);
+                });
 
             return true;
         };
@@ -106,21 +108,23 @@ define(
         /**
          * Detaches event forwarding
          *
-         * @param {mixed} valueTmp value to detach
+         * @param {mixed} value value to detach
          */
-        var valueOff = function ModelValue_valueOff(itc, valueTmp) {
-            if (itc.valueListener) {
-                valueTmp.off(
-                    [
-                        'model-insert',
-                        'model-update',
-                        'model-delete',
-                        'model-forward'
-                    ],
-                    itc.valueListener);
-
-                itc.valueListener = null;
+        var valueUnhandle = function ModelValue_valueUnhandle(itc, value) {
+            if (!itc.valueListener) {
+                return false;
             }
+
+            value.unhandle(
+                [
+                    'model-insert',
+                    'model-update',
+                    'model-delete',
+                    'model-forward'
+                ],
+                itc.valueListener);
+
+            itc.valueListener = null;
 
             return true;
         };
