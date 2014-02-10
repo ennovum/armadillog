@@ -11,7 +11,7 @@ define(
         environment,
         dom,
         utils,
-        ArmadillogExamineView
+        viewExamine
     ) {
         /**
          * ArmadillogExamine constructor
@@ -23,7 +23,6 @@ define(
 
                 bodyEl: undefined,
                 boxEl: undefined,
-                view: undefined,
                 examineEls: undefined
             };
 
@@ -92,9 +91,7 @@ define(
                 return false;
             };
 
-            itc.view = new ArmadillogExamineView();
-
-            itc.examineEls = itc.view.examineCreate();
+            itc.examineEls = viewExamine.examineCreate();
             itc.boxEl.appendChild(itc.examineEls.rawBoxEl);
             itc.boxEl.appendChild(itc.examineEls.filteredBoxEl);
 

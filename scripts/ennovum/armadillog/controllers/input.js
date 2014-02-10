@@ -11,7 +11,7 @@ define(
         environment,
         dom,
         utils,
-        ArmadillogInputView
+        viewInput
     ) {
         /**
          * ArmadillogInput constructor
@@ -23,7 +23,6 @@ define(
 
                 bodyEl: undefined,
                 boxEl: undefined,
-                view: undefined,
                 inputEls: undefined
             };
 
@@ -92,9 +91,7 @@ define(
                 return false;
             };
 
-            itc.view = new ArmadillogInputView();
-
-            itc.inputEls = itc.view.inputCreate();
+            itc.inputEls = viewInput.inputCreate();
             itc.boxEl.appendChild(itc.inputEls.clearBoxEl);
             itc.boxEl.appendChild(itc.inputEls.fileBoxEl);
             itc.boxEl.appendChild(itc.inputEls.pasteBoxEl);

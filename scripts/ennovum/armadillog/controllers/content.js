@@ -23,7 +23,7 @@ define(
         ModelMap,
         WorkerFunction,
         WorkerDownloader,
-        ArmadillogContentView
+        viewContent
     ) {
         /**
          * ArmadillogContent constructor
@@ -51,7 +51,6 @@ define(
 
                 boxEl: undefined,
                 dropEl: undefined,
-                view: undefined,
                 contentEls: undefined
             };
 
@@ -215,9 +214,7 @@ define(
 
             itc.dropEl = itc.config.contentDropEl;
 
-            itc.view = new ArmadillogContentView();
-
-            itc.contentEls = itc.view.contentCreate();
+            itc.contentEls = viewContent.contentCreate();
             itc.boxEl.appendChild(itc.contentEls.frameEl);
 
             return true;
@@ -695,7 +692,7 @@ define(
         var lineItemViewCreate = function ArmadillogContent_lineItemViewCreate(itc, lineIx, lineItemMMap) {
             lineItemMMap.set(
                 'els',
-                itc.view.contentLineItemCreate({
+                viewContent.contentLineItemCreate({
                     'number': lineIx + 1
                 }));
 

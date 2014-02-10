@@ -15,28 +15,17 @@ define(
         contentTpl,
         contentLineItemTpl
     ) {
-        /**
-         * ArmadillogContentView constructor
-         */
-        var ArmadillogContentView = function ArmadillogContentView() {
-            var itc = {
-                contentView: new View(contentTpl),
-                contentLineItemView: new View(contentLineItemTpl)
-            };
-
-            this.contentCreate = contentCreate.bind(this, itc);
-            this.contentLineItemCreate = contentLineItemCreate.bind(this, itc);
-
-            return this;
-        };
+        //
+        var contentView = new View(contentTpl);
+        var contentLineItemView = new View(contentLineItemTpl);
 
         /**
          * Returns content view
          *
          * @param {object} context context object
          */
-        var contentCreate = function ArmadillogContentView_contentCreate(itc, context) {
-            return itc.contentView.create(context);
+        var contentCreate = function ArmadillogContentView_contentCreate(context) {
+            return contentView.create(context);
         };
 
         /**
@@ -44,10 +33,13 @@ define(
          *
          * @param {object} context context object
          */
-        var contentLineItemCreate = function ArmadillogContentView_contentLineItemCreate(itc, context) {
-            return itc.contentLineItemView.create(context);
+        var contentLineItemCreate = function ArmadillogContentView_contentLineItemCreate(context) {
+            return contentLineItemView.create(context);
         };
 
         //
-        return ArmadillogContentView;
+        return {
+            contentCreate: contentCreate,
+            contentLineItemCreate: contentLineItemCreate
+        };
     });

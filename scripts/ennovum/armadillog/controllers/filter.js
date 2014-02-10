@@ -21,7 +21,7 @@ define(
         ModelList,
         ModelMap,
         WorkerFunction,
-        ArmadillogFilterView
+        viewFilter
     ) {
         /**
          * ArmadillogFilter constructor
@@ -37,7 +37,6 @@ define(
                 filterMList: undefined,
 
                 boxEl: undefined,
-                view: undefined,
                 filterEls: undefined,
 
                 workerFilter: undefined
@@ -306,9 +305,7 @@ define(
                 return false;
             };
 
-            itc.view = new ArmadillogFilterView();
-
-            itc.filterEls = itc.view.filterCreate();
+            itc.filterEls = viewFilter.filterCreate();
             itc.boxEl.appendChild(itc.filterEls.listEl);
             itc.boxEl.appendChild(itc.filterEls.buttonBoxEl);
 
@@ -562,7 +559,7 @@ define(
         var filterItemViewCreate = function ArmadillogFilter_filterItemViewCreate(itc, filterItemMMap) {
             filterItemMMap.set(
                 'els',
-                itc.view.filterItemCreate({
+                viewFilter.filterItemCreate({
                     'id': filterItemMMap.get('id'),
                     'filterAffectTypes': AFFECT_TYPE_LIST,
                     'filterValueTypes': VALUE_TYPE_LIST,

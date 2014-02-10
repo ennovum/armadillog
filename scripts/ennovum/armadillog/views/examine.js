@@ -13,28 +13,20 @@ define(
         View,
         examineTpl
     ) {
-        /**
-         * ArmadillogView constructor
-         */
-        var ArmadillogExamineView = function ArmadillogExamineView() {
-            var itc = {
-                examineView: new View(examineTpl)
-            };
-
-            this.examineCreate = examineCreate.bind(this, itc);
-
-            return this;
-        };
+        //
+        var examineView = new View(examineTpl);
 
         /**
          * Returns examine view
          *
          * @param {object} context context object
          */
-        var examineCreate = function ArmadillogView_examineCreate(itc, context) {
-            return itc.examineView.create(context);
+        var examineCreate = function ArmadillogView_examineCreate(context) {
+            return examineView.create(context);
         };
 
         //
-        return ArmadillogExamineView;
+        return {
+            examineCreate: examineCreate
+        };
     });
