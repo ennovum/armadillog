@@ -44,10 +44,7 @@ define(
                 url: undefined,
                 urlUpdateTimeout: undefined,
 
-                dragging: undefined,
-
                 boxEl: undefined,
-                dropEl: undefined,
                 contentEls: undefined
             };
 
@@ -109,8 +106,7 @@ define(
 
             itc.config = {
                 contentBoxEl: config.contentBoxEl || null,
-                contentScrollEl: config.contentScrollEl || null,
-                contentDropEl: config.contentDropEl || null
+                contentScrollEl: config.contentScrollEl || null
             };
 
             return true;
@@ -159,8 +155,6 @@ define(
             itc.url = null;
             itc.urlUpdateTimeout = null;
 
-            itc.dragging = false;
-
             return true;
         };
 
@@ -174,8 +168,6 @@ define(
                 return false;
             };
 
-            itc.dropEl = itc.config.contentDropEl;
-
             itc.contentEls = viewContent.contentCreate();
             itc.boxEl.appendChild(itc.contentEls.frameEl);
 
@@ -186,48 +178,6 @@ define(
          * Initializes UI
          */
         var uiInit = function ArmadillogContent_uiInit(itc) {
-            dom.handle(
-                itc.dropEl, 'dragstart', false, false, true,
-                function ArmadillogContent_uiInit_dropElDragstartHandler(evt) {
-                    itc.dragging = true;
-                },
-                this);
-
-            dom.handle(
-                itc.dropEl, 'dragover', false, true, true,
-                function ArmadillogContent_uiInit_dropElDragovertHandler(evt) {
-                    evt.dataTransfer.dropEffect = itc.dragging ? 'none' : 'copy';
-                },
-                this);
-
-            dom.handle(
-                itc.dropEl, 'dragend', false, true, true,
-                function ArmadillogContent_uiInit_dropElDragendHandler(evt) {
-                    itc.dragging = false;
-                },
-                this);
-
-            dom.handle(
-                itc.dropEl, 'drop', false, true, true,
-                function ArmadillogContent_uiInit_dropElDropHandler(evt) {
-                    if (itc.dragging) {
-                        return;
-                    }
-
-                    var files = evt.dataTransfer.files;
-                    if (files.length) {
-                        clear(itc);
-                        fileSet(itc, files[0], files[0].name);
-                    }
-
-                    var data = evt.dataTransfer.getData('text/plain');
-                    if (data) {
-                        clear(itc);
-                        textSet(itc, data, '(dragged text)');
-                    }
-                },
-                this);
-
             dom.handle(
                 itc.contentEls.lineListEl, 'click', false, true, true,
                 function ArmadillogContent_uiInit_lineListElClickHandler(evt) {

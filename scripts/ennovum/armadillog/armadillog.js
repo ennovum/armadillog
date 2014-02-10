@@ -9,7 +9,8 @@ define(
         './controllers/examine',
         './controllers/input',
         './controllers/filter',
-        './controllers/tailing'
+        './controllers/tailing',
+        './controllers/dragdrop'
     ],
     function (
         environment,
@@ -19,7 +20,8 @@ define(
         ControllerExamine,
         ControllerInput,
         ControllerFilter,
-        ControllerTailing
+        ControllerTailing,
+        ControllerDragdrop
     ) {
         /**
          * Armadillog constructor
@@ -86,6 +88,7 @@ define(
             itc.application.tailing = new ControllerTailing(config, itc.application);
             itc.application.examine = new ControllerExamine(config, itc.application);
             itc.application.busy = new ControllerBusy(config, itc.application);
+            itc.application.dragdrop = new ControllerDragdrop(config, itc.application);
 
             return true;
         };
