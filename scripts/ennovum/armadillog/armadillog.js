@@ -4,22 +4,22 @@ define(
     [
         'ennovum.environment',
         'ennovum.utils',
-        './components/busy',
-        './components/content',
-        './components/examine',
-        './components/input',
-        './components/filter',
-        './components/tailing'
+        './controllers/busy',
+        './controllers/content',
+        './controllers/examine',
+        './controllers/input',
+        './controllers/filter',
+        './controllers/tailing'
     ],
     function (
         environment,
         utils,
-        ArmadillogBusy,
-        ArmadillogContent,
-        ArmadillogExamine,
-        ArmadillogInput,
-        ArmadillogFilter,
-        ArmadillogTailing
+        ControllerBusy,
+        ControllerContent,
+        ControllerExamine,
+        ControllerInput,
+        ControllerFilter,
+        ControllerTailing
     ) {
         /**
          * Armadillog constructor
@@ -80,12 +80,12 @@ define(
         var applicationInit = function Armadillog_applicationInit(itc, config) {
             itc.application = {};
 
-            itc.application.filter = new ArmadillogFilter(config, itc.application);
-            itc.application.content = new ArmadillogContent(config, itc.application);
-            itc.application.input = new ArmadillogInput(config, itc.application);
-            itc.application.tailing = new ArmadillogTailing(config, itc.application);
-            itc.application.examine = new ArmadillogExamine(config, itc.application);
-            itc.application.busy = new ArmadillogBusy(config, itc.application);
+            itc.application.filter = new ControllerFilter(config, itc.application);
+            itc.application.content = new ControllerContent(config, itc.application);
+            itc.application.input = new ControllerInput(config, itc.application);
+            itc.application.tailing = new ControllerTailing(config, itc.application);
+            itc.application.examine = new ControllerExamine(config, itc.application);
+            itc.application.busy = new ControllerBusy(config, itc.application);
 
             return true;
         };
