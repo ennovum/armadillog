@@ -9,9 +9,9 @@ define(
         'ennovum.Observable',
         'ennovum.model.ModelList',
         'ennovum.model.ModelMap',
-        'ennovum.worker.WorkerFunction',
-        'ennovum.worker.WorkerDownloader',
-        './../views/content'
+        './../views/content',
+        './../services/file-reader',
+        './../services/text-line-splitter'
     ],
     function (
         environment,
@@ -21,9 +21,9 @@ define(
         Observable,
         ModelList,
         ModelMap,
-        WorkerFunction,
-        WorkerDownloader,
-        viewContent
+        viewContent,
+        serviceFileReader,
+        serviceTextLineSplitter
     ) {
         /**
          * ArmadillogContent constructor
@@ -45,9 +45,6 @@ define(
                 urlUpdateTimeout: undefined,
 
                 dragging: undefined,
-
-                workerFileReader: undefined,
-                workerTextLineSplitter: undefined,
 
                 boxEl: undefined,
                 dropEl: undefined,
@@ -163,41 +160,6 @@ define(
             itc.urlUpdateTimeout = null;
 
             itc.dragging = false;
-
-            itc.workerFileReader = new WorkerDownloader();
-
-            itc.workerTextLineSplitter = new WorkerFunction(
-                function ArmadillogContent_dataInit_workerTextLineSplitter(data, success, error) {
-                    var lineList = data.text.split(/\r?\n/g);
-                    var ix = 0;
-                    var length = lineList.length;
-                    var lengthOriginal = length;
-
-                    if (data.limit && length > Math.abs(data.limit)) {
-                        if (data.limit < 0) {
-                            ix = Math.max(0, lineList.length + data.limit);
-                        }
-                        else {
-                            length = Math.min(lineList.length, data.limit);
-                        }
-                    }
-
-                    for (var i = ix, l = length; i < l; i++) {
-                        success(
-                            {
-                                'ix': i - ix,
-                                'text': lineList[i]
-                            },
-                            null);
-                    }
-
-                    success(
-                        {
-                            'count': length - ix,
-                            'countOriginal': lengthOriginal
-                        },
-                        null);
-            });
 
             return true;
         };
@@ -430,18 +392,18 @@ define(
         var fileSet = function ArmadillogContent_fileSet(itc, file, label) {
             itc.file = file;
 
-            itc.workerFileReader.run(
+            serviceFileReader.run(
                 {
                     'url': URL.createObjectURL(itc.file),
                     'limit': 0 - CONTENT_SIZE_LIMIT
                 },
                 null,
-                function ArmadillogContent_fileSet_workerFileReaderSuccess(data, additional) {
+                function ArmadillogContent_fileSet_serviceFileReaderRunSuccess(data) {
                     URL.revokeObjectURL(data.url);
                     textSet(itc, data.result, label);
                     fileUpdateSchedule(itc);
                 },
-                function ArmadillogContent_fileSet_workerFileReaderFailure() {
+                function ArmadillogContent_fileSet_serviceFileReaderRunFailure() {
                     alert('An error occured, please try another input method.');
                 },
                 this);
@@ -462,13 +424,13 @@ define(
                 return;
             }
 
-            itc.workerFileReader.run(
+            serviceFileReader.run(
                 {
                     'url': URL.createObjectURL(itc.file),
                     'limit': 0 - CONTENT_SIZE_LIMIT
                 },
                 null,
-                function ArmadillogContent_fileUpdate_workerFileReaderSuccess(data, additional) {
+                function ArmadillogContent_fileUpdate_serviceFileReaderRunSuccess(data) {
                     URL.revokeObjectURL(data.url);
 
                     if (itc.file) {
@@ -476,7 +438,7 @@ define(
                         fileUpdateSchedule(itc);
                     }
                 },
-                function ArmadillogContent_fileUpdate_workerFileReaderFailure() {
+                function ArmadillogContent_fileUpdate_serviceFileReaderRunFailure() {
                     alert('An error occured, please try another input method.');
                 },
                 this);
@@ -524,17 +486,17 @@ define(
 
             itc.url = url;
 
-            itc.workerFileReader.run(
+            serviceFileReader.run(
                 {
                     'url': itc.url,
                     'limit': 0 - CONTENT_SIZE_LIMIT
                 },
                 null,
-                function ArmadillogContent_urlSet_workerFileReaderSuccess(data, additional) {
+                function ArmadillogContent_urlSet_serviceFileReaderRunSuccess(data) {
                     textSet(itc, data.result, label);
                     urlUpdateSchedule(itc);
                 },
-                function ArmadillogContent_urlSet_workerFileReaderFailure() {
+                function ArmadillogContent_urlSet_serviceFileReaderRunFailure() {
                     alert('An error occured, please try another input method.');
                 },
                 this);
@@ -555,19 +517,19 @@ define(
                 return;
             }
 
-            itc.workerFileReader.run(
+            serviceFileReader.run(
                 {
                     'url': itc.url,
                     'limit': 0 - CONTENT_SIZE_LIMIT
                 },
                 null,
-                function ArmadillogContent_urlUpdate_workerFileReaderSuccess(data, additional) {
+                function ArmadillogContent_urlUpdate_serviceFileReaderRunSuccess(data) {
                     if (itc.url) {
                         textUpdate(itc, data.result);
                         urlUpdateSchedule(itc);
                     }
                 },
-                function ArmadillogContent_urlUpdate_workerFileReaderFailure() {
+                function ArmadillogContent_urlUpdate_serviceFileReaderRunFailure() {
                     alert('An error occured, please try another input method.');
                 },
                 this);
@@ -609,13 +571,13 @@ define(
         var textSet = function ArmadillogContent_textSet(itc, text, label) {
             itc.lineMList.pause();
 
-            itc.workerTextLineSplitter.run(
+            serviceTextLineSplitter.run(
                 {
                     'text': text,
                     'limit': 0 - CONTENT_LINE_LIMIT
                 },
                 null,
-                function ArmadillogContent_textSet_workerTextLineSplitterSuccess(data, additional) {
+                function ArmadillogContent_textSet_serviceTextLineSplitterRunSuccess(data, additional) {
                     if ('text' in data) {
                         var lineItemMMap = new ModelMap('textRaw', data.text, 'textFiltered', null, 'hidden', true, 'els', null);
                         itc.lineMList.setAt(data.ix, lineItemMMap);
@@ -641,13 +603,13 @@ define(
         var textUpdate = function ArmadillogContent_textUpdate(itc, text) {
             itc.lineMList.pause();
 
-            itc.workerTextLineSplitter.run(
+            serviceTextLineSplitter.run(
                 {
                     'text': text,
                     'limit': 0 - CONTENT_LINE_LIMIT
                 },
                 null,
-                function ArmadillogContent_textUpdate_workerTextLineSplitterSuccess(data, additional) {
+                function ArmadillogContent_textUpdate_serviceTextLineSplitterRunSuccess(data, additional) {
                     if ('text' in data) {
                         var lineItemMMap = itc.lineMList.getAt(data.ix);
 

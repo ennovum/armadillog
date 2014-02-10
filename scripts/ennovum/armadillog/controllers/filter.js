@@ -9,8 +9,8 @@ define(
         'ennovum.Observable',
         'ennovum.model.ModelList',
         'ennovum.model.ModelMap',
-        'ennovum.worker.WorkerFunction',
-        './../views/filter'
+        './../views/filter',
+        './../services/filter'
     ],
     function (
         environment,
@@ -20,8 +20,8 @@ define(
         Observable,
         ModelList,
         ModelMap,
-        WorkerFunction,
-        viewFilter
+        viewFilter,
+        serviceFilter
     ) {
         /**
          * ArmadillogFilter constructor
@@ -290,8 +290,6 @@ define(
 
             itc.filterMList = new ModelList();
 
-            filterWorkerCreate(itc);
-
             return true;
         };
 
@@ -436,88 +434,6 @@ define(
          */
         var storageInit = function ArmadillogFilter_storageInit(itc) {
             storageLoad(itc);
-
-            return true;
-        };
-
-        /**
-         * Creates a filter worker
-         */
-        var filterWorkerCreate = function ArmadillogFilter_filterWorkerCreate(itc) {
-            itc.workerFilter = new WorkerFunction(
-                function ArmadillogFilter_filterWorkerCreate_workerFilter(data, success, error) {
-                    var textFiltered = data.text;
-                    var filterList = JSON.parse(data.filterListJSON);
-
-                    var hidden = false;
-                    var filterItem;
-                    var regexp, match;
-
-                    for (var i = 0, l = filterList.length; i < l; i++) {
-                        filterItem = filterList[i];
-
-                        if (filterItem.mute || !filterItem.value || hidden) {
-                            continue;
-                        }
-
-                        var tagBeginSymbol = filterItem.highlightType ? data['TAG_HIGHLIGHT_' + filterItem.highlightType + '_BEGIN_SYMBOL'] || '' : '';
-                        var tagEndSymbol = filterItem.highlightType ? data['TAG_HIGHLIGHT_' + filterItem.highlightType + '_END_SYMBOL'] || '' : '';
-
-                        regexp = new RegExp('(' + filterItem.value + ')', 'gi');
-                        match = textFiltered.match(regexp);
-
-                        switch (filterItem.affectType) {
-                            case data.AFFECT_TYPE_SHOW_LINE:
-                                if (match) {
-                                    textFiltered = textFiltered.replace(regexp, tagBeginSymbol + '$1' + tagEndSymbol);
-                                }
-                                else {
-                                    hidden = true;
-                                }
-                                break;
-
-                            case data.AFFECT_TYPE_SHOW:
-                                if (match) {
-                                    textFiltered = tagBeginSymbol + match.join(tagEndSymbol + ' ' + tagBeginSymbol) + tagEndSymbol;
-                                }
-                                else {
-                                    hidden = true;
-                                }
-                                break;
-
-                            case data.AFFECT_TYPE_HIDE_LINE:
-                                if (match) {
-                                    hidden = true;
-                                }
-                                break;
-
-                            case data.AFFECT_TYPE_HIDE:
-                                if (match) {
-                                    textFiltered = textFiltered.replace(regexp, '');
-                                }
-                                break;
-
-                            case data.AFFECT_TYPE_HIGHLIGHT_LINE:
-                                if (match) {
-                                    textFiltered = tagBeginSymbol + textFiltered + tagEndSymbol;
-                                }
-                                break;
-
-                            case data.AFFECT_TYPE_HIGHLIGHT:
-                                if (match) {
-                                    textFiltered = textFiltered.replace(regexp, tagBeginSymbol + '$1' + tagEndSymbol);
-                                }
-                                break;
-                        }
-                    }
-
-                    success(
-                        {
-                            'text': textFiltered,
-                            'hidden': hidden
-                        },
-                        null);
-            });
 
             return true;
         };
@@ -942,7 +858,7 @@ define(
 
             var filterListJSON = JSON.stringify(filterList);
 
-            itc.workerFilter.run(
+            serviceFilter.run(
                 {
                     'AFFECT_TYPE_SHOW_LINE': AFFECT_TYPE_SHOW_LINE,
                     'AFFECT_TYPE_SHOW': AFFECT_TYPE_SHOW,
@@ -978,7 +894,7 @@ define(
                     'filterListJSON': filterListJSON
                 },
                 null,
-                function ArmadillogFilter_filterText_workerFilterSuccess(data) {
+                function ArmadillogFilter_filterText_serviceFilterRunSuccess(data) {
                     onSuccess({
                         'text': data.text,
                         'hidden': data.hidden
