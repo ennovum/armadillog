@@ -28,8 +28,7 @@ define(
 
                 list: [],
 
-                eventGroupList: [],
-                valueListenerList: []
+                eventGroupList: []
             };
 
             this.getAt = getAt.bind(this, itc);
@@ -328,17 +327,9 @@ define(
                     'model-delete',
                     'model-forward'
                 ],
-                itc.valueListenerList[ix] = function ModelList_valueHandle_valueListener(event, dataList) {
-                    eventAdd(
-                        itc,
-                        'model-forward',
-                        [{
-                            'ix': ix,
-                            'valueNew': value,
-                            'event': event,
-                            'dataList': dataList
-                        }]);
-                });
+                valueHandler,
+                this,
+                [itc, ix, value]);
 
             return true;
         };
@@ -350,7 +341,7 @@ define(
          * @param {mixed} value value to detach
          */
         var valueUnhandle = function ModelList_valueUnhandle(itc, ix, value) {
-            if (ix < 0 || ix >= itc.valueListenerList.length) {
+            if (!value || typeof value.handle !== 'function') {
                 return false;
             }
 
@@ -361,11 +352,30 @@ define(
                     'model-delete',
                     'model-forward'
                 ],
-                itc.valueListenerList[ix]);
-
-            itc.valueListenerList[ix] = null;
+                valueHandler,
+                this);
 
             return true;
+        };
+
+        /**
+         * Forwards events
+         *
+         * @param {number} ix index of the value
+         * @param {mixed} value value
+         * @param {string} event event name
+         * @param {array} dataList event data list
+         */
+        var valueHandler = function ModelList_valueHandler(itc, ix, value, event, dataList) {
+            eventAdd(
+                itc,
+                'model-forward',
+                [{
+                    'ix': indexOf(itc, value),
+                    'valueNew': value,
+                    'event': event,
+                    'dataList': dataList
+                }]);
         };
 
         /**

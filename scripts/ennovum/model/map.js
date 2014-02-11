@@ -28,8 +28,7 @@ define(
 
                 map: {},
 
-                eventGroupList: [],
-                valueListenerMap: {}
+                eventGroupList: []
             };
 
             this.get = get.bind(this, itc);
@@ -170,17 +169,9 @@ define(
                     'model-delete',
                     'model-forward'
                 ],
-                itc.valueListenerMap[key] = function ModelMap_valueHandle_valueListener(event, dataList) {
-                    eventAdd(
-                        itc,
-                        'model-forward',
-                        [{
-                            'key': key,
-                            'valueNew': value,
-                            'event': event,
-                            'dataList': dataList
-                        }]);
-                });
+                valueHandler,
+                this,
+                [itc, key, value]);
 
             return true;
         };
@@ -192,24 +183,41 @@ define(
          * @param {mixed} value value to detach
          */
         var valueUnhandle = function ModelMap_valueUnhandle(itc, key, value) {
-            if (!(key in itc.valueListenerMap)) {
+            if (!value || typeof value.handle !== 'function') {
                 return false;
             }
 
-            if (itc.valueListenerMap[key]) {
-                value.unhandle(
-                    [
-                        'model-insert',
-                        'model-update',
-                        'model-delete',
-                        'model-forward'
-                    ],
-                    itc.valueListenerMap[key]);
-
-                itc.valueListenerMap[key] = null;
-            }
+            value.unhandle(
+                [
+                    'model-insert',
+                    'model-update',
+                    'model-delete',
+                    'model-forward'
+                ],
+                valueHandler,
+                this);
 
             return true;
+        };
+
+        /**
+         * Forwards events
+         *
+         * @param {number} key key of the value
+         * @param {mixed} value value
+         * @param {string} event event name
+         * @param {array} dataList event data list
+         */
+        var valueHandler = function ModelMap_valueHandler(itc, key, value, event, dataList) {
+            eventAdd(
+                itc,
+                'model-forward',
+                [{
+                    'key': key,
+                    'valueNew': value,
+                    'event': event,
+                    'dataList': dataList
+                }]);
         };
 
         /**

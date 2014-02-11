@@ -28,8 +28,7 @@ define(
 
                 value: undefined,
 
-                eventGroupList: [],
-                valueListener: null
+                eventGroupList: []
             };
 
             this.get = get.bind(this, itc);
@@ -90,16 +89,9 @@ define(
                     'model-delete',
                     'model-forward'
                 ],
-                itc.valueListener = function ModelValue_valueHandle_valueListener(event, dataList) {
-                    eventAdd(
-                        itc,
-                        'model-forward',
-                        [{
-                            'valueNew': value,
-                            'event': event,
-                            'dataList': dataList
-                        }]);
-                });
+                valueHandler,
+                this,
+                [itc, value]);
 
             return true;
         };
@@ -110,7 +102,7 @@ define(
          * @param {mixed} value value to detach
          */
         var valueUnhandle = function ModelValue_valueUnhandle(itc, value) {
-            if (!itc.valueListener) {
+            if (!value || typeof value.handle !== 'function') {
                 return false;
             }
 
@@ -121,11 +113,28 @@ define(
                     'model-delete',
                     'model-forward'
                 ],
-                itc.valueListener);
-
-            itc.valueListener = null;
+                valueHandler,
+                this;
 
             return true;
+        };
+
+        /**
+         * Forwards events
+         *
+         * @param {mixed} value value
+         * @param {string} event event name
+         * @param {array} dataList event data list
+         */
+        var valueHandler = function ModelValue_valueHandler(itc, value, event, dataList) {
+            eventAdd(
+                itc,
+                'model-forward',
+                [{
+                    'valueNew': value,
+                    'event': event,
+                    'dataList': dataList
+                }]);
         };
 
         /**
