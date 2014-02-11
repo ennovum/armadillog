@@ -44,11 +44,6 @@ require.config({
             'main': 'queue.js'
         },
         {
-            'name': 'ennovum.model',
-            'location': 'ennovum/model',
-            'main': 'model.js'
-        },
-        {
             'name': 'ennovum.model.ModelList',
             'location': 'ennovum/model',
             'main': 'list.js'
@@ -67,11 +62,6 @@ require.config({
             'name': 'ennovum.View',
             'location': 'ennovum',
             'main': 'view.js'
-        },
-        {
-            'name': 'ennovum.worker',
-            'location': 'ennovum/worker',
-            'main': 'worker.js'
         },
         {
             'name': 'ennovum.worker.WorkerFunction',
