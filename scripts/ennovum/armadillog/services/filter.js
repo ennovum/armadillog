@@ -12,8 +12,8 @@ define(
         WorkerFunction
     ) {
         //
-        var workerFilter = new WorkerFunction(
-            function filtering_workerFilter(data, success, error) {
+        var WORKER_FILTER = new WorkerFunction(
+            function (data, success, error) {
                 var textFiltered = data.text;
                 var filterList = JSON.parse(data.filterListJSON);
 
@@ -91,7 +91,7 @@ define(
          *
          */
         var run = function filtering_run(data, additional, fnReady, fnError, fnCtx, fnArgs) {
-            return workerFilter.run(data, additional, fnReady, fnError, fnCtx, fnArgs);
+            return WORKER_FILTER.run(data, additional, fnReady, fnError, fnCtx, fnArgs);
         };
 
         //

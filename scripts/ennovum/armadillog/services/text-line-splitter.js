@@ -12,8 +12,8 @@ define(
         WorkerFunction
     ) {
         //
-        var workerTextLineSplitter = new WorkerFunction(
-            function textLineSplitter_workerTextLineSplitter(data, success, error) {
+        var WORKER_TEXT_LINE_SPLITTER = new WorkerFunction(
+            function (data, success, error) {
                 var lineList = data.text.split(/\r?\n/g);
                 var ix = 0;
                 var length = lineList.length;
@@ -49,7 +49,7 @@ define(
          *
          */
         var run = function textLineSplitter_run(data, additional, fnReady, fnError, fnCtx, fnArgs) {
-            return workerTextLineSplitter.run(data, additional, fnReady, fnError, fnCtx, fnArgs);
+            return WORKER_TEXT_LINE_SPLITTER.run(data, additional, fnReady, fnError, fnCtx, fnArgs);
         };
 
         //
