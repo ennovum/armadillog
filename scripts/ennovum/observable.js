@@ -32,7 +32,7 @@ define(
          * @param {mixed} fnCtx handler function context
          */
         var handle = function Observable_handle(itc, eventNames, fn, fnCtx, fnArgs) {
-            return handlerAddAll(itc, eventNames, fn, fnCtx, fnArgs);
+            return handleEvents(itc, eventNames, fn, fnCtx, fnArgs);
         };
 
         /**
@@ -42,8 +42,8 @@ define(
          * @param {function} fn handler function
          * @param {mixed} fnCtx handler function context
          */
-        var unhandle = function Observable_unhandle(itc, eventNames, fn, fnCtx, fnArgs) {
-            return handlerRemoveAll(itc, eventNames, fn, fnCtx, fnArgs);
+        var unhandle = function Observable_unhandle(itc, eventNames, fn, fnCtx) {
+            return unhandleEvents(itc, eventNames, fn, fnCtx);
         };
 
         /**
@@ -53,17 +53,17 @@ define(
          * @param {mixed} data event data
          */
         var trigger = function Observable_trigger(itc, eventNames, data) {
-            return handlersTriggerAll(itc, eventNames, data);
+            return triggerEventsHandlers(itc, eventNames, data);
         };
 
         /**
          *
          */
-        var handlerAddAll = function Observable_handlerAddAll(itc, eventNames, fn, fnCtx, fnArgs) {
+        var handleEvents = function Observable_handleEvents(itc, eventNames, fn, fnCtx, fnArgs) {
             eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
 
             for (var i = 0, l = eventNames.length; i < l; i++) {
-                handlerAdd(itc, eventNames[i], fn, fnCtx, fnArgs);
+                handleEvent(itc, eventNames[i], fn, fnCtx, fnArgs);
             }
 
             return true;
@@ -72,7 +72,7 @@ define(
         /**
          *
          */
-        var handlerAdd = function Observable_handlerAdd(itc, eventName, fn, fnCtx, fnArgs) {
+        var handleEvent = function Observable_handleEvent(itc, eventName, fn, fnCtx, fnArgs) {
             var handler = {
                 fn: fn,
                 fnCtx: fnCtx,
@@ -91,11 +91,11 @@ define(
         /**
          *
          */
-        var handlerRemoveAll = function Observable_handlerRemoveAll(itc, eventNames, fn, fnCtx, fnArgs) {
+        var unhandleEvents = function Observable_unhandleEvents(itc, eventNames, fn, fnCtx) {
             eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
 
             for (var i = 0, l = eventNames.length; i < l; i++) {
-                handlerRemove(itc, eventNames[i], fn, fnCtx, fnArgs);
+                unhandleEvent(itc, eventNames[i], fn, fnCtx);
             }
 
             return true;
@@ -104,11 +104,11 @@ define(
         /**
          *
          */
-        var handlerRemove = function Observable_handlerRemove(itc, eventName, fn, fnCtx, fnArgs) {
-            var handlerIx = handlerIndexOf(itc, eventName, fn, fnCtx, fnArgs);
+        var unhandleEvent = function Observable_unhandleEvent(itc, eventName, fn, fnCtx) {
+            var handlerIx = handlerIndexOf(itc, eventName, fn, fnCtx);
 
             if (!~handlerIx) {
-                console.error('Observable', 'handlerRemove', 'no such event handler', eventName, fn, fnCtx, fnArgs);
+                console.error('Observable', 'unhandleEvent', 'no such event handler', eventName, fn, fnCtx);
                 return false;
             }
 
@@ -120,7 +120,7 @@ define(
         /**
          *
          */
-        var handlerIndexOf = function Observable_handlerIndexOf(itc, eventName, fn, fnCtx, fnArgs) {
+        var handlerIndexOf = function Observable_handlerIndexOf(itc, eventName, fn, fnCtx) {
             var handlers = itc.eventHandlerMap[eventName] || [];
             var handler;
 
@@ -138,11 +138,11 @@ define(
         /**
          *
          */
-        var handlersTriggerAll = function Observable_handlersTriggerAll(itc, eventNames, data) {
+        var triggerEventsHandlers = function Observable_triggerEventsHandlers(itc, eventNames, data) {
             eventNames = Array.isArray(eventNames) ? eventNames : [eventNames];
 
             for (var i = 0, l = eventNames.length; i < l; i++) {
-                handlersTrigger(itc, eventNames[i], data);
+                triggerEventHandlers(itc, eventNames[i], data);
             }
 
             return true;
@@ -151,25 +151,25 @@ define(
         /**
          *
          */
-        var handlersTrigger = function Observable_handlersTrigger(itc, eventName, data) {
+        var triggerEventHandlers = function Observable_triggerEventHandlers(itc, eventName, data) {
             if (!(eventName in itc.eventHandlerMap) || itc.eventHandlerMap[eventName].length === 0) {
                 return false;
             }
 
             for (var i = 0, l = itc.eventHandlerMap[eventName].length; i < l; i++) {
-                handlerTrigger(itc, eventName, itc.eventHandlerMap[eventName][i], data);
+                triggerEventHandler(itc, eventName, itc.eventHandlerMap[eventName][i], data);
             }
         };
 
         /**
          *
          */
-        var handlerTrigger = function Observable_handlerTrigger(itc, eventName, handler, data) {
+        var triggerEventHandler = function Observable_triggerEventHandler(itc, eventName, handler, data) {
             try {
                 handler.fn.apply(handler.fnCtx, (handler.fnArgs || []).concat([eventName, data]));
             }
             catch (err) {
-                console.error('Observable', 'handlerTrigger', 'event handler run error', err);
+                console.error('Observable', 'triggerEventHandler', 'event handler run error', err);
             }
         };
 
