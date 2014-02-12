@@ -347,7 +347,6 @@ define(
                     'url': URL.createObjectURL(itc.file),
                     'limit': 0 - CONTENT_SIZE_LIMIT
                 },
-                null,
                 function ArmadillogContent_fileSet_serviceFileReaderRunSuccess(data) {
                     URL.revokeObjectURL(data.url);
                     textSet(itc, data.result, label);
@@ -379,7 +378,6 @@ define(
                     'url': URL.createObjectURL(itc.file),
                     'limit': 0 - CONTENT_SIZE_LIMIT
                 },
-                null,
                 function ArmadillogContent_fileUpdate_serviceFileReaderRunSuccess(data) {
                     URL.revokeObjectURL(data.url);
 
@@ -441,7 +439,6 @@ define(
                     'url': itc.url,
                     'limit': 0 - CONTENT_SIZE_LIMIT
                 },
-                null,
                 function ArmadillogContent_urlSet_serviceFileReaderRunSuccess(data) {
                     textSet(itc, data.result, label);
                     urlUpdateSchedule(itc);
@@ -472,7 +469,6 @@ define(
                     'url': itc.url,
                     'limit': 0 - CONTENT_SIZE_LIMIT
                 },
-                null,
                 function ArmadillogContent_urlUpdate_serviceFileReaderRunSuccess(data) {
                     if (itc.url) {
                         textUpdate(itc, data.result);
@@ -526,8 +522,7 @@ define(
                     'text': text,
                     'limit': 0 - CONTENT_LINE_LIMIT
                 },
-                null,
-                function ArmadillogContent_textSet_serviceTextLineSplitterRunSuccess(data, additional) {
+                function ArmadillogContent_textSet_serviceTextLineSplitterRunSuccess(data) {
                     if ('text' in data) {
                         var lineItemMMap = new ModelMap('textRaw', data.text, 'textFiltered', null, 'hidden', true, 'els', null);
                         itc.lineMList.setAt(data.ix, lineItemMMap);
@@ -558,8 +553,7 @@ define(
                     'text': text,
                     'limit': 0 - CONTENT_LINE_LIMIT
                 },
-                null,
-                function ArmadillogContent_textUpdate_serviceTextLineSplitterRunSuccess(data, additional) {
+                function ArmadillogContent_textUpdate_serviceTextLineSplitterRunSuccess(data) {
                     if ('text' in data) {
                         var lineItemMMap = itc.lineMList.getAt(data.ix);
 

@@ -48,8 +48,8 @@ define(
         /**
          *
          */
-        var run = function textLineSplitter_run(data, additional, fnReady, fnError, fnCtx, fnArgs) {
-            return WORKER_TEXT_LINE_SPLITTER.run(data, additional, fnReady, fnError, fnCtx, fnArgs);
+        var run = function textLineSplitter_run(data, fnReady, fnError, fnCtx, fnArgs) {
+            return WORKER_TEXT_LINE_SPLITTER.run(data, fnReady, fnError, fnCtx, fnArgs);
         };
 
         //

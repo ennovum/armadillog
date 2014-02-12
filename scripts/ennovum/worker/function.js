@@ -29,7 +29,7 @@ define(
                 queue: undefined,
 
                 config: {},
-                fn: fn,
+                fn: undefined,
 
                 widSeq: 0,
                 workMap: {},
@@ -43,40 +43,42 @@ define(
             this.destroy = destroy.bind(this, itc);
             this.run = run.bind(this, itc);
 
-            init.call(this, itc, config);
+            init.call(this, itc, fn, config);
 
             return this;
         };
 
         //
-        var SOURCE = [
-            '"use strict"',
-            'var fnReady = function (wid) {',
-            '    return function (data) {',
-            '        postMessage(',
-            '            {',
-            '                "wid": wid,',
-            '                "success": true,',
-            '                "data": data',
-            '            },',
-            '            undefined);',
-            '    };',
-            '};',
-            'var fnError = function (wid) {',
-            '    return function (data) {',
-            '        postMessage(',
-            '            {',
-            '                "wid": wid,',
-            '                "success": false,',
-            '                "data": data',
-            '            },',
-            '            undefined);',
-            '    };',
-            '};',
-            'this.onmessage = function(event){',
-            '    ({{function}}).call(this, event.data.data, fnReady(event.data.wid), fnError(event.data.wid));',
-            '};',
-        ].join('\n');
+        var WORK_FUNCTION = function work(fn) {
+            "use strict"
+            var fnReady = function (wid) {
+                return function (data) {
+                    postMessage(
+                        {
+                            "wid": wid,
+                            "success": true,
+                            "data": data
+                        },
+                        undefined);
+                };
+            };
+            var fnError = function (wid) {
+                return function (data) {
+                    postMessage(
+                        {
+                            "wid": wid,
+                            "success": false,
+                            "data": data
+                        },
+                        undefined);
+                };
+            };
+            onmessage = function(event){
+                fn.call(null, event.data.data, fnReady(event.data.wid), fnError(event.data.wid));
+            };
+        };
+
+        var WORK_FUNCTION_SOURCE = WORK_FUNCTION.toString();
 
         //
         var DISABLE_NATIVE_WORKER_STORAGE_NAME = 'disableNativeWorker';
@@ -84,16 +86,18 @@ define(
         /**
          *
          */
-        var init = function WorkerFunction_init(itc, config) {
+        var init = function WorkerFunction_init(itc, fn, config) {
             itc.queue = composition.mixin(this, new Queue());
 
             configure(itc, config || {});
 
-            itc.sourceURL = URL.createObjectURL(
-                new Blob([SOURCE.replace('{{function}}', itc.fn.toString())],
-                {'type': 'text/javascript'}));
+            itc.fn = fn;
 
             try {
+                itc.sourceURL = URL.createObjectURL(
+                    new Blob(['(' + WORK_FUNCTION_SOURCE + ')(' + itc.fn.toString() + ');'],
+                    {'type': 'text/javascript'}));
+
                 itc.worker = new Worker(itc.sourceURL);
 
                 itc.worker.onmessage = function WorkerFunction_workerInit_onmessage(event) {
@@ -141,11 +145,15 @@ define(
         };
 
         /**
-         * Runs the worker
+         * Queues the worker run
          *
          * @param {mixed} data Message data
+         * @param {function} fnReady ready callback
+         * @param {function} fnError error callback
+         * @param {mixed} fnCtx ready/error callback context
+         * @param {array} fnArgs ready/error callback arguments
          */
-        var run = function WorkerFunction_run(itc, data, additional, fnReady, fnError, fnCtx, fnArgs) {
+        var run = function WorkerFunction_run(itc, data, fnReady, fnError, fnCtx, fnArgs) {
             switch (false) {
                 case !fnReady || typeof fnReady === 'function':
                 case !fnError || typeof fnError === 'function':
@@ -156,7 +164,6 @@ define(
 
             var wid = '' + (itc.widSeq++);
             var work = {
-                'additional': additional || null,
                 'fnReady': fnReady || null,
                 'fnError': fnError || null,
                 'fnCtx': fnCtx || null,
@@ -165,29 +172,35 @@ define(
 
             itc.workMap[wid] = work;
 
-            itc.queue.queueUp(
-                function () {
-                    if (!itc.worker || itc.config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
-                        itc.fn(
-                            data,
-                            function (data) {
-                                messageHandler(itc, wid, true, data);
-                            },
-                            function (data) {
-                                messageHandler(itc, wid, false, data);
-                            });
-                    }
-                    else {
-                        itc.worker.postMessage(
-                            {
-                                'wid': wid,
-                                'data': data
-                            });
-                    }
-                },
-                true);
+            itc.queue.queueUp(runWork, true, this, [itc, data, wid]);
 
             return true;
+        };
+
+        /**
+         * Runs the worker
+         *
+         * @param {mixed} data Message data
+         * @param {number} wid work id
+         */
+        var runWork = function WorkerFunction_runWork(itc, data, wid) {
+            if (!itc.worker || itc.config.disableNativeWorker || localStorage.getItem(DISABLE_NATIVE_WORKER_STORAGE_NAME)) {
+                itc.fn(
+                    data,
+                    function (data) {
+                        messageHandler(itc, wid, true, data);
+                    },
+                    function (data) {
+                        messageHandler(itc, wid, false, data);
+                    });
+            }
+            else {
+                itc.worker.postMessage(
+                    {
+                        'wid': wid,
+                        'data': data
+                    });
+            }
         };
 
         /**
@@ -200,12 +213,12 @@ define(
 
             if (success) {
                 if (work.fnReady) {
-                    work.fnReady.apply(work.fnCtx, (work.fnArgs || []).concat([data, work.additional]));
+                    work.fnReady.apply(work.fnCtx, (work.fnArgs || []).concat([data]));
                 }
             }
             else {
                 if (work.fnError) {
-                    work.fnError.apply(work.fnCtx, (work.fnArgs || []).concat([data, work.additional]));
+                    work.fnError.apply(work.fnCtx, (work.fnArgs || []).concat([data]));
                 }
             }
 

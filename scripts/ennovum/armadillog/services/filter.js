@@ -90,8 +90,8 @@ define(
         /**
          *
          */
-        var run = function filtering_run(data, additional, fnReady, fnError, fnCtx, fnArgs) {
-            return WORKER_FILTER.run(data, additional, fnReady, fnError, fnCtx, fnArgs);
+        var run = function filtering_run(data, fnReady, fnError, fnCtx, fnArgs) {
+            return WORKER_FILTER.run(data, fnReady, fnError, fnCtx, fnArgs);
         };
 
         //

@@ -893,7 +893,6 @@ define(
                     'text': text,
                     'filterListJSON': filterListJSON
                 },
-                null,
                 function ArmadillogFilter_filterText_serviceFilterRunSuccess(data) {
                     onSuccess({
                         'text': data.text,

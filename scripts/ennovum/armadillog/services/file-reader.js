@@ -17,8 +17,8 @@ define(
         /**
          *
          */
-        var run = function fileReader_run(data, additional, fnReady, fnError, fnCtx, fnArgs) {
-            return workerFileReader.run(data, additional, fnReady, fnError, fnCtx, fnArgs);
+        var run = function fileReader_run(data, fnReady, fnError, fnCtx, fnArgs) {
+            return workerFileReader.run(data, fnReady, fnError, fnCtx, fnArgs);
         };
 
         //
