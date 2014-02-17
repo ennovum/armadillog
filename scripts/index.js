@@ -6,7 +6,7 @@ require.config({
         {
             'name': 'handlebars',
             'location': 'vendor',
-            'main': 'handlebars-1.0.rc.1.js'
+            'main': 'handlebars.js'
         },
         {
             'name': 'ennovum.environment',
@@ -90,7 +90,7 @@ require.config({
         }
     ],
     'paths': {
-        'text': 'vendor/text-2.0.5'
+        'text': 'vendor/text'
     },
     'shim': {
         'handlebars': {
