@@ -7,6 +7,12 @@ define(
     function (
         environment
     ) {
+        //
+        var FUNCTION_NAME_REGEXP = /[a-z]+ ([^\(]*)/i;
+
+        //
+        var spySeq = 0;
+
         /**
          *
          */
